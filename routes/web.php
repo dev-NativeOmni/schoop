@@ -1,7 +1,46 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
+});
+
+Route::middleware('guest')->group(function (): void {
+    Route::get('/login', [LoginController::class, 'create'])->name('login');
+    Route::post('/login', [LoginController::class, 'store'])->name('login.store');
+});
+
+Route::middleware('auth')->group(function (): void {
+    Route::post('/logout', LogoutController::class)->name('logout');
+
+    Route::get('/dashboard', [DashboardController::class, 'redirect'])
+        ->name('dashboard');
+
+    Route::get('/dashboard/super-admin', [DashboardController::class, 'superAdmin'])
+        ->middleware('role:super_admin')
+        ->name('dashboard.super-admin');
+
+    Route::get('/dashboard/admin', [DashboardController::class, 'admin'])
+        ->middleware('role:super_admin,admin')
+        ->name('dashboard.admin');
+
+    Route::get('/dashboard/kepala-sekolah', [DashboardController::class, 'kepalaSekolah'])
+        ->middleware('role:super_admin,principal')
+        ->name('dashboard.kepala-sekolah');
+
+    Route::get('/dashboard/guru', [DashboardController::class, 'teacher'])
+        ->middleware('role:super_admin,teacher')
+        ->name('dashboard.teacher');
+
+    Route::get('/dashboard/orang-tua', [DashboardController::class, 'parent'])
+        ->middleware('role:super_admin,parent')
+        ->name('dashboard.parent');
+
+    Route::get('/dashboard/santri', [DashboardController::class, 'student'])
+        ->middleware('role:super_admin,student')
+        ->name('dashboard.student');
 });

@@ -1,0 +1,10 @@
+@extends('layouts.app')
+
+@section('content')
+    <div class="rounded-2xl bg-white p-8 shadow-sm">
+        <h2 class="text-2xl font-bold">Dashboard Kepala Sekolah</h2>
+        <p class="mt-2 text-slate-600">
+            Placeholder dashboard untuk monitoring aktivitas guru, santri, dan setoran.
+        </p>
+    </div>
+@endsection
