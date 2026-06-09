@@ -6,5 +6,10 @@
         <p class="mt-2 text-slate-600">
             Placeholder dashboard untuk guru tahfidz.
         </p>
+
+        <a href="{{ route('tahfizh.hafalan-records.create') }}"
+           class="mt-4 inline-block rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
+            Input Setoran Tahfizh
+        </a>
     </div>
 @endsection

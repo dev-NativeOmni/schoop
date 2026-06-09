@@ -19,8 +19,8 @@
                             {{ auth()->user()->role?->label ?? 'Tanpa Role' }}
                         </p>
 
-                        @if (auth()->user()->hasRole(['super_admin', 'admin']))
-                            <nav class="mt-4 flex flex-wrap gap-3 text-sm">
+                        <nav class="mt-4 flex flex-wrap gap-3 text-sm">
+                            @if (auth()->user()->hasRole(['super_admin', 'admin']))
                                 @if (auth()->user()->hasRole('super_admin'))
                                     <a href="{{ route('master-data.schools.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
                                         Sekolah
@@ -42,8 +42,14 @@
                                 <a href="{{ route('master-data.students.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
                                     Santri
                                 </a>
-                            </nav>
-                        @endif
+                            @endif
+
+                            @if (auth()->user()->hasRole(['super_admin', 'admin', 'teacher', 'principal']))
+                                <a href="{{ route('tahfizh.hafalan-records.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Setoran Tahfizh
+                                </a>
+                            @endif
+                        </nav>
                     </div>
 
                     <form method="POST" action="{{ route('logout') }}">

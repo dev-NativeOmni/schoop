@@ -8,6 +8,7 @@ use App\Http\Controllers\MasterData\ParentController;
 use App\Http\Controllers\MasterData\SchoolController;
 use App\Http\Controllers\MasterData\StudentController;
 use App\Http\Controllers\MasterData\TeacherController;
+use App\Http\Controllers\Tahfizh\HafalanRecordController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -64,4 +65,36 @@ Route::middleware('auth')->group(function (): void {
     Route::middleware('role:super_admin')->prefix('master-data')->name('master-data.')->group(function (): void {
         Route::resource('schools', SchoolController::class);
     });
+
+    // Tahfizh Setoran Routes
+    Route::middleware('role:super_admin,admin,teacher,principal')
+        ->prefix('tahfizh')
+        ->name('tahfizh.')
+        ->group(function (): void {
+            Route::get('hafalan-records', [HafalanRecordController::class, 'index'])
+                ->name('hafalan-records.index');
+
+            Route::get('hafalan-records/{hafalan_record}', [HafalanRecordController::class, 'show'])
+                ->name('hafalan-records.show');
+        });
+
+    Route::middleware('role:super_admin,admin,teacher')
+        ->prefix('tahfizh')
+        ->name('tahfizh.')
+        ->group(function (): void {
+            Route::get('hafalan-records/create', [HafalanRecordController::class, 'create'])
+                ->name('hafalan-records.create');
+
+            Route::post('hafalan-records', [HafalanRecordController::class, 'store'])
+                ->name('hafalan-records.store');
+
+            Route::get('hafalan-records/{hafalan_record}/edit', [HafalanRecordController::class, 'edit'])
+                ->name('hafalan-records.edit');
+
+            Route::put('hafalan-records/{hafalan_record}', [HafalanRecordController::class, 'update'])
+                ->name('hafalan-records.update');
+
+            Route::delete('hafalan-records/{hafalan_record}', [HafalanRecordController::class, 'destroy'])
+                ->name('hafalan-records.destroy');
+        });
 });
