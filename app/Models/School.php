@@ -51,4 +51,14 @@ class School extends Model
     {
         return $this->hasMany(Student::class);
     }
+
+    public function tahfizhTargets(): HasMany
+    {
+        return $this->hasMany(TahfizhTarget::class);
+    }
+
+    public function hafalanRecords(): HasMany
+    {
+        return $this->hasMany(HafalanRecord::class);
+    }
 }

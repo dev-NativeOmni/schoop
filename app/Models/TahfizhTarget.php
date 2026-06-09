@@ -4,32 +4,33 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Student extends Model
+class TahfizhTarget extends Model
 {
     protected $fillable = [
         'school_id',
-        'user_id',
         'class_room_id',
-        'student_number',
-        'nisn',
-        'full_name',
-        'nickname',
-        'gender',
-        'birth_place',
-        'birth_date',
-        'address',
-        'phone',
+        'student_id',
+        'name',
         'program_type',
+        'daily_target_lines',
+        'weekly_target_lines',
+        'monthly_target_lines',
+        'effective_from',
+        'effective_until',
+        'created_by',
         'is_active',
     ];
 
     protected function casts(): array
     {
         return [
-            'birth_date' => 'date',
+            'daily_target_lines' => 'integer',
+            'weekly_target_lines' => 'integer',
+            'monthly_target_lines' => 'integer',
+            'effective_from' => 'date',
+            'effective_until' => 'date',
             'is_active' => 'boolean',
         ];
     }
@@ -39,26 +40,19 @@ class Student extends Model
         return $this->belongsTo(School::class);
     }
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
     public function classRoom(): BelongsTo
     {
         return $this->belongsTo(ClassRoom::class);
     }
 
-    public function parents(): BelongsToMany
+    public function student(): BelongsTo
     {
-        return $this->belongsToMany(ParentProfile::class, 'parent_student')
-            ->withPivot(['relationship', 'is_primary'])
-            ->withTimestamps();
+        return $this->belongsTo(Student::class);
     }
 
-    public function tahfizhTargets(): HasMany
+    public function creator(): BelongsTo
     {
-        return $this->hasMany(TahfizhTarget::class);
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function hafalanRecords(): HasMany

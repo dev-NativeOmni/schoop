@@ -12,6 +12,9 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             SchoolSeeder::class,
             InitialUserSeeder::class,
+            QuranJuzSeeder::class,
+            QuranSurahSeeder::class,
+            MushafPageSeeder::class,
         ]);
     }
 }

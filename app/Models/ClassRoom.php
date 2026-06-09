@@ -38,4 +38,9 @@ class ClassRoom extends Model
     {
         return $this->hasMany(Student::class);
     }
+
+    public function tahfizhTargets(): HasMany
+    {
+        return $this->hasMany(TahfizhTarget::class);
+    }
 }
