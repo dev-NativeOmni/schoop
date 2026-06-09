@@ -7,7 +7,7 @@
 | 2 | Master Data Foundation | Done |
 | 3 | Tahfizh Core Database Foundation | Done |
 | 4 | Tahfizh Input Foundation | Done |
-| 5 | Target and Debt Calculation | Pending |
+| 5 | Target and Debt Calculation | Done |
 | 6 | Dashboard and Reports | Pending |
 | 7 | Parent and Student Progress Portal | Pending |
 | 8 | Notification Center | Pending |

@@ -48,6 +48,14 @@
                                 <a href="{{ route('tahfizh.hafalan-records.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
                                     Setoran Tahfizh
                                 </a>
+
+                                <a href="{{ route('tahfizh.targets.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Target Tahfizh
+                                </a>
+
+                                <a href="{{ route('tahfizh.debts.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Hutang Hafalan
+                                </a>
                             @endif
                         </nav>
                     </div>

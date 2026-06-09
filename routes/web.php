@@ -9,6 +9,8 @@ use App\Http\Controllers\MasterData\SchoolController;
 use App\Http\Controllers\MasterData\StudentController;
 use App\Http\Controllers\MasterData\TeacherController;
 use App\Http\Controllers\Tahfizh\HafalanRecordController;
+use App\Http\Controllers\Tahfizh\TahfizhDebtController;
+use App\Http\Controllers\Tahfizh\TahfizhTargetController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -96,5 +98,46 @@ Route::middleware('auth')->group(function (): void {
 
             Route::delete('hafalan-records/{hafalan_record}', [HafalanRecordController::class, 'destroy'])
                 ->name('hafalan-records.destroy');
+        });
+
+    // Tahfizh Targets and Debts Routes
+    Route::middleware('role:super_admin,admin,principal,teacher')
+        ->prefix('tahfizh')
+        ->name('tahfizh.')
+        ->group(function (): void {
+            Route::get('targets', [TahfizhTargetController::class, 'index'])
+                ->name('targets.index');
+
+            Route::get('targets/{target}', [TahfizhTargetController::class, 'show'])
+                ->name('targets.show');
+
+            Route::get('debts', [TahfizhDebtController::class, 'index'])
+                ->name('debts.index');
+
+            Route::get('debts/{debt}', [TahfizhDebtController::class, 'show'])
+                ->name('debts.show');
+        });
+
+    Route::middleware('role:super_admin,admin')
+        ->prefix('tahfizh')
+        ->name('tahfizh.')
+        ->group(function (): void {
+            Route::get('targets/create', [TahfizhTargetController::class, 'create'])
+                ->name('targets.create');
+
+            Route::post('targets', [TahfizhTargetController::class, 'store'])
+                ->name('targets.store');
+
+            Route::get('targets/{target}/edit', [TahfizhTargetController::class, 'edit'])
+                ->name('targets.edit');
+
+            Route::put('targets/{target}', [TahfizhTargetController::class, 'update'])
+                ->name('targets.update');
+
+            Route::delete('targets/{target}', [TahfizhTargetController::class, 'destroy'])
+                ->name('targets.destroy');
+
+            Route::post('debts/calculate', [TahfizhDebtController::class, 'calculate'])
+                ->name('debts.calculate');
         });
 });

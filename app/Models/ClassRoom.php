@@ -43,4 +43,9 @@ class ClassRoom extends Model
     {
         return $this->hasMany(TahfizhTarget::class);
     }
+
+    public function tahfizhDebts(): HasMany
+    {
+        return $this->hasMany(TahfizhDebt::class);
+    }
 }

@@ -59,4 +59,9 @@ class TahfizhTarget extends Model
     {
         return $this->hasMany(HafalanRecord::class);
     }
+
+    public function debts(): HasMany
+    {
+        return $this->hasMany(TahfizhDebt::class);
+    }
 }
