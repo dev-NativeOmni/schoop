@@ -18,6 +18,32 @@
                             {{ auth()->user()->name }} —
                             {{ auth()->user()->role?->label ?? 'Tanpa Role' }}
                         </p>
+
+                        @if (auth()->user()->hasRole(['super_admin', 'admin']))
+                            <nav class="mt-4 flex flex-wrap gap-3 text-sm">
+                                @if (auth()->user()->hasRole('super_admin'))
+                                    <a href="{{ route('master-data.schools.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                        Sekolah
+                                    </a>
+                                @endif
+
+                                <a href="{{ route('master-data.class-rooms.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Kelas
+                                </a>
+
+                                <a href="{{ route('master-data.teachers.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Guru
+                                </a>
+
+                                <a href="{{ route('master-data.parents.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Orang Tua
+                                </a>
+
+                                <a href="{{ route('master-data.students.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Santri
+                                </a>
+                            </nav>
+                        @endif
                     </div>
 
                     <form method="POST" action="{{ route('logout') }}">
