@@ -9,6 +9,9 @@ use App\Http\Controllers\MasterData\SchoolController;
 use App\Http\Controllers\MasterData\StudentController;
 use App\Http\Controllers\MasterData\TeacherController;
 use App\Http\Controllers\Tahfizh\HafalanRecordController;
+use App\Http\Controllers\Reports\MonthlyTahfizhReportController;
+use App\Http\Controllers\Reports\QuarterlyTahfizhReportController;
+use App\Http\Controllers\Reports\TahfizhDashboardController;
 use App\Http\Controllers\Tahfizh\TahfizhDebtController;
 use App\Http\Controllers\Tahfizh\TahfizhTargetController;
 use Illuminate\Support\Facades\Route;
@@ -139,5 +142,26 @@ Route::middleware('auth')->group(function (): void {
 
             Route::post('debts/calculate', [TahfizhDebtController::class, 'calculate'])
                 ->name('debts.calculate');
+        });
+
+    // Tahfizh Reports Routes
+    Route::middleware('role:super_admin,admin,principal,teacher')
+        ->prefix('reports/tahfizh')
+        ->name('reports.tahfizh.')
+        ->group(function (): void {
+            Route::get('dashboard', TahfizhDashboardController::class)
+                ->name('dashboard');
+
+            Route::get('monthly', [MonthlyTahfizhReportController::class, 'index'])
+                ->name('monthly.index');
+
+            Route::get('monthly/students/{student}', [MonthlyTahfizhReportController::class, 'show'])
+                ->name('monthly.show');
+
+            Route::get('quarterly', [QuarterlyTahfizhReportController::class, 'index'])
+                ->name('quarterly.index');
+
+            Route::get('quarterly/students/{student}', [QuarterlyTahfizhReportController::class, 'show'])
+                ->name('quarterly.show');
         });
 });

@@ -56,6 +56,18 @@
                                 <a href="{{ route('tahfizh.debts.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
                                     Hutang Hafalan
                                 </a>
+
+                                <a href="{{ route('reports.tahfizh.dashboard') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Dashboard Tahfizh
+                                </a>
+
+                                <a href="{{ route('reports.tahfizh.monthly.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Laporan Bulanan
+                                </a>
+
+                                <a href="{{ route('reports.tahfizh.quarterly.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Laporan Triwulan
+                                </a>
                             @endif
                         </nav>
                     </div>
