@@ -7,9 +7,16 @@
             Placeholder dashboard untuk orang tua.
         </p>
 
-        <a href="{{ route('portal.parent.dashboard') }}"
-           class="mt-4 inline-block rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
-            Buka Portal Orang Tua
-        </a>
+        <div class="mt-4 flex flex-wrap gap-3">
+            <a href="{{ route('portal.parent.dashboard') }}"
+               class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
+                Buka Portal Orang Tua
+            </a>
+
+            <a href="{{ route('notifications.index') }}"
+               class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                Lihat Notifikasi
+            </a>
+        </div>
     </div>
 @endsection

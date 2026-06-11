@@ -81,6 +81,26 @@
                                     Portal Santri
                                 </a>
                             @endif
+
+                            @php
+                                $unreadNotificationCount = auth()->user()->unreadNotifications()->count();
+                            @endphp
+
+                            <a href="{{ route('notifications.index') }}" class="relative font-semibold text-slate-700 hover:text-slate-950">
+                                Notifikasi
+
+                                @if ($unreadNotificationCount > 0)
+                                    <span class="absolute -right-4 -top-2 rounded-full bg-red-600 px-2 py-0.5 text-xs font-bold text-white">
+                                        {{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}
+                                    </span>
+                                @endif
+                            </a>
+
+                            @if (auth()->user()->hasRole(['super_admin', 'admin']))
+                                <a href="{{ route('notifications.announcements.create') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Kirim Pengumuman
+                                </a>
+                            @endif
                         </nav>
                     </div>
 

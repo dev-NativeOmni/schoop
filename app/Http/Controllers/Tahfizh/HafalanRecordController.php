@@ -14,6 +14,7 @@ use App\Models\TahfizhTarget;
 use App\Models\User;
 use App\Services\Tahfizh\HafalanSequenceGuard;
 use App\Services\Tahfizh\LineRangeCalculator;
+use App\Services\Notifications\NotificationDispatchService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -148,12 +149,12 @@ class HafalanRecordController extends Controller
             ]);
         }
 
-        DB::transaction(function () use ($request, $user, $totalLines, $sequence): void {
+        $record = DB::transaction(function () use ($request, $user, $totalLines, $sequence): HafalanRecord {
             $teacherId = $user->hasRole('teacher')
                 ? $user->id
                 : $request->input('teacher_id');
 
-            HafalanRecord::query()->create([
+            return HafalanRecord::query()->create([
                 'school_id' => $request->integer('school_id'),
                 'student_id' => $request->integer('student_id'),
                 'teacher_id' => $teacherId,
@@ -182,6 +183,8 @@ class HafalanRecordController extends Controller
                 'updated_by' => null,
             ]);
         });
+
+        app(NotificationDispatchService::class)->notifyHafalanRecordCreated($record);
 
         return redirect()
             ->route('tahfizh.hafalan-records.index')

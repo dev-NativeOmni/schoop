@@ -10,6 +10,6 @@
 | 5 | Target and Debt Calculation | Done |
 | 6 | Dashboard and Reports | Done |
 | 7 | Parent and Student Progress Portal | Done |
-| 8 | Notification Center | Pending |
+| 8 | Notification Center | Done |
 | 9 | Export PDF/Excel | Pending |
 | 10 | Production Hardening | Pending |

@@ -27,6 +27,11 @@
                class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                 Laporan Triwulan
             </a>
+
+            <a href="{{ route('notifications.index') }}"
+               class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                Lihat Notifikasi
+            </a>
         </div>
     </div>
 @endsection

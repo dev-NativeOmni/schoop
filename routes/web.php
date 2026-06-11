@@ -14,6 +14,8 @@ use App\Http\Controllers\Reports\QuarterlyTahfizhReportController;
 use App\Http\Controllers\Reports\TahfizhDashboardController;
 use App\Http\Controllers\Portal\ParentProgressPortalController;
 use App\Http\Controllers\Portal\StudentProgressPortalController;
+use App\Http\Controllers\Notifications\AnnouncementController;
+use App\Http\Controllers\Notifications\NotificationCenterController;
 use App\Http\Controllers\Tahfizh\TahfizhDebtController;
 use App\Http\Controllers\Tahfizh\TahfizhTargetController;
 use Illuminate\Support\Facades\Route;
@@ -198,5 +200,37 @@ Route::middleware('auth')->group(function (): void {
 
             Route::get('monthly', [StudentProgressPortalController::class, 'monthly'])
                 ->name('monthly');
+        });
+
+    // Notification Center Routes
+    Route::prefix('notifications')
+        ->name('notifications.')
+        ->group(function (): void {
+            Route::get('/', [NotificationCenterController::class, 'index'])
+                ->name('index');
+
+            Route::post('mark-all-as-read', [NotificationCenterController::class, 'markAllAsRead'])
+                ->name('mark-all-as-read');
+
+            Route::get('{notification}', [NotificationCenterController::class, 'show'])
+                ->name('show');
+
+            Route::patch('{notification}/mark-as-read', [NotificationCenterController::class, 'markAsRead'])
+                ->name('mark-as-read');
+
+            Route::delete('{notification}', [NotificationCenterController::class, 'destroy'])
+                ->name('destroy');
+        });
+
+    // Announcement Routes
+    Route::middleware('role:super_admin,admin')
+        ->prefix('notifications/announcements')
+        ->name('notifications.announcements.')
+        ->group(function (): void {
+            Route::get('create', [AnnouncementController::class, 'create'])
+                ->name('create');
+
+            Route::post('/', [AnnouncementController::class, 'store'])
+                ->name('store');
         });
 });
