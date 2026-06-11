@@ -95,6 +95,33 @@ class InitialUserSeeder extends Seeder
             ]
         );
 
+        // Teacher 2
+        $teacher2 = User::query()->updateOrCreate(
+            ['email' => 'guru2@hafizplus.test'],
+            [
+                'role_id' => $roles['teacher']->id,
+                'school_id' => $school->id,
+                'name' => 'Guru Tahfidz Kedua',
+                'username' => 'guru2',
+                'phone' => null,
+                'password' => $defaultPassword,
+                'is_active' => true,
+            ]
+        );
+
+        TeacherProfile::query()->updateOrCreate(
+            ['user_id' => $teacher2->id],
+            [
+                'school_id' => $school->id,
+                'employee_number' => 'GT-002',
+                'specialization' => 'Tahfidz',
+                'address' => null,
+                'joined_at' => now()->toDateString(),
+                'is_active' => true,
+            ]
+        );
+
+        // Parent 1
         $parentUser = User::query()->updateOrCreate(
             ['email' => 'ortu@hafizplus.test'],
             [
@@ -119,6 +146,32 @@ class InitialUserSeeder extends Seeder
             ]
         );
 
+        // Parent 2
+        $parentUser2 = User::query()->updateOrCreate(
+            ['email' => 'ortu2@hafizplus.test'],
+            [
+                'role_id' => $roles['parent']->id,
+                'school_id' => $school->id,
+                'name' => 'Orang Tua Santri 2',
+                'username' => 'ortu2',
+                'phone' => null,
+                'password' => $defaultPassword,
+                'is_active' => true,
+            ]
+        );
+
+        $parentProfile2 = ParentProfile::query()->updateOrCreate(
+            ['user_id' => $parentUser2->id],
+            [
+                'school_id' => $school->id,
+                'relationship' => 'Wali',
+                'occupation' => null,
+                'address' => null,
+                'is_active' => true,
+            ]
+        );
+
+        // Student 1 (Parent 1)
         $studentUser = User::query()->updateOrCreate(
             ['email' => 'santri@hafizplus.test'],
             [
@@ -153,6 +206,86 @@ class InitialUserSeeder extends Seeder
 
         $parentProfile->students()->syncWithoutDetaching([
             $student->id => [
+                'relationship' => 'Wali',
+                'is_primary' => true,
+            ],
+        ]);
+
+        // Student 2 (Parent 1)
+        $studentUser2 = User::query()->updateOrCreate(
+            ['email' => 'santri2@hafizplus.test'],
+            [
+                'role_id' => $roles['student']->id,
+                'school_id' => $school->id,
+                'name' => 'Santri Contoh 2',
+                'username' => 'santri2',
+                'phone' => null,
+                'password' => $defaultPassword,
+                'is_active' => true,
+            ]
+        );
+
+        $student2 = Student::query()->updateOrCreate(
+            ['user_id' => $studentUser2->id],
+            [
+                'school_id' => $school->id,
+                'class_room_id' => null,
+                'student_number' => 'S-002',
+                'nisn' => null,
+                'full_name' => 'Santri Contoh 2',
+                'nickname' => 'Santri 2',
+                'gender' => null,
+                'birth_place' => null,
+                'birth_date' => null,
+                'address' => null,
+                'phone' => null,
+                'program_type' => 'tahfizh',
+                'is_active' => true,
+            ]
+        );
+
+        $parentProfile->students()->syncWithoutDetaching([
+            $student2->id => [
+                'relationship' => 'Wali',
+                'is_primary' => true,
+            ],
+        ]);
+
+        // Student 3 (Parent 2)
+        $studentUser3 = User::query()->updateOrCreate(
+            ['email' => 'santri3@hafizplus.test'],
+            [
+                'role_id' => $roles['student']->id,
+                'school_id' => $school->id,
+                'name' => 'Santri Contoh 3',
+                'username' => 'santri3',
+                'phone' => null,
+                'password' => $defaultPassword,
+                'is_active' => true,
+            ]
+        );
+
+        $student3 = Student::query()->updateOrCreate(
+            ['user_id' => $studentUser3->id],
+            [
+                'school_id' => $school->id,
+                'class_room_id' => null,
+                'student_number' => 'S-003',
+                'nisn' => null,
+                'full_name' => 'Santri Contoh 3',
+                'nickname' => 'Santri 3',
+                'gender' => null,
+                'birth_place' => null,
+                'birth_date' => null,
+                'address' => null,
+                'phone' => null,
+                'program_type' => 'tahfizh',
+                'is_active' => true,
+            ]
+        );
+
+        $parentProfile2->students()->syncWithoutDetaching([
+            $student3->id => [
                 'relationship' => 'Wali',
                 'is_primary' => true,
             ],
