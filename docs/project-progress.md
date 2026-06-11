@@ -13,8 +13,8 @@
 | 8 | Notification Center | Done |
 | 9 | Export PDF and Excel | Done |
 | 10 | Production Hardening | Done |
-| 11 | Mutabaah Yaumiyah Tracker | Pending |
-| 12 | QR Attendance System | Pending |
-| 13 | Tahsin Management App | Pending |
+| 11 | Mutabaah Yaumiyah Tracker | Done |
+| 12 | QR Attendance System | Done |
+| 13 | Tahsin Management App | Done |
 | 14 | Student Finance Ledger | Pending |
 | 15 | SchoolOS Mini | Pending |

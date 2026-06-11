@@ -15,6 +15,12 @@ class DatabaseSeeder extends Seeder
             QuranJuzSeeder::class,
             QuranSurahSeeder::class,
             MushafPageSeeder::class,
+            // Phase 11 — Mutabaah Yaumiyah Tracker
+            MutabaahCategorySeeder::class,
+            MutabaahActivitySeeder::class,
+            // Phase 13 — Tahsin Management App
+            TahsinLevelSeeder::class,
+            TahsinSkillSeeder::class,
         ]);
     }
 }

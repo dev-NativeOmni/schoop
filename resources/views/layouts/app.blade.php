@@ -72,17 +72,99 @@
                                 <a href="{{ route('exports.tahfizh.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
                                     Export Laporan
                                 </a>
+
+                                <a href="{{ route('mutabaah.reports.dashboard') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Mutabaah
+                                </a>
+
+                                <a href="{{ route('attendance.reports.dashboard') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Attendance
+                                </a>
+
+                                <a href="{{ route('tahsin.reports.dashboard') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Tahsin
+                                </a>
+
+                                <a href="{{ route('tahsin.assessments.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Asesmen Tahsin
+                                </a>
+
+                                <a href="{{ route('tahsin.profiles.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Profil Tahsin
+                                </a>
+                            @endif
+
+                            @if (auth()->user()->hasRole(['super_admin', 'admin', 'teacher']))
+                                <a href="{{ route('mutabaah.daily.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Input Mutabaah
+                                </a>
+
+                                <a href="{{ route('attendance.scanner.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Scanner QR
+                                </a>
+
+                                <a href="{{ route('attendance.manual.create') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Presensi Manual
+                                </a>
+                            @endif
+
+                            @if (auth()->user()->hasRole(['super_admin', 'admin']))
+                                <a href="{{ route('mutabaah.activities.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Template Mutabaah
+                                </a>
+
+                                <a href="{{ route('attendance.sessions.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Session Presensi
+                                </a>
+
+                                <a href="{{ route('attendance.qr-cards.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    QR Santri
+                                </a>
+
+                                <a href="{{ route('tahsin.levels.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Level Tahsin
+                                </a>
+
+                                <a href="{{ route('tahsin.skills.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Skill Tahsin
+                                </a>
                             @endif
 
                             @if (auth()->user()->hasRole('parent'))
                                 <a href="{{ route('portal.parent.dashboard') }}" class="font-semibold text-slate-700 hover:text-slate-950">
                                     Portal Orang Tua
                                 </a>
+
+                                @if(auth()->user()->parentProfile?->students()->exists())
+                                <a href="#" class="font-semibold text-slate-700 hover:text-slate-950" id="parent-mutabaah-link">
+                                    Mutabaah Anak
+                                </a>
+                                @endif
+
+                                <a href="{{ route('portal.parent.attendance') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Presensi Anak
+                                </a>
+
+                                <a href="{{ route('portal.parent.tahsin') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Tahsin Anak
+                                </a>
                             @endif
 
                             @if (auth()->user()->hasRole('student'))
                                 <a href="{{ route('portal.student.dashboard') }}" class="font-semibold text-slate-700 hover:text-slate-950">
                                     Portal Santri
+                                </a>
+
+                                <a href="{{ route('portal.student.mutabaah') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Mutabaah Saya
+                                </a>
+
+                                <a href="{{ route('portal.student.attendance') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Presensi Saya
+                                </a>
+
+                                <a href="{{ route('portal.student.tahsin') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Tahsin Saya
                                 </a>
                             @endif
 

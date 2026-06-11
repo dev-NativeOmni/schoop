@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Student extends Model
 {
@@ -69,5 +70,31 @@ class Student extends Model
     public function tahfizhDebts(): HasMany
     {
         return $this->hasMany(TahfizhDebt::class);
+    }
+
+    public function mutabaahRecords(): HasMany
+    {
+        return $this->hasMany(MutabaahRecord::class);
+    }
+
+    public function attendanceQrToken(): HasOne
+    {
+        return $this->hasOne(AttendanceQrToken::class)
+            ->where('is_active', true);
+    }
+
+    public function attendanceRecords(): HasMany
+    {
+        return $this->hasMany(AttendanceRecord::class);
+    }
+
+    public function tahsinProfile(): HasOne
+    {
+        return $this->hasOne(TahsinStudentProfile::class);
+    }
+
+    public function tahsinAssessments(): HasMany
+    {
+        return $this->hasMany(TahsinAssessment::class);
     }
 }

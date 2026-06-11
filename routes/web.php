@@ -20,6 +20,25 @@ use App\Http\Controllers\Exports\TahfizhExportController;
 use App\Http\Controllers\Admin\SystemStatusController;
 use App\Http\Controllers\Tahfizh\TahfizhDebtController;
 use App\Http\Controllers\Tahfizh\TahfizhTargetController;
+use App\Http\Controllers\Mutabaah\MutabaahActivityController;
+use App\Http\Controllers\Mutabaah\MutabaahDailyInputController;
+use App\Http\Controllers\Mutabaah\MutabaahReportController;
+use App\Http\Controllers\Portal\ParentMutabaahPortalController;
+use App\Http\Controllers\Portal\StudentMutabaahPortalController;
+use App\Http\Controllers\Attendance\AttendanceQrCardController;
+use App\Http\Controllers\Attendance\AttendanceSessionController;
+use App\Http\Controllers\Attendance\AttendanceScannerController;
+use App\Http\Controllers\Attendance\AttendanceManualRecordController;
+use App\Http\Controllers\Attendance\AttendanceReportController;
+use App\Http\Controllers\Portal\ParentAttendancePortalController;
+use App\Http\Controllers\Portal\StudentAttendancePortalController;
+use App\Http\Controllers\Tahsin\TahsinLevelController;
+use App\Http\Controllers\Tahsin\TahsinSkillController;
+use App\Http\Controllers\Tahsin\TahsinStudentProfileController;
+use App\Http\Controllers\Tahsin\TahsinAssessmentController;
+use App\Http\Controllers\Tahsin\TahsinReportController;
+use App\Http\Controllers\Portal\ParentTahsinPortalController;
+use App\Http\Controllers\Portal\StudentTahsinPortalController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -271,4 +290,127 @@ Route::middleware('auth')->group(function (): void {
             Route::get('status', SystemStatusController::class)
                 ->name('status');
         });
+
+    // Mutabaah Routes
+    Route::middleware('role:super_admin,admin,teacher,principal')
+        ->prefix('mutabaah')
+        ->name('mutabaah.')
+        ->group(function (): void {
+            Route::get('reports/dashboard', [MutabaahReportController::class, 'dashboard'])
+                ->name('reports.dashboard');
+
+            Route::get('reports/student/{student}', [MutabaahReportController::class, 'studentReport'])
+                ->name('reports.student');
+
+            Route::get('daily', [MutabaahDailyInputController::class, 'index'])
+                ->name('daily.index');
+
+            Route::post('daily', [MutabaahDailyInputController::class, 'store'])
+                ->name('daily.store');
+        });
+
+    Route::middleware('role:super_admin,admin')
+        ->prefix('mutabaah')
+        ->name('mutabaah.')
+        ->group(function (): void {
+            Route::resource('activities', MutabaahActivityController::class);
+        });
+
+    // Parent Mutabaah Portal Route
+    Route::get('/portal/parent/mutabaah/{student}', [ParentMutabaahPortalController::class, 'show'])
+        ->middleware('role:parent')
+        ->name('portal.parent.mutabaah');
+
+    // Student Mutabaah Portal Route
+    Route::get('/portal/student/mutabaah', [StudentMutabaahPortalController::class, 'index'])
+        ->middleware('role:student')
+        ->name('portal.student.mutabaah');
+
+    // Attendance Routes
+    Route::prefix('attendance')
+        ->name('attendance.')
+        ->middleware(['role:super_admin,admin,admin_sekolah,kepala_sekolah,principal,teacher,guru,guru_tahfidz'])
+        ->group(function (): void {
+            Route::get('/qr-cards', [AttendanceQrCardController::class, 'index'])
+                ->name('qr-cards.index');
+
+            Route::get('/qr-cards/print', [AttendanceQrCardController::class, 'print'])
+                ->name('qr-cards.print');
+
+            Route::post('/qr-cards/{student}/rotate', [AttendanceQrCardController::class, 'rotate'])
+                ->name('qr-cards.rotate');
+
+            Route::get('/scanner', [AttendanceScannerController::class, 'index'])
+                ->name('scanner.index');
+
+            Route::post('/scanner/scan', [AttendanceScannerController::class, 'scan'])
+                ->name('scanner.scan');
+
+            Route::get('/manual/create', [AttendanceManualRecordController::class, 'create'])
+                ->name('manual.create');
+
+            Route::post('/manual', [AttendanceManualRecordController::class, 'store'])
+                ->name('manual.store');
+
+            Route::get('/reports/dashboard', [AttendanceReportController::class, 'dashboard'])
+                ->name('reports.dashboard');
+
+            Route::resource('sessions', AttendanceSessionController::class);
+        });
+
+    // Parent Attendance Portal Route
+    Route::get('/portal/parent/attendance', [ParentAttendancePortalController::class, 'index'])
+        ->middleware(['role:parent'])
+        ->name('portal.parent.attendance');
+
+    // Student Attendance Portal Route
+    Route::get('/portal/student/attendance', [StudentAttendancePortalController::class, 'index'])
+        ->middleware(['role:student'])
+        ->name('portal.student.attendance');
+
+    // Tahsin Management Routes
+    Route::prefix('tahsin')
+        ->name('tahsin.')
+        ->middleware(['role:super_admin,admin,admin_sekolah,kepala_sekolah,principal,teacher,guru,guru_tahfidz'])
+        ->group(function (): void {
+            Route::get('/reports/dashboard', [TahsinReportController::class, 'dashboard'])
+                ->name('reports.dashboard');
+
+            Route::get('/profiles', [TahsinStudentProfileController::class, 'index'])
+                ->name('profiles.index');
+
+            Route::get('/profiles/{student}', [TahsinStudentProfileController::class, 'show'])
+                ->name('profiles.show');
+
+            Route::get('/profiles/{student}/edit', [TahsinStudentProfileController::class, 'edit'])
+                ->name('profiles.edit');
+
+            Route::put('/profiles/{student}', [TahsinStudentProfileController::class, 'update'])
+                ->name('profiles.update');
+
+            Route::get('/assessments', [TahsinAssessmentController::class, 'index'])
+                ->name('assessments.index');
+
+            Route::get('/assessments/create', [TahsinAssessmentController::class, 'create'])
+                ->name('assessments.create');
+
+            Route::post('/assessments', [TahsinAssessmentController::class, 'store'])
+                ->name('assessments.store');
+
+            Route::get('/assessments/{assessment}', [TahsinAssessmentController::class, 'show'])
+                ->name('assessments.show');
+
+            Route::resource('levels', TahsinLevelController::class);
+            Route::resource('skills', TahsinSkillController::class);
+        });
+
+    // Parent Tahsin Portal Route
+    Route::get('/portal/parent/tahsin', [ParentTahsinPortalController::class, 'index'])
+        ->middleware(['role:parent'])
+        ->name('portal.parent.tahsin');
+
+    // Student Tahsin Portal Route
+    Route::get('/portal/student/tahsin', [StudentTahsinPortalController::class, 'index'])
+        ->middleware(['role:student'])
+        ->name('portal.student.tahsin');
 });
