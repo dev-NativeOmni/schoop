@@ -69,6 +69,18 @@
                                     Laporan Triwulan
                                 </a>
                             @endif
+
+                            @if (auth()->user()->hasRole('parent'))
+                                <a href="{{ route('portal.parent.dashboard') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Portal Orang Tua
+                                </a>
+                            @endif
+
+                            @if (auth()->user()->hasRole('student'))
+                                <a href="{{ route('portal.student.dashboard') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Portal Santri
+                                </a>
+                            @endif
                         </nav>
                     </div>
 

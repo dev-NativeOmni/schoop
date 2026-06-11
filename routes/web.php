@@ -12,6 +12,8 @@ use App\Http\Controllers\Tahfizh\HafalanRecordController;
 use App\Http\Controllers\Reports\MonthlyTahfizhReportController;
 use App\Http\Controllers\Reports\QuarterlyTahfizhReportController;
 use App\Http\Controllers\Reports\TahfizhDashboardController;
+use App\Http\Controllers\Portal\ParentProgressPortalController;
+use App\Http\Controllers\Portal\StudentProgressPortalController;
 use App\Http\Controllers\Tahfizh\TahfizhDebtController;
 use App\Http\Controllers\Tahfizh\TahfizhTargetController;
 use Illuminate\Support\Facades\Route;
@@ -163,5 +165,38 @@ Route::middleware('auth')->group(function (): void {
 
             Route::get('quarterly/students/{student}', [QuarterlyTahfizhReportController::class, 'show'])
                 ->name('quarterly.show');
+        });
+
+    // Parent Portal Routes
+    Route::middleware('role:parent')
+        ->prefix('portal/parent')
+        ->name('portal.parent.')
+        ->group(function (): void {
+            Route::get('dashboard', [ParentProgressPortalController::class, 'dashboard'])
+                ->name('dashboard');
+
+            Route::get('children/{student}', [ParentProgressPortalController::class, 'progress'])
+                ->name('children.progress');
+
+            Route::get('children/{student}/records', [ParentProgressPortalController::class, 'records'])
+                ->name('children.records');
+
+            Route::get('children/{student}/monthly', [ParentProgressPortalController::class, 'monthly'])
+                ->name('children.monthly');
+        });
+
+    // Student Portal Routes
+    Route::middleware('role:student')
+        ->prefix('portal/student')
+        ->name('portal.student.')
+        ->group(function (): void {
+            Route::get('dashboard', [StudentProgressPortalController::class, 'dashboard'])
+                ->name('dashboard');
+
+            Route::get('records', [StudentProgressPortalController::class, 'records'])
+                ->name('records');
+
+            Route::get('monthly', [StudentProgressPortalController::class, 'monthly'])
+                ->name('monthly');
         });
 });
