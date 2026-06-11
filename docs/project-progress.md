@@ -12,4 +12,9 @@
 | 7 | Parent and Student Progress Portal | Done |
 | 8 | Notification Center | Done |
 | 9 | Export PDF and Excel | Done |
-| 10 | Production Hardening | Pending |
+| 10 | Production Hardening | Done |
+| 11 | Mutabaah Yaumiyah Tracker | Pending |
+| 12 | QR Attendance System | Pending |
+| 13 | Tahsin Management App | Pending |
+| 14 | Student Finance Ledger | Pending |
+| 15 | SchoolOS Mini | Pending |

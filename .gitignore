@@ -9,6 +9,12 @@
 .env
 .env.backup
 .env.production
+.env.staging
+/storage/app/backups/*
+!/storage/app/backups/.gitkeep
+/storage/app/private/backups/*
+!/storage/app/private/backups/.gitkeep
+/storage/logs/*.log
 .phpactor.json
 .phpunit.result.cache
 Homestead.json

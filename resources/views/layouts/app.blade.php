@@ -104,6 +104,10 @@
                                 <a href="{{ route('notifications.announcements.create') }}" class="font-semibold text-slate-700 hover:text-slate-950">
                                     Kirim Pengumuman
                                 </a>
+
+                                <a href="{{ route('admin.system.status') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    System Status
+                                </a>
                             @endif
                         </nav>
                     </div>

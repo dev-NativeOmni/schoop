@@ -17,6 +17,7 @@ use App\Http\Controllers\Portal\StudentProgressPortalController;
 use App\Http\Controllers\Notifications\AnnouncementController;
 use App\Http\Controllers\Notifications\NotificationCenterController;
 use App\Http\Controllers\Exports\TahfizhExportController;
+use App\Http\Controllers\Admin\SystemStatusController;
 use App\Http\Controllers\Tahfizh\TahfizhDebtController;
 use App\Http\Controllers\Tahfizh\TahfizhTargetController;
 use Illuminate\Support\Facades\Route;
@@ -260,5 +261,14 @@ Route::middleware('auth')->group(function (): void {
 
             Route::get('dashboard/pdf', [TahfizhExportController::class, 'dashboardPdf'])
                 ->name('dashboard.pdf');
+        });
+
+    // System Status Routes
+    Route::middleware('role:super_admin,admin')
+        ->prefix('admin/system')
+        ->name('admin.system.')
+        ->group(function (): void {
+            Route::get('status', SystemStatusController::class)
+                ->name('status');
         });
 });
