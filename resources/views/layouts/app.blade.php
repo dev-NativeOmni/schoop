@@ -68,6 +68,10 @@
                                 <a href="{{ route('reports.tahfizh.quarterly.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
                                     Laporan Triwulan
                                 </a>
+
+                                <a href="{{ route('exports.tahfizh.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Export Laporan
+                                </a>
                             @endif
 
                             @if (auth()->user()->hasRole('parent'))

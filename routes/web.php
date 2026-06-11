@@ -16,6 +16,7 @@ use App\Http\Controllers\Portal\ParentProgressPortalController;
 use App\Http\Controllers\Portal\StudentProgressPortalController;
 use App\Http\Controllers\Notifications\AnnouncementController;
 use App\Http\Controllers\Notifications\NotificationCenterController;
+use App\Http\Controllers\Exports\TahfizhExportController;
 use App\Http\Controllers\Tahfizh\TahfizhDebtController;
 use App\Http\Controllers\Tahfizh\TahfizhTargetController;
 use Illuminate\Support\Facades\Route;
@@ -222,7 +223,7 @@ Route::middleware('auth')->group(function (): void {
                 ->name('destroy');
         });
 
-    // Announcement Routes
+// Announcement Routes
     Route::middleware('role:super_admin,admin')
         ->prefix('notifications/announcements')
         ->name('notifications.announcements.')
@@ -232,5 +233,32 @@ Route::middleware('auth')->group(function (): void {
 
             Route::post('/', [AnnouncementController::class, 'store'])
                 ->name('store');
+        });
+
+    // Export Routes
+    Route::middleware('role:super_admin,admin,principal,teacher')
+        ->prefix('exports/tahfizh')
+        ->name('exports.tahfizh.')
+        ->group(function (): void {
+            Route::get('/', [TahfizhExportController::class, 'index'])
+                ->name('index');
+
+            Route::get('monthly/excel', [TahfizhExportController::class, 'monthlyExcel'])
+                ->name('monthly.excel');
+
+            Route::get('monthly/pdf', [TahfizhExportController::class, 'monthlyPdf'])
+                ->name('monthly.pdf');
+
+            Route::get('quarterly/excel', [TahfizhExportController::class, 'quarterlyExcel'])
+                ->name('quarterly.excel');
+
+            Route::get('quarterly/pdf', [TahfizhExportController::class, 'quarterlyPdf'])
+                ->name('quarterly.pdf');
+
+            Route::get('dashboard/excel', [TahfizhExportController::class, 'dashboardExcel'])
+                ->name('dashboard.excel');
+
+            Route::get('dashboard/pdf', [TahfizhExportController::class, 'dashboardPdf'])
+                ->name('dashboard.pdf');
         });
 });

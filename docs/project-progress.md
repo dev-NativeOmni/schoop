@@ -11,5 +11,5 @@
 | 6 | Dashboard and Reports | Done |
 | 7 | Parent and Student Progress Portal | Done |
 | 8 | Notification Center | Done |
-| 9 | Export PDF/Excel | Pending |
+| 9 | Export PDF and Excel | Done |
 | 10 | Production Hardening | Pending |
