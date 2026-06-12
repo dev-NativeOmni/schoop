@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClassRoom;
+use App\Models\School;
+use App\Models\Student;
+use App\Models\TeacherProfile;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -25,22 +30,52 @@ class DashboardController extends Controller
 
     public function superAdmin(): View
     {
-        return view('dashboards.super-admin');
+        $stats = [
+            'total_schools' => School::count(),
+            'total_users' => User::count(),
+            'total_students' => Student::count(),
+            'total_teachers' => TeacherProfile::count(),
+        ];
+
+        return view('dashboards.super-admin', compact('stats'));
     }
 
-    public function admin(): View
+    public function admin(Request $request): View
     {
-        return view('dashboards.admin');
+        $schoolId = $request->user()->school_id;
+
+        $stats = [
+            'total_classrooms' => ClassRoom::where('school_id', $schoolId)->count(),
+            'total_students' => Student::where('school_id', $schoolId)->count(),
+            'total_teachers' => TeacherProfile::where('school_id', $schoolId)->count(),
+        ];
+
+        return view('dashboards.admin', compact('stats'));
     }
 
-    public function kepalaSekolah(): View
+    public function kepalaSekolah(Request $request): View
     {
-        return view('dashboards.kepala-sekolah');
+        $schoolId = $request->user()->school_id;
+
+        $stats = [
+            'total_classrooms' => ClassRoom::where('school_id', $schoolId)->count(),
+            'total_students' => Student::where('school_id', $schoolId)->count(),
+            'total_teachers' => TeacherProfile::where('school_id', $schoolId)->count(),
+        ];
+
+        return view('dashboards.kepala-sekolah', compact('stats'));
     }
 
-    public function teacher(): View
+    public function teacher(Request $request): View
     {
-        return view('dashboards.teacher');
+        $schoolId = $request->user()->school_id;
+
+        $stats = [
+            'total_classrooms' => ClassRoom::where('school_id', $schoolId)->count(),
+            'total_students' => Student::where('school_id', $schoolId)->count(),
+        ];
+
+        return view('dashboards.teacher', compact('stats'));
     }
 
     public function parent(): View

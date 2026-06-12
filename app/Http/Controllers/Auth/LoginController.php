@@ -10,11 +10,17 @@ use Illuminate\View\View;
 
 class LoginController extends Controller
 {
+    /**
+     * Show the login form.
+     */
     public function create(): View
     {
         return view('auth.login');
     }
 
+    /**
+     * Handle an authentication attempt.
+     */
     public function store(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
@@ -22,9 +28,8 @@ class LoginController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $loginField = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL)
-            ? 'email'
-            : 'username';
+        // Determine if the login field is an email or username
+        $loginField = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         $attemptCredentials = [
             $loginField => $credentials['login'],
@@ -42,9 +47,12 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        $request->user()->forceFill([
-            'last_login_at' => now(),
-        ])->save();
+        // Update user's last login timestamp
+        if ($user = $request->user()) {
+            $user->forceFill([
+                'last_login_at' => now(),
+            ])->save();
+        }
 
         return redirect()->intended(route('dashboard'));
     }

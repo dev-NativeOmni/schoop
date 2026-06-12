@@ -48,7 +48,7 @@ use App\Http\Controllers\Finance\FinanceReportController;
 use App\Http\Controllers\Portal\ParentFinancePortalController;
 use App\Http\Controllers\Portal\StudentFinancePortalController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\ProfileController;
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -67,7 +67,7 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard/super-admin', [DashboardController::class, 'superAdmin'])
         ->middleware('role:super_admin')
         ->name('dashboard.super-admin');
-
+Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->name('profile.show');
     Route::get('/dashboard/admin', [DashboardController::class, 'admin'])
         ->middleware('role:super_admin,admin')
         ->name('dashboard.admin');
