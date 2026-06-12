@@ -39,6 +39,14 @@ use App\Http\Controllers\Tahsin\TahsinAssessmentController;
 use App\Http\Controllers\Tahsin\TahsinReportController;
 use App\Http\Controllers\Portal\ParentTahsinPortalController;
 use App\Http\Controllers\Portal\StudentTahsinPortalController;
+use App\Http\Controllers\Finance\FinanceFeeCategoryController;
+use App\Http\Controllers\Finance\FinanceFeeItemController;
+use App\Http\Controllers\Finance\StudentBillController;
+use App\Http\Controllers\Finance\StudentPaymentController;
+use App\Http\Controllers\Finance\FinanceLedgerController;
+use App\Http\Controllers\Finance\FinanceReportController;
+use App\Http\Controllers\Portal\ParentFinancePortalController;
+use App\Http\Controllers\Portal\StudentFinancePortalController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -413,4 +421,58 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/portal/student/tahsin', [StudentTahsinPortalController::class, 'index'])
         ->middleware(['role:student'])
         ->name('portal.student.tahsin');
+
+    // Student Finance Ledger Routes
+    Route::prefix('finance')
+        ->name('finance.')
+        ->middleware(['role:super_admin,admin,principal'])
+        ->group(function (): void {
+            Route::get('/reports/dashboard', [FinanceReportController::class, 'dashboard'])
+                ->name('reports.dashboard');
+
+            Route::get('/bills', [StudentBillController::class, 'index'])
+                ->name('bills.index');
+
+            Route::get('/bills/create', [StudentBillController::class, 'create'])
+                ->name('bills.create');
+
+            Route::post('/bills', [StudentBillController::class, 'store'])
+                ->name('bills.store');
+
+            Route::get('/bills/{bill}', [StudentBillController::class, 'show'])
+                ->name('bills.show');
+
+            Route::patch('/bills/{bill}/void', [StudentBillController::class, 'void'])
+                ->name('bills.void');
+
+            Route::get('/payments', [StudentPaymentController::class, 'index'])
+                ->name('payments.index');
+
+            Route::get('/payments/create', [StudentPaymentController::class, 'create'])
+                ->name('payments.create');
+
+            Route::post('/payments', [StudentPaymentController::class, 'store'])
+                ->name('payments.store');
+
+            Route::get('/payments/{payment}', [StudentPaymentController::class, 'show'])
+                ->name('payments.show');
+
+            Route::patch('/payments/{payment}/void', [StudentPaymentController::class, 'void'])
+                ->name('payments.void');
+
+            Route::get('/ledgers/students/{student}', [FinanceLedgerController::class, 'student'])
+                ->name('ledgers.student');
+
+            Route::resource('fee-categories', FinanceFeeCategoryController::class);
+            Route::resource('fee-items', FinanceFeeItemController::class);
+        });
+
+    Route::get('/portal/parent/finance', [ParentFinancePortalController::class, 'index'])
+        ->middleware(['role:parent'])
+        ->name('portal.parent.finance');
+
+    Route::get('/portal/student/finance', [StudentFinancePortalController::class, 'index'])
+        ->middleware(['role:student'])
+        ->name('portal.student.finance');
 });
+

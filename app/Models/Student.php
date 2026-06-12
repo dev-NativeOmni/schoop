@@ -97,4 +97,20 @@ class Student extends Model
     {
         return $this->hasMany(TahsinAssessment::class);
     }
+
+    public function financeBills(): HasMany
+    {
+        return $this->hasMany(StudentBill::class);
+    }
+
+    public function financePayments(): HasMany
+    {
+        return $this->hasMany(StudentPayment::class);
+    }
+
+    public function financeLedgerEntries(): HasMany
+    {
+        return $this->hasMany(FinanceLedgerEntry::class);
+    }
 }
+

@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             // Phase 13 — Tahsin Management App
             TahsinLevelSeeder::class,
             TahsinSkillSeeder::class,
+            // Phase 14 — Student Finance Ledger
+            FinanceFeeCategorySeeder::class,
         ]);
     }
 }

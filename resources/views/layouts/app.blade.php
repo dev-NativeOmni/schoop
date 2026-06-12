@@ -94,6 +94,20 @@
                                 </a>
                             @endif
 
+                            @if (auth()->user()->hasRole(['super_admin', 'admin', 'principal']))
+                                <a href="{{ route('finance.reports.dashboard') }}" class="font-semibold text-slate-700 hover:text-slate-950 text-blue-600">
+                                    Finance Dashboard
+                                </a>
+
+                                <a href="{{ route('finance.bills.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Tagihan Santri
+                                </a>
+
+                                <a href="{{ route('finance.payments.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
+                                    Pembayaran
+                                </a>
+                            @endif
+
                             @if (auth()->user()->hasRole(['super_admin', 'admin', 'teacher']))
                                 <a href="{{ route('mutabaah.daily.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
                                     Input Mutabaah
@@ -128,6 +142,14 @@
                                 <a href="{{ route('tahsin.skills.index') }}" class="font-semibold text-slate-700 hover:text-slate-950">
                                     Skill Tahsin
                                 </a>
+
+                                <a href="{{ route('finance.fee-categories.index') }}" class="font-semibold text-slate-700 hover:text-slate-950 text-amber-600">
+                                    Kategori Biaya
+                                </a>
+
+                                <a href="{{ route('finance.fee-items.index') }}" class="font-semibold text-slate-700 hover:text-slate-950 text-amber-600">
+                                    Item Biaya
+                                </a>
                             @endif
 
                             @if (auth()->user()->hasRole('parent'))
@@ -148,6 +170,10 @@
                                 <a href="{{ route('portal.parent.tahsin') }}" class="font-semibold text-slate-700 hover:text-slate-950">
                                     Tahsin Anak
                                 </a>
+
+                                <a href="{{ route('portal.parent.finance') }}" class="font-semibold text-slate-700 hover:text-slate-950 text-blue-600">
+                                    Keuangan Anak
+                                </a>
                             @endif
 
                             @if (auth()->user()->hasRole('student'))
@@ -165,6 +191,10 @@
 
                                 <a href="{{ route('portal.student.tahsin') }}" class="font-semibold text-slate-700 hover:text-slate-950">
                                     Tahsin Saya
+                                </a>
+
+                                <a href="{{ route('portal.student.finance') }}" class="font-semibold text-slate-700 hover:text-slate-950 text-blue-600">
+                                    Keuangan Saya
                                 </a>
                             @endif
 

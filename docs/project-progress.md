@@ -16,5 +16,6 @@
 | 11 | Mutabaah Yaumiyah Tracker | Done |
 | 12 | QR Attendance System | Done |
 | 13 | Tahsin Management App | Done |
-| 14 | Student Finance Ledger | Pending |
+| 14 | Student Finance Ledger | Done |
 | 15 | SchoolOS Mini | Pending |
+
