@@ -10,3 +10,70 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* ==========================================================================
+   Global Capsule Buttons & Glow Highlights
+   ========================================================================== */
+
+/* Target buttons, submit inputs, and link buttons */
+button,
+.btn,
+a[class*="bg-indigo-"],
+a[class*="bg-slate-900"],
+a[class*="bg-emerald-"],
+a[class*="bg-blue-"],
+a[class*="bg-amber-"],
+a[class*="border-slate-"],
+a[class*="border-amber-"],
+a[class*="btn-outline-"],
+input[type="submit"],
+input[type="button"] {
+    border-radius: 9999px !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Hover highlights (slight translation + ring glow) */
+button:hover,
+.btn:hover,
+a[class*="bg-indigo-"]:hover,
+a[class*="bg-slate-900"]:hover,
+a[class*="bg-emerald-"]:hover,
+a[class*="bg-blue-"]:hover,
+a[class*="bg-amber-"]:hover,
+a[class*="border-slate-"]:hover,
+a[class*="border-amber-"]:hover,
+a[class*="btn-outline-"]:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+    transform: translateY(-1.5px) !important;
+    box-shadow: 0 4px 14px -2px rgba(99, 102, 241, 0.3), 0 0 0 4px rgba(99, 102, 241, 0.15) !important;
+}
+
+/* Emerald green button specific hover */
+a[class*="bg-emerald-"]:hover,
+button[class*="bg-emerald-"]:hover {
+    box-shadow: 0 4px 14px -2px rgba(16, 185, 129, 0.3), 0 0 0 4px rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Rose red button specific hover */
+a[class*="bg-rose-"]:hover,
+button[class*="bg-rose-"]:hover,
+a[class*="bg-red-"]:hover,
+button[class*="bg-red-"]:hover {
+    box-shadow: 0 4px 14px -2px rgba(244, 63, 94, 0.3), 0 0 0 4px rgba(244, 63, 94, 0.15) !important;
+}
+
+/* Active click micro-animation */
+button:active,
+.btn:active,
+a[class*="bg-indigo-"]:active,
+a[class*="bg-slate-900"]:active,
+a[class*="bg-emerald-"]:active,
+a[class*="bg-blue-"]:active,
+a[class*="bg-amber-"]:active,
+input[type="submit"]:active,
+input[type="button"]:active {
+    transform: translateY(0) scale(0.97) !important;
+    box-shadow: none !important;
+}
+

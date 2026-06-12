@@ -111,6 +111,17 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
     });
 
     // Tahfizh Setoran Routes
+    Route::middleware('role:super_admin,admin,teacher')
+        ->prefix('tahfizh')
+        ->name('tahfizh.')
+        ->group(function (): void {
+            Route::get('hafalan-records/create', [HafalanRecordController::class, 'create'])
+                ->name('hafalan-records.create');
+
+            Route::post('hafalan-records', [HafalanRecordController::class, 'store'])
+                ->name('hafalan-records.store');
+        });
+
     Route::middleware('role:super_admin,admin,teacher,principal')
         ->prefix('tahfizh')
         ->name('tahfizh.')
@@ -126,12 +137,6 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
         ->prefix('tahfizh')
         ->name('tahfizh.')
         ->group(function (): void {
-            Route::get('hafalan-records/create', [HafalanRecordController::class, 'create'])
-                ->name('hafalan-records.create');
-
-            Route::post('hafalan-records', [HafalanRecordController::class, 'store'])
-                ->name('hafalan-records.store');
-
             Route::get('hafalan-records/{hafalan_record}/edit', [HafalanRecordController::class, 'edit'])
                 ->name('hafalan-records.edit');
 

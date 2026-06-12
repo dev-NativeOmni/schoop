@@ -40,7 +40,20 @@ class MutabaahDailyInputController extends Controller
 
         $this->accessService->applyStudentScope($studentQuery, $user);
 
+        // Apply filters if any
+        if ($request->filled('class_room_id')) {
+            $studentQuery->where('class_room_id', $request->integer('class_room_id'));
+        }
+
+        if ($request->filled('student_id')) {
+            $studentQuery->where('id', $request->integer('student_id'));
+        }
+
         $students = $studentQuery->get();
+
+        if ($request->filled('student_id')) {
+            $selectedStudent = $students->firstWhere('id', $request->integer('student_id'));
+        }
 
         $activities = MutabaahActivity::query()
             ->with('category')
@@ -49,18 +62,17 @@ class MutabaahDailyInputController extends Controller
             ->orderBy('name')
             ->get();
 
+        // Load existing records for all displayed students
+        $studentIds = $students->pluck('id')->all();
         $existingRecords = collect();
-
-        if ($request->filled('student_id')) {
-            $selectedStudent = $students->firstWhere('id', $request->integer('student_id'));
-
-            if ($selectedStudent) {
-                $existingRecords = MutabaahRecord::query()
-                    ->where('student_id', $selectedStudent->id)
-                    ->whereDate('record_date', $selectedDate)
-                    ->get()
-                    ->keyBy('mutabaah_activity_id');
-            }
+        
+        if (!empty($studentIds)) {
+            $existingRecords = MutabaahRecord::query()
+                ->whereIn('student_id', $studentIds)
+                ->whereDate('record_date', $selectedDate)
+                ->get()
+                ->groupBy('student_id')
+                ->map(fn ($records) => $records->keyBy('mutabaah_activity_id'));
         }
 
         $classRooms = ClassRoom::query()
