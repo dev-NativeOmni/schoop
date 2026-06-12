@@ -10,6 +10,9 @@
     $hasAdminOrSuperAdmin = $isSuperAdmin || $isAdmin;
     $hasInternalAccess = $hasAdminOrSuperAdmin || $isTeacher || $isPrincipal;
     $hasFinanceAccess = $hasAdminOrSuperAdmin || $isPrincipal;
+    $roleName = $user->role?->name;
+    $canViewSchoolOs = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'kepala_sekolah', 'principal', 'teacher', 'guru', 'guru_tahfidz', 'parent', 'student'], true);
+    $canManageSchoolOs = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah'], true);
 
     // Parent dynamic student parameter
     $firstChild = null;
@@ -39,6 +42,23 @@
                     <a href="{{ route('dashboard') }}" class="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100">
                         Dashboard
                     </a>
+
+                    @if ($canViewSchoolOs)
+                        <div class="relative" @click.outside="openDropdown === 'schoolos' && (openDropdown = null)">
+                            <button @click="openDropdown = openDropdown === 'schoolos' ? null : 'schoolos'" class="flex items-center space-x-1 rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100">
+                                <span>SchoolOS</span>
+                                <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': openDropdown === 'schoolos' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div x-show="openDropdown === 'schoolos'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-2 w-56 rounded-xl border border-slate-100 bg-white p-2 shadow-xl dark:border-slate-800 dark:bg-slate-850" style="display: none;">
+                                <a href="{{ route('schoolos.dashboard') }}" class="block rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">Dashboard SchoolOS</a>
+                                @if ($canManageSchoolOs)
+                                    <a href="{{ route('schoolos.academic-years.index') }}" class="block rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">Tahun Ajaran</a>
+                                    <a href="{{ route('schoolos.modules.index') }}" class="block rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">Module Registry</a>
+                                    <a href="{{ route('schoolos.settings.index') }}" class="block rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">School Settings</a>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
 
                     <!-- Admin: Master Data Dropdown -->
                     @if ($hasAdminOrSuperAdmin)
@@ -220,6 +240,18 @@
     <!-- Mobile Menu -->
     <div x-show="open" x-transition class="lg:hidden border-t border-slate-100 bg-white/95 backdrop-blur-md px-4 py-3 space-y-1 dark:border-slate-800 dark:bg-slate-900/95" style="display: none;" @click.away="open = false">
         <a href="{{ route('dashboard') }}" class="block rounded-lg px-3 py-2 text-base font-semibold text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">Dashboard</a>
+
+        @if ($canViewSchoolOs)
+            <div class="py-2 border-t border-slate-100 dark:border-slate-800">
+                <p class="px-3 text-xs font-semibold text-slate-450 uppercase tracking-wider">SchoolOS</p>
+                <a href="{{ route('schoolos.dashboard') }}" class="block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">Dashboard SchoolOS</a>
+                @if ($canManageSchoolOs)
+                    <a href="{{ route('schoolos.academic-years.index') }}" class="block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">Tahun Ajaran</a>
+                    <a href="{{ route('schoolos.modules.index') }}" class="block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">Module Registry</a>
+                    <a href="{{ route('schoolos.settings.index') }}" class="block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">School Settings</a>
+                @endif
+            </div>
+        @endif
 
         @if ($hasAdminOrSuperAdmin)
             <div class="py-2 border-t border-slate-100 dark:border-slate-800">

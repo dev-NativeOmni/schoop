@@ -17,5 +17,8 @@
 | 12 | QR Attendance System | Done |
 | 13 | Tahsin Management App | Done |
 | 14 | Student Finance Ledger | Done |
-| 15 | SchoolOS Mini | Pending |
-
+| 15 | SchoolOS Mini | Done |
+| 16 | Boarding School Management System | Pending |
+| 17 | Multi-Tenant Foundation | Pending |
+| 18 | White-Label School App Builder | Pending |
+| 19 | Cashless Kantin / Merchant POS | Pending |

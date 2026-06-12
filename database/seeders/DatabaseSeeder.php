@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             TahsinSkillSeeder::class,
             // Phase 14 — Student Finance Ledger
             FinanceFeeCategorySeeder::class,
+            // Phase 15 — SchoolOS Mini
+            SystemModuleSeeder::class,
         ]);
     }
 }

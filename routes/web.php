@@ -47,6 +47,12 @@ use App\Http\Controllers\Finance\FinanceLedgerController;
 use App\Http\Controllers\Finance\FinanceReportController;
 use App\Http\Controllers\Portal\ParentFinancePortalController;
 use App\Http\Controllers\Portal\StudentFinancePortalController;
+use App\Http\Controllers\SchoolOs\AcademicYearController;
+use App\Http\Controllers\SchoolOs\SchoolOsDashboardController;
+use App\Http\Controllers\SchoolOs\SchoolOsSearchController;
+use App\Http\Controllers\SchoolOs\SchoolSettingController;
+use App\Http\Controllers\SchoolOs\Student360Controller;
+use App\Http\Controllers\SchoolOs\SystemModuleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 Route::get('/', function () {
@@ -474,5 +480,32 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
     Route::get('/portal/student/finance', [StudentFinancePortalController::class, 'index'])
         ->middleware(['role:student'])
         ->name('portal.student.finance');
-});
 
+    Route::prefix('schoolos')
+        ->name('schoolos.')
+        ->group(function (): void {
+            Route::get('/', [SchoolOsDashboardController::class, 'index'])
+                ->name('dashboard');
+
+            Route::get('/search', SchoolOsSearchController::class)
+                ->name('search');
+
+            Route::get('/students/{student}/360', [Student360Controller::class, 'show'])
+                ->name('students.show');
+
+            Route::resource('academic-years', AcademicYearController::class)
+                ->except(['show', 'destroy']);
+
+            Route::get('/settings', [SchoolSettingController::class, 'index'])
+                ->name('settings.index');
+
+            Route::patch('/settings', [SchoolSettingController::class, 'update'])
+                ->name('settings.update');
+
+            Route::get('/modules', [SystemModuleController::class, 'index'])
+                ->name('modules.index');
+
+            Route::patch('/modules/{systemModule}', [SystemModuleController::class, 'update'])
+                ->name('modules.update');
+        });
+});
