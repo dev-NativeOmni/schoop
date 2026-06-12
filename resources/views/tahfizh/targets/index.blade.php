@@ -1,166 +1,220 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div>
-            <h2 class="text-2xl font-bold">Target Tahfizh</h2>
-            <p class="text-sm text-slate-500">Kelola target hafalan untuk sekolah, kelas, program, atau santri secara spesifik.</p>
-        </div>
+<div class="space-y-6">
 
+    {{-- Header --}}
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200/80 pb-5 dark:border-slate-800 gap-4">
+        <div class="flex items-center space-x-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 14c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z" />
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Target Tahfizh</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Kelola target hafalan tahfizh untuk sekolah, kelas, program, atau santri.</p>
+            </div>
+        </div>
         @if (auth()->user()->hasRole(['super_admin', 'admin']))
-            <a href="{{ route('tahfizh.targets.create') }}"
-               class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
-                Tambah Target
-            </a>
+            <div>
+                <a href="{{ route('tahfizh.targets.create') }}"
+                   class="inline-flex items-center space-x-2 rounded-full bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 shadow-sm transition-all focus:outline-none focus:ring-4 focus:ring-indigo-500/20 active:scale-[0.98]">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>Tambah Target</span>
+                </a>
+            </div>
         @endif
     </div>
 
-    <!-- Filter Form -->
-    <div class="mb-6 rounded-2xl bg-white p-4 shadow-sm border border-slate-100">
-        <form method="GET" action="{{ route('tahfizh.targets.index') }}" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-5 items-end">
-            <div>
-                <label for="school_id" class="block text-xs font-semibold text-slate-600 mb-1">Sekolah</label>
-                <select name="school_id" id="school_id" class="w-full rounded-lg border border-slate-200 p-2 text-sm">
-                    <option value="">Semua Sekolah</option>
-                    @foreach ($schools as $school)
-                        <option value="{{ $school->id }}" {{ request('school_id') == $school->id ? 'selected' : '' }}>
-                            {{ $school->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+    {{-- Filter Form --}}
+    <div class="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <h3 class="text-sm font-bold text-slate-700 dark:text-slate-350 mb-4 uppercase tracking-wider">Filter Pencarian</h3>
+        <form method="GET" action="{{ route('tahfizh.targets.index') }}" class="space-y-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
+                <div>
+                    <label for="school_id" class="mb-1.5 block text-xs font-bold text-slate-500 dark:text-slate-455 uppercase tracking-wider">Sekolah</label>
+                    <select name="school_id" id="school_id" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500">
+                        <option value="">Semua Sekolah</option>
+                        @foreach ($schools as $school)
+                            <option value="{{ $school->id }}" {{ request('school_id') == $school->id ? 'selected' : '' }}>
+                                {{ $school->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-            <div>
-                <label for="class_room_id" class="block text-xs font-semibold text-slate-600 mb-1">Kelas</label>
-                <select name="class_room_id" id="class_room_id" class="w-full rounded-lg border border-slate-200 p-2 text-sm">
-                    <option value="">Semua Kelas</option>
-                    @foreach ($classRooms as $classRoom)
-                        <option value="{{ $classRoom->id }}" {{ request('class_room_id') == $classRoom->id ? 'selected' : '' }}>
-                            {{ $classRoom->name }} ({{ $classRoom->school?->name }})
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+                <div>
+                    <label for="class_room_id" class="mb-1.5 block text-xs font-bold text-slate-500 dark:text-slate-455 uppercase tracking-wider">Kelas</label>
+                    <select name="class_room_id" id="class_room_id" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500">
+                        <option value="">Semua Kelas</option>
+                        @foreach ($classRooms as $classRoom)
+                            <option value="{{ $classRoom->id }}" {{ request('class_room_id') == $classRoom->id ? 'selected' : '' }}>
+                                {{ $classRoom->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-            <div>
-                <label for="student_id" class="block text-xs font-semibold text-slate-600 mb-1">Santri</label>
-                <select name="student_id" id="student_id" class="w-full rounded-lg border border-slate-200 p-2 text-sm">
-                    <option value="">Semua Santri</option>
-                    @foreach ($students as $student)
-                        <option value="{{ $student->id }}" {{ request('student_id') == $student->id ? 'selected' : '' }}>
-                            {{ $student->full_name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+                <div>
+                    <label for="student_id" class="mb-1.5 block text-xs font-bold text-slate-500 dark:text-slate-455 uppercase tracking-wider">Santri</label>
+                    <select name="student_id" id="student_id" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500">
+                        <option value="">Semua Santri</option>
+                        @foreach ($students as $student)
+                            <option value="{{ $student->id }}" {{ request('student_id') == $student->id ? 'selected' : '' }}>
+                                {{ $student->full_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-            <div>
-                <label for="program_type" class="block text-xs font-semibold text-slate-600 mb-1">Jenis Program</label>
-                <select name="program_type" id="program_type" class="w-full rounded-lg border border-slate-200 p-2 text-sm">
-                    <option value="">Semua Program</option>
-                    <option value="reguler" {{ request('program_type') == 'reguler' ? 'selected' : '' }}>Reguler</option>
-                    <option value="takhassus" {{ request('program_type') == 'takhassus' ? 'selected' : '' }}>Takhassus</option>
-                </select>
-            </div>
+                <div>
+                    <label for="program_type" class="mb-1.5 block text-xs font-bold text-slate-500 dark:text-slate-455 uppercase tracking-wider">Program</label>
+                    <select name="program_type" id="program_type" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500">
+                        <option value="">Semua Program</option>
+                        <option value="reguler" {{ request('program_type') == 'reguler' ? 'selected' : '' }}>Reguler</option>
+                        <option value="takhassus" {{ request('program_type') == 'takhassus' ? 'selected' : '' }}>Takhassus</option>
+                    </select>
+                </div>
 
-            <div class="flex gap-2">
-                <button type="submit" class="flex-1 rounded-lg bg-slate-900 py-2 px-3 text-sm font-semibold text-white hover:bg-slate-700">
-                    Filter
-                </button>
-                <a href="{{ route('tahfizh.targets.index') }}" class="rounded-lg bg-slate-100 py-2 px-3 text-sm font-semibold text-slate-700 hover:bg-slate-200 text-center">
-                    Reset
-                </a>
+                <div class="flex items-center justify-end space-x-2 sm:col-span-2 md:col-span-4 lg:col-span-1">
+                    <a href="{{ route('tahfizh.targets.index') }}"
+                       class="inline-flex items-center space-x-1.5 rounded-full border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 transition-all focus:outline-none">
+                        Reset
+                    </a>
+                    <button type="submit"
+                            class="inline-flex items-center space-x-1.5 rounded-full bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 transition-all focus:outline-none">
+                        Filter
+                    </button>
+                </div>
             </div>
         </form>
     </div>
 
-    <!-- Table -->
-    <div class="overflow-hidden rounded-2xl bg-white shadow-sm border border-slate-100">
-        <table class="w-full border-collapse text-left text-sm">
-            <thead class="bg-slate-50">
-                <tr>
-                    <th class="px-4 py-3">Nama Target</th>
-                    <th class="px-4 py-3">Berlaku Untuk</th>
-                    <th class="px-4 py-3">Target Harian</th>
-                    <th class="px-4 py-3">Target Mingguan</th>
-                    <th class="px-4 py-3">Target Bulanan</th>
-                    <th class="px-4 py-3">Masa Berlaku</th>
-                    <th class="px-4 py-3">Status</th>
-                    <th class="px-4 py-3 text-right">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($targets as $target)
-                    <tr class="border-t">
-                        <td class="px-4 py-3 font-semibold">
-                            <a href="{{ route('tahfizh.targets.show', $target) }}" class="text-slate-900 hover:underline">
-                                {{ $target->name }}
-                            </a>
-                        </td>
-                        <td class="px-4 py-3">
-                            @if ($target->student)
-                                <span class="inline-block bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-xs font-semibold">
-                                    Santri: {{ $target->student->full_name }}
-                                </span>
-                            @elseif ($target->classRoom)
-                                <span class="inline-block bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded text-xs font-semibold">
-                                    Kelas: {{ $target->classRoom->name }}
-                                </span>
-                            @elseif ($target->program_type)
-                                <span class="inline-block bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-xs font-semibold">
-                                    Program: {{ ucfirst($target->program_type) }}
-                                </span>
-                            @else
-                                <span class="inline-block bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-xs font-semibold">
-                                    Sekolah: {{ $target->school->name }}
-                                </span>
-                            @endif
-                        </td>
-                        <td class="px-4 py-3">{{ $target->daily_target_lines }} baris</td>
-                        <td class="px-4 py-3">{{ $target->weekly_target_lines }} baris</td>
-                        <td class="px-4 py-3">{{ $target->monthly_target_lines }} baris</td>
-                        <td class="px-4 py-3">
-                            <span class="text-xs">
-                                {{ $target->effective_from ? $target->effective_from->format('d/m/Y') : 'Selamanya' }}
-                                -
-                                {{ $target->effective_until ? $target->effective_until->format('d/m/Y') : 'Selamanya' }}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3">
-                            <span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold {{ $target->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                {{ $target->is_active ? 'Aktif' : 'Nonaktif' }}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3">
-                            <div class="flex justify-end gap-2 text-xs">
-                                <a href="{{ route('tahfizh.targets.show', $target) }}" class="text-slate-700 hover:underline">Lihat</a>
-                                @if (auth()->user()->hasRole(['super_admin', 'admin']))
-                                    <a href="{{ route('tahfizh.targets.edit', $target) }}" class="text-blue-700 hover:underline">Edit</a>
-
-                                    <form method="POST" action="{{ route('tahfizh.targets.destroy', $target) }}"
-                                          onsubmit="return confirm('Hapus target ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-700 hover:underline">
-                                            Hapus
-                                        </button>
-                                    </form>
+    {{-- Table Card --}}
+    <div class="rounded-2xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm">
+                <thead>
+                    <tr class="bg-slate-50/40 dark:bg-slate-850/40 border-b border-slate-200/80 dark:border-slate-800">
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Nama Target</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Berlaku Untuk</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Target Harian</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Target Mingguan</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Target Bulanan</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Masa Berlaku</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center w-28">Status</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center w-36">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                    @forelse ($targets as $target)
+                        <tr class="hover:bg-slate-50/40 dark:hover:bg-slate-850/10 transition-all">
+                            <td class="px-6 py-4 font-bold text-slate-800 dark:text-slate-200">
+                                <a href="{{ route('tahfizh.targets.show', $target) }}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                    {{ $target->name }}
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-slate-600 dark:text-slate-400">
+                                @if ($target->student)
+                                    <span class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-semibold text-indigo-700 border border-indigo-150/40 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-900/50">
+                                        Santri: {{ $target->student->full_name }}
+                                    </span>
+                                @elseif ($target->classRoom)
+                                    <span class="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 border border-emerald-150/40 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/50">
+                                        Kelas: {{ $target->classRoom->name }}
+                                    </span>
+                                @elseif ($target->program_type)
+                                    <span class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 border border-amber-150/40 dark:bg-amber-950/20 dark:text-amber-450 dark:border-amber-900/50">
+                                        Program: {{ ucfirst($target->program_type) }}
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center rounded-md bg-slate-50 px-2 py-0.5 text-xs font-semibold text-slate-700 border border-slate-150 dark:bg-slate-800/40 dark:text-slate-450 dark:border-slate-750">
+                                        Sekolah: {{ $target->school->name }}
+                                    </span>
                                 @endif
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="8" class="px-4 py-6 text-center text-slate-500">
-                            Belum ada target tahfizh yang dikonfigurasi.
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                            </td>
+                            <td class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                                {{ $target->daily_target_lines }} baris
+                            </td>
+                            <td class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                                {{ $target->weekly_target_lines }} baris
+                            </td>
+                            <td class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                                {{ $target->monthly_target_lines }} baris
+                            </td>
+                            <td class="px-6 py-4 text-xs text-slate-500 dark:text-slate-450">
+                                {{ $target->effective_from ? $target->effective_from->format('d/m/Y') : 'Mulai Selamanya' }}
+                                <span class="mx-1 text-slate-300 dark:text-slate-700">—</span>
+                                {{ $target->effective_until ? $target->effective_until->format('d/m/Y') : 'Sampai Selamanya' }}
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                @if($target->is_active)
+                                    <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-150 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/50">Aktif</span>
+                                @else
+                                    <span class="inline-flex items-center rounded-full bg-slate-50 px-2.5 py-0.5 text-[10px] font-bold text-slate-500 border border-slate-150 dark:bg-slate-800/40 dark:text-slate-450 dark:border-slate-750">Nonaktif</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="inline-flex items-center space-x-1.5">
+                                    {{-- Detail --}}
+                                    <a href="{{ route('tahfizh.targets.show', $target) }}" 
+                                       class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 transition-all" 
+                                       title="Detail">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </a>
+
+                                    @if (auth()->user()->hasRole(['super_admin', 'admin']))
+                                        {{-- Edit --}}
+                                        <a href="{{ route('tahfizh.targets.edit', $target) }}" 
+                                           class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-indigo-600 hover:bg-indigo-50/30 dark:border-slate-800 dark:text-indigo-400 dark:hover:bg-indigo-950/20 transition-all" 
+                                           title="Edit">
+                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                        </a>
+
+                                        {{-- Hapus --}}
+                                        <form method="POST" action="{{ route('tahfizh.targets.destroy', $target) }}"
+                                              onsubmit="return confirm('Apakah Anda yakin ingin menghapus target tahfizh ini?')">
+                                            @csrf 
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                    class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-rose-600 hover:bg-rose-50/30 dark:border-slate-800 dark:text-rose-450 dark:hover:bg-rose-950/20 transition-all" 
+                                                    title="Hapus">
+                                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="px-6 py-8 text-center text-sm text-slate-450 dark:text-slate-500">Belum ada target tahfizh terdaftar.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="mt-6">
-        {{ $targets->links() }}
-    </div>
+    {{-- Pagination --}}
+    @if($targets->hasPages())
+        <div class="pt-4">
+            {{ $targets->links() }}
+        </div>
+    @endif
+
+</div>
 @endsection
+

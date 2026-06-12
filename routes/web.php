@@ -148,23 +148,6 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
         });
 
     // Tahfizh Targets and Debts Routes
-    Route::middleware('role:super_admin,admin,principal,teacher')
-        ->prefix('tahfizh')
-        ->name('tahfizh.')
-        ->group(function (): void {
-            Route::get('targets', [TahfizhTargetController::class, 'index'])
-                ->name('targets.index');
-
-            Route::get('targets/{target}', [TahfizhTargetController::class, 'show'])
-                ->name('targets.show');
-
-            Route::get('debts', [TahfizhDebtController::class, 'index'])
-                ->name('debts.index');
-
-            Route::get('debts/{debt}', [TahfizhDebtController::class, 'show'])
-                ->name('debts.show');
-        });
-
     Route::middleware('role:super_admin,admin')
         ->prefix('tahfizh')
         ->name('tahfizh.')
@@ -186,6 +169,23 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
 
             Route::post('debts/calculate', [TahfizhDebtController::class, 'calculate'])
                 ->name('debts.calculate');
+        });
+
+    Route::middleware('role:super_admin,admin,principal,teacher')
+        ->prefix('tahfizh')
+        ->name('tahfizh.')
+        ->group(function (): void {
+            Route::get('targets', [TahfizhTargetController::class, 'index'])
+                ->name('targets.index');
+
+            Route::get('targets/{target}', [TahfizhTargetController::class, 'show'])
+                ->name('targets.show');
+
+            Route::get('debts', [TahfizhDebtController::class, 'index'])
+                ->name('debts.index');
+
+            Route::get('debts/{debt}', [TahfizhDebtController::class, 'show'])
+                ->name('debts.show');
         });
 
     // Tahfizh Reports Routes
