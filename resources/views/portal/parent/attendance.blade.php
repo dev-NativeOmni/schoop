@@ -1,99 +1,149 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-900">Presensi Anak</h1>
-    <p class="text-sm text-gray-600">Pantau kehadiran anak.</p>
-</div>
+<div class="space-y-6">
 
-@if($students->isEmpty())
-    <div class="rounded-xl bg-white p-6 text-gray-600 shadow">
-        Belum ada data anak yang terhubung. Hubungi admin sekolah.
+    {{-- Header --}}
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200/80 pb-5 dark:border-slate-800 gap-4">
+        <div class="flex items-center space-x-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Presensi Anak</h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Pantau dan pantau riwayat kehadiran harian anak Anda.</p>
+            </div>
+        </div>
     </div>
-@else
-    <form method="GET" action="{{ route('portal.parent.attendance') }}" class="mb-6 grid grid-cols-1 gap-4 rounded-xl bg-white p-4 shadow md:grid-cols-4">
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Anak</label>
-            <select name="student_id" class="mt-1 w-full rounded-lg border-gray-300">
-                @foreach($students as $student)
-                    <option value="{{ $student->id }}" @selected($selectedStudent?->id === $student->id)>
-                        {{ $student->full_name ?? $student->nama_lengkap ?? $student->name ?? 'Santri #' . $student->id }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
 
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
-            <input type="date" name="start_date" value="{{ $snapshot['period']['start_date'] ?? now()->startOfMonth()->toDateString() }}" class="mt-1 w-full rounded-lg border-gray-300">
+    @if($students->isEmpty())
+        <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+            <svg class="mx-auto h-12 w-12 text-slate-400 dark:text-slate-650 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <p class="text-base font-bold">Belum ada data anak yang terhubung.</p>
+            <p class="text-sm mt-1 text-slate-455">Silakan hubungi administrator sekolah untuk menghubungkan akun anak Anda.</p>
         </div>
+    @else
+        {{-- Filters Form --}}
+        <form method="GET" action="{{ route('portal.parent.attendance') }}" class="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 grid grid-cols-1 gap-5 md:grid-cols-4">
+            <div class="space-y-1.5">
+                <label class="block text-xs font-bold text-slate-500 dark:text-slate-455 uppercase tracking-wider">Anak</label>
+                <select name="student_id" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-850 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500">
+                    @foreach($students as $student)
+                        <option value="{{ $student->id }}" @selected($selectedStudent?->id === $student->id)>
+                            {{ $student->full_name ?? $student->nama_lengkap ?? $student->name ?? 'Santri #' . $student->id }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Tanggal Selesai</label>
-            <input type="date" name="end_date" value="{{ $snapshot['period']['end_date'] ?? now()->toDateString() }}" class="mt-1 w-full rounded-lg border-gray-300">
-        </div>
+            <div class="space-y-1.5">
+                <label class="block text-xs font-bold text-slate-500 dark:text-slate-455 uppercase tracking-wider">Tanggal Mulai</label>
+                <input type="date" name="start_date" value="{{ $snapshot['period']['start_date'] ?? now()->startOfMonth()->toDateString() }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-850 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500">
+            </div>
 
-        <div class="flex items-end">
-            <button class="rounded-lg bg-blue-600 px-4 py-2 text-white">
-                Filter
-            </button>
-        </div>
-    </form>
+            <div class="space-y-1.5">
+                <label class="block text-xs font-bold text-slate-500 dark:text-slate-455 uppercase tracking-wider">Tanggal Selesai</label>
+                <input type="date" name="end_date" value="{{ $snapshot['period']['end_date'] ?? now()->toDateString() }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-850 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500">
+            </div>
 
-    @if($snapshot)
-        <div class="mb-6 grid grid-cols-2 gap-4 md:grid-cols-5">
-            <div class="rounded-xl bg-white p-4 shadow">
-                <div class="text-sm text-gray-500">Hadir</div>
-                <div class="text-2xl font-bold text-green-700">{{ $snapshot['summary']['present'] }}</div>
+            <div class="flex items-end">
+                <button class="w-full inline-flex items-center justify-center rounded-full bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 shadow-sm shadow-indigo-500/10 hover:shadow-indigo-500/20 active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-indigo-500/20">
+                    Filter Riwayat
+                </button>
             </div>
-            <div class="rounded-xl bg-white p-4 shadow">
-                <div class="text-sm text-gray-500">Telat</div>
-                <div class="text-2xl font-bold text-amber-700">{{ $snapshot['summary']['late'] }}</div>
-            </div>
-            <div class="rounded-xl bg-white p-4 shadow">
-                <div class="text-sm text-gray-500">Sakit</div>
-                <div class="text-2xl font-bold text-blue-700">{{ $snapshot['summary']['sick'] }}</div>
-            </div>
-            <div class="rounded-xl bg-white p-4 shadow">
-                <div class="text-sm text-gray-500">Izin</div>
-                <div class="text-2xl font-bold text-purple-700">{{ $snapshot['summary']['permission'] }}</div>
-            </div>
-            <div class="rounded-xl bg-white p-4 shadow">
-                <div class="text-sm text-gray-500">Alpa</div>
-                <div class="text-2xl font-bold text-red-700">{{ $snapshot['summary']['absent'] }}</div>
-            </div>
-        </div>
+        </form>
 
-        <div class="overflow-hidden rounded-xl bg-white shadow">
-            <table class="min-w-full text-sm">
-                <thead class="bg-gray-50 text-gray-700">
-                    <tr>
-                        <th class="px-4 py-3 text-left">Tanggal</th>
-                        <th class="px-4 py-3 text-left">Session</th>
-                        <th class="px-4 py-3 text-left">Status</th>
-                        <th class="px-4 py-3 text-left">Masuk</th>
-                        <th class="px-4 py-3 text-left">Pulang</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @forelse($snapshot['records'] as $record)
-                        <tr>
-                            <td class="px-4 py-3">{{ $record->attendance_date?->format('d M Y') }}</td>
-                            <td class="px-4 py-3">{{ $record->session?->name ?? '-' }}</td>
-                            <td class="px-4 py-3">{{ ucfirst($record->status) }}</td>
-                            <td class="px-4 py-3">{{ $record->check_in_at?->format('H:i') ?? '-' }}</td>
-                            <td class="px-4 py-3">{{ $record->check_out_at?->format('H:i') ?? '-' }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="px-4 py-6 text-center text-gray-500">
-                                Belum ada data presensi.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+        @if($snapshot)
+            {{-- Summary Cards --}}
+            <div class="grid grid-cols-2 gap-4 md:grid-cols-5">
+                <div class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 transition-all hover:translate-y-[-2px]">
+                    <div class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Hadir</div>
+                    <div class="mt-1 text-2xl font-extrabold text-emerald-600 dark:text-emerald-450">{{ $snapshot['summary']['present'] }}</div>
+                </div>
+                <div class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 transition-all hover:translate-y-[-2px]">
+                    <div class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Telat</div>
+                    <div class="mt-1 text-2xl font-extrabold text-amber-600 dark:text-amber-450">{{ $snapshot['summary']['late'] }}</div>
+                </div>
+                <div class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 transition-all hover:translate-y-[-2px]">
+                    <div class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Sakit</div>
+                    <div class="mt-1 text-2xl font-extrabold text-blue-600 dark:text-blue-450">{{ $snapshot['summary']['sick'] }}</div>
+                </div>
+                <div class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 transition-all hover:translate-y-[-2px]">
+                    <div class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Izin</div>
+                    <div class="mt-1 text-2xl font-extrabold text-purple-600 dark:text-purple-450">{{ $snapshot['summary']['permission'] }}</div>
+                </div>
+                <div class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 transition-all hover:translate-y-[-2px]">
+                    <div class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Alpa</div>
+                    <div class="mt-1 text-2xl font-extrabold text-rose-600 dark:text-rose-450">{{ $snapshot['summary']['absent'] }}</div>
+                </div>
+            </div>
+
+            {{-- Table Logs --}}
+            <div class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse text-left text-sm text-slate-500 dark:text-slate-400">
+                        <thead class="bg-slate-50/75 text-xs font-bold uppercase tracking-wider text-slate-500 dark:bg-slate-850/50 dark:text-slate-400 border-b border-slate-200/85 dark:border-slate-800">
+                            <tr>
+                                <th scope="col" class="px-6 py-4">Tanggal</th>
+                                <th scope="col" class="px-6 py-4">Session</th>
+                                <th scope="col" class="px-6 py-4">Status</th>
+                                <th scope="col" class="px-6 py-4">Masuk</th>
+                                <th scope="col" class="px-6 py-4">Pulang</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200/70 dark:divide-slate-800/80">
+                            @forelse($snapshot['records'] as $record)
+                                @php
+                                    $statusVal = strtolower($record->status);
+                                    $badgeClass = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400';
+                                    if ($statusVal === 'present') {
+                                        $badgeClass = 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400';
+                                    } elseif ($statusVal === 'late') {
+                                        $badgeClass = 'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400';
+                                    } elseif ($statusVal === 'sick') {
+                                        $badgeClass = 'bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400';
+                                    } elseif ($statusVal === 'permission') {
+                                        $badgeClass = 'bg-purple-50 text-purple-700 dark:bg-purple-950/30 dark:text-purple-400';
+                                    } elseif ($statusVal === 'absent') {
+                                        $badgeClass = 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-450';
+                                    }
+                                @endphp
+                                <tr class="hover:bg-slate-50/40 dark:hover:bg-slate-800/20 transition-colors">
+                                    <td class="px-6 py-4 font-bold text-slate-850 dark:text-slate-200">
+                                        {{ $record->attendance_date?->format('d M Y') }}
+                                    </td>
+                                    <td class="px-6 py-4 font-medium text-slate-600 dark:text-slate-350">
+                                        {{ $record->session?->name ?? '-' }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold capitalize {{ $badgeClass }}">
+                                            {{ $record->status }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                                        {{ $record->check_in_at?->format('H:i') ?? '-' }}
+                                    </td>
+                                    <td class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                                        {{ $record->check_out_at?->format('H:i') ?? '-' }}
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="px-6 py-10 text-center font-medium text-slate-400 dark:text-slate-500">
+                                        Belum ada data presensi.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
     @endif
-@endif
+
+</div>
 @endsection
