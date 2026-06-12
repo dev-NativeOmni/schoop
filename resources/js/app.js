@@ -1,7 +1,5 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
-window.Alpine = Alpine;
-Alpine.start();
 
 // Dark mode persistence using Alpine store
 document.addEventListener('alpine:init', () => {
@@ -14,3 +12,6 @@ document.addEventListener('alpine:init', () => {
     }
   });
 });
+
+window.Alpine = Alpine;
+Alpine.start();
