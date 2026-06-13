@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 @variant dark (.dark &);
 
@@ -8,7 +9,7 @@
 @source "../**/*.vue";
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Sora', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 
     /* Lime color overrides (remapping indigo & blue) */
@@ -134,4 +135,11 @@ input[type="button"]:active {
     box-shadow: none !important;
 }
 
+/* Page radial gradient backgrounds */
+body {
+    background: radial-gradient(ellipse at top left, #ffffff 0%, #f3f4f6 70%) !important;
+}
 
+.dark body {
+    background: radial-gradient(ellipse at top right, #1f2937 0%, #0b0f17 80%) !important;
+}

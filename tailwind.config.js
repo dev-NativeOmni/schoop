@@ -16,7 +16,7 @@ module.exports = {
         accent: 'hsl(340, 70%, 55%)',   // lively pink
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['Sora', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
     },
   },
