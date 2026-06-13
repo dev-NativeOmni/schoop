@@ -19,19 +19,35 @@ class ParentController extends Controller
 {
     public function index(): View
     {
-        $parents = ParentProfile::query()
-            ->with(['user', 'school', 'students'])
-            ->latest()
-            ->paginate(10);
+        $query = ParentProfile::query()->with(['user', 'school', 'students']);
+        
+        if (!auth()->user()->isSuperAdmin()) {
+            $query->where('school_id', auth()->user()->school_id);
+        }
+
+        $parents = $query->latest()->paginate(10);
 
         return view('master-data.parents.index', compact('parents'));
     }
 
     public function create(): View
     {
+        $isSuperAdmin = auth()->user()->isSuperAdmin();
+        $schoolId = auth()->user()->school_id;
+
+        $schools = $isSuperAdmin
+            ? School::query()->where('is_active', true)->orderBy('name')->get()
+            : collect([auth()->user()->school]);
+
+        $studentsQuery = Student::query();
+        if (!$isSuperAdmin) {
+            $studentsQuery->where('school_id', $schoolId);
+        }
+        $students = $studentsQuery->orderBy('full_name')->get();
+
         return view('master-data.parents.create', [
-            'schools' => School::query()->where('is_active', true)->orderBy('name')->get(),
-            'students' => Student::query()->orderBy('full_name')->get(),
+            'schools' => $schools,
+            'students' => $students,
         ]);
     }
 
@@ -39,21 +55,23 @@ class ParentController extends Controller
     {
         DB::transaction(function () use ($request): void {
             $role = Role::query()->where('name', 'parent')->firstOrFail();
+            $schoolId = auth()->user()->isSuperAdmin() ? $request->integer('school_id') : auth()->user()->school_id;
 
             $user = User::query()->create([
                 'role_id' => $role->id,
-                'school_id' => $request->integer('school_id'),
+                'school_id' => $schoolId,
                 'name' => $request->string('name'),
                 'username' => $request->string('username'),
                 'email' => $request->string('email'),
                 'phone' => $request->input('phone'),
                 'password' => Hash::make($request->string('password')),
+                'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->string('password')),
                 'is_active' => $request->boolean('is_active'),
             ]);
 
             $parent = ParentProfile::query()->create([
                 'user_id' => $user->id,
-                'school_id' => $request->integer('school_id'),
+                'school_id' => $schoolId,
                 'relationship' => $request->input('relationship'),
                 'occupation' => $request->input('occupation'),
                 'address' => $request->input('address'),
@@ -70,6 +88,10 @@ class ParentController extends Controller
 
     public function show(ParentProfile $parent): View
     {
+        if (!auth()->user()->isSuperAdmin() && $parent->school_id !== auth()->user()->school_id) {
+            abort(403, 'Anda tidak memiliki akses ke data orang tua ini.');
+        }
+
         $parent->load(['user', 'school', 'students']);
 
         return view('master-data.parents.show', compact('parent'));
@@ -77,21 +99,43 @@ class ParentController extends Controller
 
     public function edit(ParentProfile $parent): View
     {
+        if (!auth()->user()->isSuperAdmin() && $parent->school_id !== auth()->user()->school_id) {
+            abort(403, 'Anda tidak memiliki akses ke data orang tua ini.');
+        }
+
         $parent->load(['user', 'school', 'students']);
+        $isSuperAdmin = auth()->user()->isSuperAdmin();
+        $schoolId = auth()->user()->school_id;
+
+        $schools = $isSuperAdmin
+            ? School::query()->where('is_active', true)->orderBy('name')->get()
+            : collect([auth()->user()->school]);
+
+        $studentsQuery = Student::query();
+        if (!$isSuperAdmin) {
+            $studentsQuery->where('school_id', $schoolId);
+        }
+        $students = $studentsQuery->orderBy('full_name')->get();
 
         return view('master-data.parents.edit', [
             'parent' => $parent,
-            'schools' => School::query()->where('is_active', true)->orderBy('name')->get(),
-            'students' => Student::query()->orderBy('full_name')->get(),
+            'schools' => $schools,
+            'students' => $students,
             'selectedStudents' => $parent->students->pluck('id')->all(),
         ]);
     }
 
     public function update(UpdateParentRequest $request, ParentProfile $parent): RedirectResponse
     {
+        if (!auth()->user()->isSuperAdmin() && $parent->school_id !== auth()->user()->school_id) {
+            abort(403, 'Anda tidak memiliki akses ke data orang tua ini.');
+        }
+
         DB::transaction(function () use ($request, $parent): void {
+            $schoolId = auth()->user()->isSuperAdmin() ? $request->integer('school_id') : auth()->user()->school_id;
+
             $parent->user->update([
-                'school_id' => $request->integer('school_id'),
+                'school_id' => $schoolId,
                 'name' => $request->string('name'),
                 'username' => $request->string('username'),
                 'email' => $request->string('email'),
@@ -102,11 +146,12 @@ class ParentController extends Controller
             if ($request->filled('password')) {
                 $parent->user->update([
                     'password' => Hash::make($request->string('password')),
+                    'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->string('password')),
                 ]);
             }
 
             $parent->update([
-                'school_id' => $request->integer('school_id'),
+                'school_id' => $schoolId,
                 'relationship' => $request->input('relationship'),
                 'occupation' => $request->input('occupation'),
                 'address' => $request->input('address'),
@@ -123,6 +168,10 @@ class ParentController extends Controller
 
     public function destroy(ParentProfile $parent): RedirectResponse
     {
+        if (!auth()->user()->isSuperAdmin() && $parent->school_id !== auth()->user()->school_id) {
+            abort(403, 'Anda tidak memiliki akses ke data orang tua ini.');
+        }
+
         $parent->user?->delete();
 
         return redirect()

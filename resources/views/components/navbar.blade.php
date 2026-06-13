@@ -92,6 +92,7 @@
                             <div x-show="openDropdown === 'master'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-52 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
                                 @if ($isSuperAdmin)
                                     <a href="{{ route('master-data.schools.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Sekolah</a>
+                                    <a href="{{ route('master-data.users.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Kelola User</a>
                                 @endif
                                 <a href="{{ route('master-data.class-rooms.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Kelas</a>
                                 <a href="{{ route('master-data.teachers.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Guru</a>
@@ -321,6 +322,7 @@
                 <p class="px-3 py-1 text-[10px] font-bold text-slate-455 uppercase tracking-wider">Data Master</p>
                 @if ($isSuperAdmin)
                     <a href="{{ route('master-data.schools.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Sekolah</a>
+                    <a href="{{ route('master-data.users.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Kelola User</a>
                 @endif
                 <a href="{{ route('master-data.class-rooms.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Kelas</a>
                 <a href="{{ route('master-data.teachers.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Guru</a>

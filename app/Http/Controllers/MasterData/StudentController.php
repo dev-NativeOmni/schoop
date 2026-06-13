@@ -20,20 +20,42 @@ class StudentController extends Controller
 {
     public function index(): View
     {
-        $students = Student::query()
-            ->with(['school', 'classRoom', 'user', 'parents.user'])
-            ->latest()
-            ->paginate(10);
+        $query = Student::query()->with(['school', 'classRoom', 'user', 'parents.user']);
+        
+        if (!auth()->user()->isSuperAdmin()) {
+            $query->where('school_id', auth()->user()->school_id);
+        }
+
+        $students = $query->latest()->paginate(10);
 
         return view('master-data.students.index', compact('students'));
     }
 
     public function create(): View
     {
+        $isSuperAdmin = auth()->user()->isSuperAdmin();
+        $schoolId = auth()->user()->school_id;
+
+        $schools = $isSuperAdmin
+            ? School::query()->where('is_active', true)->orderBy('name')->get()
+            : collect([auth()->user()->school]);
+
+        $classRoomsQuery = ClassRoom::query()->where('is_active', true);
+        if (!$isSuperAdmin) {
+            $classRoomsQuery->where('school_id', $schoolId);
+        }
+        $classRooms = $classRoomsQuery->orderBy('name')->get();
+
+        $parentsQuery = ParentProfile::query()->with('user');
+        if (!$isSuperAdmin) {
+            $parentsQuery->where('school_id', $schoolId);
+        }
+        $parents = $parentsQuery->get()->sortBy('user.name');
+
         return view('master-data.students.create', [
-            'schools' => School::query()->where('is_active', true)->orderBy('name')->get(),
-            'classRooms' => ClassRoom::query()->where('is_active', true)->orderBy('name')->get(),
-            'parents' => ParentProfile::query()->with('user')->get()->sortBy('user.name'),
+            'schools' => $schools,
+            'classRooms' => $classRooms,
+            'parents' => $parents,
         ]);
     }
 
@@ -41,18 +63,20 @@ class StudentController extends Controller
     {
         DB::transaction(function () use ($request): void {
             $userId = null;
+            $schoolId = auth()->user()->isSuperAdmin() ? $request->integer('school_id') : auth()->user()->school_id;
 
             if ($request->boolean('create_login_account')) {
                 $role = Role::query()->where('name', 'student')->firstOrFail();
 
                 $user = User::query()->create([
                     'role_id' => $role->id,
-                    'school_id' => $request->integer('school_id'),
+                    'school_id' => $schoolId,
                     'name' => $request->input('name') ?: $request->string('full_name'),
                     'username' => $request->input('username'),
                     'email' => $request->input('email'),
                     'phone' => $request->input('phone'),
                     'password' => Hash::make($request->input('password')),
+                    'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->input('password')),
                     'is_active' => $request->boolean('is_active'),
                 ]);
 
@@ -60,7 +84,7 @@ class StudentController extends Controller
             }
 
             $student = Student::query()->create([
-                'school_id' => $request->integer('school_id'),
+                'school_id' => $schoolId,
                 'user_id' => $userId,
                 'class_room_id' => $request->input('class_room_id'),
                 'student_number' => $request->input('student_number'),
@@ -86,6 +110,10 @@ class StudentController extends Controller
 
     public function show(Student $student): View
     {
+        if (!auth()->user()->isSuperAdmin() && $student->school_id !== auth()->user()->school_id) {
+            abort(403, 'Anda tidak memiliki akses ke data santri ini.');
+        }
+
         $student->load(['school', 'classRoom', 'user', 'parents.user']);
 
         return view('master-data.students.show', compact('student'));
@@ -93,23 +121,51 @@ class StudentController extends Controller
 
     public function edit(Student $student): View
     {
+        if (!auth()->user()->isSuperAdmin() && $student->school_id !== auth()->user()->school_id) {
+            abort(403, 'Anda tidak memiliki akses ke data santri ini.');
+        }
+
         $student->load(['school', 'classRoom', 'user', 'parents']);
+        $isSuperAdmin = auth()->user()->isSuperAdmin();
+        $schoolId = auth()->user()->school_id;
+
+        $schools = $isSuperAdmin
+            ? School::query()->where('is_active', true)->orderBy('name')->get()
+            : collect([auth()->user()->school]);
+
+        $classRoomsQuery = ClassRoom::query()->where('is_active', true);
+        if (!$isSuperAdmin) {
+            $classRoomsQuery->where('school_id', $schoolId);
+        }
+        $classRooms = $classRoomsQuery->orderBy('name')->get();
+
+        $parentsQuery = ParentProfile::query()->with('user');
+        if (!$isSuperAdmin) {
+            $parentsQuery->where('school_id', $schoolId);
+        }
+        $parents = $parentsQuery->get()->sortBy('user.name');
 
         return view('master-data.students.edit', [
             'student' => $student,
-            'schools' => School::query()->where('is_active', true)->orderBy('name')->get(),
-            'classRooms' => ClassRoom::query()->where('is_active', true)->orderBy('name')->get(),
-            'parents' => ParentProfile::query()->with('user')->get()->sortBy('user.name'),
+            'schools' => $schools,
+            'classRooms' => $classRooms,
+            'parents' => $parents,
             'selectedParents' => $student->parents->pluck('id')->all(),
         ]);
     }
 
     public function update(UpdateStudentRequest $request, Student $student): RedirectResponse
     {
+        if (!auth()->user()->isSuperAdmin() && $student->school_id !== auth()->user()->school_id) {
+            abort(403, 'Anda tidak memiliki akses ke data santri ini.');
+        }
+
         DB::transaction(function () use ($request, $student): void {
+            $schoolId = auth()->user()->isSuperAdmin() ? $request->integer('school_id') : auth()->user()->school_id;
+
             if ($student->user) {
                 $student->user->update([
-                    'school_id' => $request->integer('school_id'),
+                    'school_id' => $schoolId,
                     'name' => $request->input('name') ?: $request->string('full_name'),
                     'username' => $request->input('username'),
                     'email' => $request->input('email'),
@@ -120,12 +176,13 @@ class StudentController extends Controller
                 if ($request->filled('password')) {
                     $student->user->update([
                         'password' => Hash::make($request->string('password')),
+                        'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->string('password')),
                     ]);
                 }
             }
 
             $student->update([
-                'school_id' => $request->integer('school_id'),
+                'school_id' => $schoolId,
                 'class_room_id' => $request->input('class_room_id'),
                 'student_number' => $request->input('student_number'),
                 'nisn' => $request->input('nisn'),
@@ -150,6 +207,10 @@ class StudentController extends Controller
 
     public function destroy(Student $student): RedirectResponse
     {
+        if (!auth()->user()->isSuperAdmin() && $student->school_id !== auth()->user()->school_id) {
+            abort(403, 'Anda tidak memiliki akses ke data santri ini.');
+        }
+
         DB::transaction(function () use ($student): void {
             $user = $student->user;
             $student->delete();

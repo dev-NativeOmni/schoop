@@ -10,18 +10,22 @@
         <form method="POST" action="{{ route('master-data.class-rooms.store') }}" class="space-y-4">
             @csrf
 
-            <div>
-                <label class="mb-2 block text-sm font-semibold">Sekolah</label>
-                <select name="school_id" class="w-full rounded-lg border border-slate-300 px-4 py-2" required>
-                    <option value="">Pilih Sekolah</option>
-                    @foreach ($schools as $school)
-                        <option value="{{ $school->id }}" @selected(old('school_id') == $school->id)>
-                            {{ $school->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('school_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-            </div>
+            @if(auth()->user()->isSuperAdmin())
+                <div>
+                    <label class="mb-2 block text-sm font-semibold">Sekolah</label>
+                    <select name="school_id" class="w-full rounded-lg border border-slate-300 px-4 py-2" required>
+                        <option value="">Pilih Sekolah</option>
+                        @foreach ($schools as $school)
+                            <option value="{{ $school->id }}" @selected(old('school_id') == $school->id)>
+                                {{ $school->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('school_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                </div>
+            @else
+                <input type="hidden" name="school_id" value="{{ auth()->user()->school_id }}">
+            @endif
 
             <div>
                 <label class="mb-2 block text-sm font-semibold">Nama Kelas</label>

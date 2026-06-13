@@ -8,6 +8,7 @@ use App\Http\Controllers\MasterData\ParentController;
 use App\Http\Controllers\MasterData\SchoolController;
 use App\Http\Controllers\MasterData\StudentController;
 use App\Http\Controllers\MasterData\TeacherController;
+use App\Http\Controllers\MasterData\UserController;
 use App\Http\Controllers\Tahfizh\HafalanRecordController;
 use App\Http\Controllers\Reports\MonthlyTahfizhReportController;
 use App\Http\Controllers\Reports\QuarterlyTahfizhReportController;
@@ -108,6 +109,7 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
 
     Route::middleware('role:super_admin')->prefix('master-data')->name('master-data.')->group(function (): void {
         Route::resource('schools', SchoolController::class);
+        Route::resource('users', UserController::class);
     });
 
     // Tahfizh Setoran Routes
