@@ -23,9 +23,9 @@
 @endphp
 
 <nav x-data="{ open: false, openDropdown: null }" 
-     class="sticky top-4 z-50 mx-auto w-[calc(100%-2rem)] max-w-7xl rounded-full border border-slate-750 bg-[#1F2937]/90 backdrop-blur-md shadow-xl text-white my-4 px-6 py-1.5 transition-all duration-300" 
+     class="sticky top-0 z-50 w-full border-b border-slate-750 bg-[#1F2937]/95 backdrop-blur-md shadow-lg text-white transition-all duration-300" 
      @keydown.escape="openDropdown = null">
-    <div class="mx-auto max-w-7xl">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
             <div class="flex items-center space-x-6">
                 <!-- Logo -->
@@ -301,7 +301,7 @@
     </div>
 
     <!-- Mobile Menu Overlay -->
-    <div x-show="open" x-transition class="lg:hidden border-t border-slate-750 bg-[#1F2937]/95 backdrop-blur-md px-4 py-4 mt-2 rounded-2xl space-y-2 text-white" style="display: none;" @click.away="open = false">
+    <div x-show="open" x-transition class="lg:hidden border-t border-slate-750 bg-[#1F2937]/95 backdrop-blur-md px-4 sm:px-6 py-4 space-y-2 text-white" style="display: none;" @click.away="open = false">
         <a href="{{ route('dashboard') }}" class="block rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-slate-800 transition">Dashboard</a>
 
         @if ($canViewSchoolOs)
