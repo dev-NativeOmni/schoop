@@ -10,6 +10,62 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Lime color overrides (remapping indigo & blue) */
+    --color-indigo-50: #f7fee7;
+    --color-indigo-100: #ecfccb;
+    --color-indigo-200: #d9f99d;
+    --color-indigo-300: #bef264;
+    --color-indigo-400: #a3e635; /* Lime */
+    --color-indigo-500: #84cc16;
+    --color-indigo-600: #65a30d;
+    --color-indigo-700: #4f7c0f;
+    --color-indigo-800: #3f6212;
+    --color-indigo-900: #365314;
+    --color-indigo-950: #1a2e05;
+
+    --color-blue-50: #f7fee7;
+    --color-blue-100: #ecfccb;
+    --color-blue-200: #d9f99d;
+    --color-blue-300: #bef264;
+    --color-blue-400: #a3e635;
+    --color-blue-500: #84cc16;
+    --color-blue-600: #65a30d;
+    --color-blue-700: #4f7c0f;
+    --color-blue-800: #3f6212;
+    --color-blue-900: #365314;
+    --color-blue-950: #1a2e05;
+
+    /* Slate & Gray remapped to Charcoal (#1F2937) and Soft Gray (#F3F4F6) */
+    --color-slate-50: #fafafa;
+    --color-slate-100: #f3f4f6; /* Soft Gray */
+    --color-slate-200: #e5e7eb;
+    --color-slate-250: #dadde2;
+    --color-slate-300: #d1d5db;
+    --color-slate-400: #9ca3af;
+    --color-slate-450: #88909d;
+    --color-slate-500: #6b7280;
+    --color-slate-550: #5f6671;
+    --color-slate-600: #4b5563;
+    --color-slate-700: #374151;
+    --color-slate-750: #2c3543;
+    --color-slate-800: #1f2937; /* Charcoal */
+    --color-slate-850: #19212c;
+    --color-slate-900: #111827;
+    --color-slate-950: #0b0f17;
+
+    --color-gray-50: #fafafa;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5db;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #6b7280;
+    --color-gray-600: #4b5563;
+    --color-gray-700: #374151;
+    --color-gray-850: #19212c;
+    --color-gray-800: #1f2937;
+    --color-gray-900: #111827;
+    --color-gray-950: #0b0f17;
 }
 
 /* ==========================================================================
@@ -33,7 +89,7 @@ input[type="button"] {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Hover highlights (slight translation + ring glow) */
+/* Hover highlights (slight translation + ring glow with Lime color) */
 button:hover,
 .btn:hover,
 a[class*="bg-indigo-"]:hover,
@@ -47,7 +103,7 @@ a[class*="btn-outline-"]:hover,
 input[type="submit"]:hover,
 input[type="button"]:hover {
     transform: translateY(-1.5px) !important;
-    box-shadow: 0 4px 14px -2px rgba(99, 102, 241, 0.3), 0 0 0 4px rgba(99, 102, 241, 0.15) !important;
+    box-shadow: 0 4px 14px -2px rgba(163, 230, 53, 0.35), 0 0 0 4px rgba(163, 230, 53, 0.18) !important;
 }
 
 /* Emerald green button specific hover */
@@ -77,4 +133,5 @@ input[type="button"]:active {
     transform: translateY(0) scale(0.97) !important;
     box-shadow: none !important;
 }
+
 
