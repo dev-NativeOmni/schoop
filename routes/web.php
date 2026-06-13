@@ -56,6 +56,9 @@ use App\Http\Controllers\SchoolOs\Student360Controller;
 use App\Http\Controllers\SchoolOs\SystemModuleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QuranMushafController;
+use App\Http\Controllers\QuranPdfController;
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -515,4 +518,15 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
             Route::patch('/modules/{systemModule}', [SystemModuleController::class, 'update'])
                 ->name('modules.update');
         });
+
+    // Quran Interactive Routes
+    Route::get('/quran-pdf', [QuranPdfController::class, 'index'])
+        ->name('quran.pdf');
+
+    Route::post('/quran-pdf/config', [QuranPdfController::class, 'updateConfig'])
+        ->middleware('role:super_admin,admin')
+        ->name('quran.pdf.config');
+
+    Route::get('/mushaf', [QuranMushafController::class, 'index'])
+        ->name('quran.mushaf');
 });
