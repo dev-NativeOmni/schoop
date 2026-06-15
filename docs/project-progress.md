@@ -23,6 +23,7 @@
 | 18 | White-Label School App Builder | Done |
 | 19 | Cashless Kantin / Merchant POS | Done |
 | 20 | Company/Product Scale & SaaS Operations | Done |
+| 21 | Native Mobile Companion Apps & App Store Distribution | Partial |
 
 ## Phase 19 - Cashless Kantin / Merchant POS
 
@@ -79,3 +80,35 @@ Risk notes:
 - Billing remains manual; no payment gateway, auto debit, QRIS, virtual account, or bank callback is included.
 - Usage snapshots store aggregate metrics only.
 - SaaS Operations is hidden from parent/student roles.
+
+## Phase 21 - Native Mobile Companion Apps & App Store Distribution
+
+Status: Partial
+
+Output:
+
+- Mobile API v1 foundation.
+- Mobile token authentication with hashed Bearer tokens.
+- Mobile device registry.
+- Mobile app version management.
+- Mobile API audit log.
+- Tenant-aware bootstrap config.
+- Parent mobile endpoints.
+- Student mobile endpoints.
+- Teacher mobile workflow endpoints.
+- Merchant mobile POS endpoints using existing ledger-first cashless services.
+- Mobile release checklist.
+- Mobile privacy checklist.
+- Mobile support SOP.
+- Mobile test plan.
+
+Blocker:
+
+- Flutter SDK is not available in the local PATH, so native Flutter skeleton, analyze, test, and debug APK build are skipped.
+
+Risk notes:
+
+- Mobile is a companion channel. Laravel remains the source of truth.
+- No offline cashless transaction is included.
+- No app store publishing is performed in Phase 21.
+- Mobile checkout stays server-authoritative and uses existing cashless ledger services.

@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
             SaasSubscriptionPlanSeeder::class,
             SlaPolicySeeder::class,
             OnboardingChecklistItemSeeder::class,
+            MobileAppVersionSeeder::class,
         ]);
     }
 }

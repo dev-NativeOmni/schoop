@@ -8,6 +8,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
@@ -19,6 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => CheckRole::class,
             'tenant.resolve' => \App\Http\Middleware\ResolveTenantContext::class,
             'tenant.access' => \App\Http\Middleware\EnsureTenantAccess::class,
+            'mobile.auth' => \App\Http\Middleware\AuthenticateMobileAccessToken::class,
+            'mobile.tenant' => \App\Http\Middleware\EnsureMobileTenantContext::class,
+            'mobile.version' => \App\Http\Middleware\EnsureMobileAppVersion::class,
+            'mobile.response' => \App\Http\Middleware\MobileApiResponseMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
