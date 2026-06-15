@@ -143,3 +143,83 @@ body {
 .dark body {
     background: radial-gradient(ellipse at top right, #1f2937 0%, #0b0f17 80%) !important;
 }
+
+/* ========================================================================== 
+   Dark Mode Hardening for Legacy Views
+   ========================================================================== */
+
+.dark .bg-white {
+    background-color: #111827 !important;
+}
+
+.dark .bg-gray-50,
+.dark .bg-gray-100,
+.dark .bg-slate-50,
+.dark .bg-slate-100 {
+    background-color: #19212c !important;
+}
+
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-gray-300,
+.dark .border-slate-100,
+.dark .border-slate-150,
+.dark .border-slate-200,
+.dark .border-slate-250,
+.dark .border-slate-300 {
+    border-color: #1f2937 !important;
+}
+
+.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #1f2937 !important;
+}
+
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-slate-900,
+.dark .text-slate-800 {
+    color: #f8fafc !important;
+}
+
+.dark .text-gray-700,
+.dark .text-gray-600,
+.dark .text-slate-700,
+.dark .text-slate-650,
+.dark .text-slate-600 {
+    color: #cbd5e1 !important;
+}
+
+.dark .text-gray-500,
+.dark .text-gray-450,
+.dark .text-gray-400,
+.dark .text-slate-500,
+.dark .text-slate-450,
+.dark .text-slate-400 {
+    color: #94a3b8 !important;
+}
+
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark select,
+.dark textarea {
+    background-color: #0b0f17 !important;
+    border-color: #1f2937 !important;
+    color: #e5e7eb !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #64748b !important;
+}
+
+.dark tr.hover\:bg-slate-50\/40:hover,
+.dark tr.hover\:bg-slate-50\/30:hover,
+.dark tr.hover\:bg-slate-50\/20:hover,
+.dark tr.hover\:bg-slate-50:hover,
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-white:hover {
+    background-color: #19212c !important;
+}
