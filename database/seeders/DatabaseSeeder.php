@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
             MobileAppVersionSeeder::class,
             ApiScopeSeeder::class,
             ApiDocumentationPageSeeder::class,
+            AnalyticsMetricDefinitionSeeder::class,
         ]);
     }
 }

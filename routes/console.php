@@ -31,3 +31,12 @@ Schedule::command('app:retry-failed-webhooks')
 Schedule::command('app:prune-api-request-logs --days=90')
     ->dailyAt('02:30')
     ->withoutOverlapping();
+
+// Phase 23 - Advanced Analytics & Executive Intelligence
+Schedule::command('app:capture-analytics-snapshots')
+    ->dailyAt('23:45')
+    ->withoutOverlapping();
+
+Schedule::command('app:recalculate-tenant-health-scores')
+    ->dailyAt('23:55')
+    ->withoutOverlapping();

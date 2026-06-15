@@ -109,6 +109,16 @@ use App\Http\Controllers\DeveloperPortal\DeveloperPortalDashboardController;
 use App\Http\Controllers\DeveloperPortal\PartnerIntegrationController;
 use App\Http\Controllers\DeveloperPortal\WebhookDeliveryController;
 use App\Http\Controllers\DeveloperPortal\WebhookEndpointController;
+use App\Http\Controllers\Analytics\ExecutiveAnalyticsDashboardController;
+use App\Http\Controllers\Analytics\SchoolAnalyticsDashboardController;
+use App\Http\Controllers\Analytics\TenantHealthAnalyticsController;
+use App\Http\Controllers\Analytics\AcademicAnalyticsController;
+use App\Http\Controllers\Analytics\OperationalAnalyticsController;
+use App\Http\Controllers\Analytics\FinanceAnalyticsController;
+use App\Http\Controllers\Analytics\SupportAnalyticsController;
+use App\Http\Controllers\Analytics\MobileApiAnalyticsController;
+use App\Http\Controllers\Analytics\ExecutiveReportController;
+use App\Http\Controllers\Analytics\MetricDictionaryController;
 
 Route::get('/', [App\Http\Controllers\Public\TenantPublicLandingController::class, 'index'])->name('tenant.public.landing');
 Route::get('/manifest.json', [App\Http\Controllers\Public\TenantPwaManifestController::class, 'show'])->name('tenant.pwa.manifest');
@@ -724,6 +734,51 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
             Route::get('request-logs/{log}', [ApiRequestLogController::class, 'show'])->name('request-logs.show');
 
             Route::resource('docs', ApiDocumentationPageController::class)->parameters(['docs' => 'doc']);
+        });
+
+    // Phase 23 — Advanced Analytics & Executive Intelligence
+    Route::middleware(['auth'])
+        ->prefix('analytics')
+        ->name('analytics.')
+        ->group(function (): void {
+            Route::get('/executive', [ExecutiveAnalyticsDashboardController::class, 'index'])
+                ->name('executive.dashboard');
+
+            Route::get('/school', [SchoolAnalyticsDashboardController::class, 'index'])
+                ->name('school.dashboard');
+
+            Route::get('/tenant-health', [TenantHealthAnalyticsController::class, 'index'])
+                ->name('tenant-health.index');
+            Route::get('/tenant-health/{school}', [TenantHealthAnalyticsController::class, 'show'])
+                ->name('tenant-health.show');
+
+            Route::get('/academic', [AcademicAnalyticsController::class, 'index'])
+                ->name('academic.dashboard');
+
+            Route::get('/operational', [OperationalAnalyticsController::class, 'index'])
+                ->name('operational.dashboard');
+
+            Route::get('/finance', [FinanceAnalyticsController::class, 'index'])
+                ->name('finance.dashboard');
+
+            Route::get('/support', [SupportAnalyticsController::class, 'index'])
+                ->name('support.dashboard');
+
+            Route::get('/mobile-api', [MobileApiAnalyticsController::class, 'index'])
+                ->name('mobile-api.dashboard');
+
+            Route::get('/executive-reports', [ExecutiveReportController::class, 'index'])
+                ->name('executive-reports.index');
+            Route::get('/executive-reports/create', [ExecutiveReportController::class, 'create'])
+                ->name('executive-reports.create');
+            Route::post('/executive-reports', [ExecutiveReportController::class, 'store'])
+                ->name('executive-reports.store');
+            Route::get('/executive-reports/{report}', [ExecutiveReportController::class, 'show'])
+                ->name('executive-reports.show');
+            Route::get('/executive-reports/{report}/print', [ExecutiveReportController::class, 'print'])
+                ->name('executive-reports.print');
+
+            Route::resource('metric-dictionary', MetricDictionaryController::class);
         });
 
     // Tenancy Management Routes
