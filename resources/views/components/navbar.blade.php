@@ -6,10 +6,12 @@
     $isTeacher = $user->isTeacher();
     $isParent = $user->isParent();
     $isStudent = $user->isStudent();
+    $isBoardingSupervisor = $user->isBoardingSupervisor();
 
     $hasAdminOrSuperAdmin = $isSuperAdmin || $isAdmin;
     $hasInternalAccess = $hasAdminOrSuperAdmin || $isTeacher || $isPrincipal;
     $hasFinanceAccess = $hasAdminOrSuperAdmin || $isPrincipal;
+    $hasBoardingAccess = $hasAdminOrSuperAdmin || $isPrincipal || $isBoardingSupervisor;
     $roleName = $user->role?->name;
     $canViewSchoolOs = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'kepala_sekolah', 'principal', 'teacher', 'guru', 'guru_tahfidz', 'parent', 'student'], true);
     $canManageSchoolOs = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah'], true);
@@ -232,6 +234,37 @@
                         </div>
                     @endif
 
+                    <!-- Boarding Dropdown -->
+                    @if ($hasBoardingAccess)
+                        @php $active = request()->routeIs('boarding.*'); @endphp
+                        <div class="relative" @click.outside="openDropdown === 'boarding' && (openDropdown = null)">
+                            <button @click="openDropdown = openDropdown === 'boarding' ? null : 'boarding'" class="flex flex-col items-center justify-center w-20 py-1.5 group transition-all rounded-lg focus:outline-none">
+                                @if ($active)
+                                    <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>
+                                    <span class="text-[11px] tracking-wide font-black text-[#A3E635] mt-1 flex items-center justify-center gap-0.5 w-full">Boarding <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                @else
+                                    <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                                    <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">Boarding <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                @endif
+                            </button>
+                            <div x-show="openDropdown === 'boarding'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-52 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
+                                <a href="{{ route('boarding.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Dashboard Boarding</a>
+                                @if ($hasAdminOrSuperAdmin)
+                                    <a href="{{ route('boarding.dormitories.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Asrama</a>
+                                    <a href="{{ route('boarding.rooms.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Kamar</a>
+                                    <a href="{{ route('boarding.beds.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Ranjang</a>
+                                    <a href="{{ route('boarding.supervisors.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Pembina Asrama</a>
+                                @endif
+                                <a href="{{ route('boarding.assignments.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Penempatan Santri</a>
+                                <a href="{{ route('boarding.leave-requests.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Perizinan</a>
+                                <a href="{{ route('boarding.health-logs.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Health Log</a>
+                                <a href="{{ route('boarding.discipline-logs.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Discipline Log</a>
+                                <a href="{{ route('boarding.roll-calls.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Roll Call</a>
+                                <a href="{{ route('boarding.reports.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Laporan Boarding</a>
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Parent Portal Menu -->
                     @if ($isParent)
                         @php $active = request()->routeIs('portal.parent.*'); @endphp
@@ -253,6 +286,7 @@
                                 <a href="{{ route('portal.parent.attendance') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Kehadiran Anak</a>
                                 <a href="{{ route('portal.parent.tahsin') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tahsin Anak</a>
                                 <a href="{{ route('portal.parent.finance') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Keuangan Anak</a>
+                                <a href="{{ route('portal.parent.boarding') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Boarding Anak</a>
                             </div>
                         </div>
                     @endif
@@ -276,6 +310,7 @@
                                 <a href="{{ route('portal.student.attendance') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Kehadiran Saya</a>
                                 <a href="{{ route('portal.student.tahsin') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tahsin Saya</a>
                                 <a href="{{ route('portal.student.finance') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Keuangan Saya</a>
+                                <a href="{{ route('portal.student.boarding') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Boarding Saya</a>
                             </div>
                         </div>
                     @endif
@@ -400,6 +435,25 @@
             </div>
         @endif
 
+        @if ($hasBoardingAccess)
+            <div class="py-1 border-t border-slate-750">
+                <p class="px-3 py-1 text-[10px] font-bold text-slate-455 uppercase tracking-wider">Boarding</p>
+                <a href="{{ route('boarding.dashboard') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Dashboard Boarding</a>
+                @if ($hasAdminOrSuperAdmin)
+                    <a href="{{ route('boarding.dormitories.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Asrama</a>
+                    <a href="{{ route('boarding.rooms.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Kamar</a>
+                    <a href="{{ route('boarding.beds.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Ranjang</a>
+                    <a href="{{ route('boarding.supervisors.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Pembina Asrama</a>
+                @endif
+                <a href="{{ route('boarding.assignments.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Penempatan Santri</a>
+                <a href="{{ route('boarding.leave-requests.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Perizinan</a>
+                <a href="{{ route('boarding.health-logs.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Health Log</a>
+                <a href="{{ route('boarding.discipline-logs.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Discipline Log</a>
+                <a href="{{ route('boarding.roll-calls.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Roll Call</a>
+                <a href="{{ route('boarding.reports.dashboard') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Laporan Boarding</a>
+            </div>
+        @endif
+
         @if ($isParent)
             <div class="py-1 border-t border-slate-750">
                 <p class="px-3 py-1 text-[10px] font-bold text-slate-455 uppercase tracking-wider">Portal Wali</p>
@@ -410,6 +464,7 @@
                 <a href="{{ route('portal.parent.attendance') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Kehadiran Anak</a>
                 <a href="{{ route('portal.parent.tahsin') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Tahsin Anak</a>
                 <a href="{{ route('portal.parent.finance') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Keuangan Anak</a>
+                <a href="{{ route('portal.parent.boarding') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Boarding Anak</a>
             </div>
         @endif
 
@@ -421,6 +476,7 @@
                 <a href="{{ route('portal.student.attendance') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Kehadiran Saya</a>
                 <a href="{{ route('portal.student.tahsin') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Tahsin Saya</a>
                 <a href="{{ route('portal.student.finance') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Keuangan Saya</a>
+                <a href="{{ route('portal.student.boarding') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Boarding Saya</a>
             </div>
         @endif
     </div>

@@ -319,7 +319,7 @@
                                 </div>
 
                                 <!-- Dynamic Verse Cards Container -->
-                                <div class="flex-grow overflow-y-auto mt-4 space-y-4 pr-1 scrollbar-thin" id="verse-list-container">
+                                <div class="flex-grow overflow-y-auto mt-5 space-y-6 pr-1 scrollbar-thin" id="verse-list-container">
                                     <template x-show="!loading" x-for="(verse, index) in verses" :key="verse.id">
                                         <div :id="`verse-card-${verse.id}`"
                                              :class="{
@@ -328,10 +328,10 @@
                                                  'border-[#dfd3ad] bg-[#ece3c5]/30 hover:bg-[#ece3c5]/70': theme === 'sepia' && playingVerseId !== verse.id,
                                                  'border-[#2b2b38] bg-[#22222a]/40 hover:bg-[#22222a]/80': theme === 'dark' && playingVerseId !== verse.id
                                              }"
-                                             class="rounded-xl border p-4 transition-all duration-200">
+                                             class="rounded-xl border p-5 sm:p-6 transition-all duration-200">
                                             
                                             <!-- Verse Header -->
-                                            <div class="flex items-center justify-between mb-3 text-xs opacity-75">
+                                            <div class="flex items-center justify-between mb-5 text-xs opacity-75">
                                                 <span class="font-semibold" x-text="getSurahNameAndAyah(verse.verse_key)"></span>
                                                 
                                                 <!-- Action links -->
@@ -348,19 +348,20 @@
                                             </div>
 
                                             <!-- Uthmani Arabic Text -->
-                                            <div class="text-right leading-loose mb-3 font-arabic"
+                                            <div class="quran-verse-text text-right mb-5 font-arabic"
                                                  style="direction: rtl;">
                                                 <span :class="arabicFontClass" 
-                                                      class="inline-block text-2xl sm:text-3xl text-slate-900 dark:text-slate-100 antialiased font-semibold select-all"
+                                                      class="quran-verse-line inline-block text-slate-900 dark:text-slate-100 antialiased font-semibold select-all"
                                                       x-text="verse.text_uthmani"></span>
                                                 <!-- Custom Arabic Ayah end symbol -->
-                                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full border border-yellow-750/30 text-[10px] font-bold font-mono mx-1.5 relative top-[-4px]"
+                                                <span class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-yellow-750/30 text-[10px] font-bold font-mono mx-2 relative top-[-6px] shrink-0"
                                                       :class="theme === 'dark' ? 'bg-[#2b2b38] text-yellow-500' : 'bg-yellow-550/10 text-yellow-800'"
                                                       x-text="getAyahNumFromKey(verse.verse_key)"></span>
                                             </div>
 
                                             <!-- Indonesian Translation -->
-                                            <p class="text-xs sm:text-sm leading-relaxed mb-4" 
+                                            <p class="quran-translation border-t pt-4 mb-5"
+                                               :class="{ 'border-slate-150 text-slate-700': theme === 'light', 'border-[#dfd6b1] text-[#4a3c31]': theme === 'sepia', 'border-[#2d2d38] text-slate-300': theme === 'dark' }"
                                                x-html="getIndonesianTranslation(verse)"></p>
 
                                             <!-- Action Toolbar for Verse -->
@@ -1025,6 +1026,28 @@
     <style>
         .font-arabic {
             font-family: 'Scheherazade New', 'Amiri', serif;
+        }
+        .quran-verse-text {
+            line-height: 2.35;
+            word-spacing: 0.12em;
+        }
+        .quran-verse-line {
+            font-size: 1.9rem;
+        }
+        .quran-translation {
+            font-size: 0.875rem;
+            line-height: 2;
+        }
+        @media (min-width: 640px) {
+            .quran-verse-text {
+                line-height: 2.55;
+            }
+            .quran-verse-line {
+                font-size: 2.35rem;
+            }
+            .quran-translation {
+                font-size: 0.9375rem;
+            }
         }
         /* Custom scrollbar styling */
         .scrollbar-thin::-webkit-scrollbar {

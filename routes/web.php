@@ -58,6 +58,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuranMushafController;
 use App\Http\Controllers\QuranPdfController;
+use App\Http\Controllers\Boarding\BoardingDashboardController;
+use App\Http\Controllers\Boarding\BoardingDormitoryController;
+use App\Http\Controllers\Boarding\BoardingRoomController;
+use App\Http\Controllers\Boarding\BoardingBedController;
+use App\Http\Controllers\Boarding\BoardingSupervisorController;
+use App\Http\Controllers\Boarding\BoardingStudentAssignmentController;
+use App\Http\Controllers\Boarding\BoardingLeaveRequestController;
+use App\Http\Controllers\Boarding\BoardingHealthLogController;
+use App\Http\Controllers\Boarding\BoardingDisciplineLogController;
+use App\Http\Controllers\Boarding\BoardingRollCallController;
+use App\Http\Controllers\Boarding\BoardingReportController;
+use App\Http\Controllers\Portal\ParentBoardingPortalController;
+use App\Http\Controllers\Portal\StudentBoardingPortalController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -529,4 +542,68 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
 
     Route::get('/mushaf', [QuranMushafController::class, 'index'])
         ->name('quran.mushaf');
+
+    // Boarding School Management System Routes
+    Route::middleware(['role:super_admin,admin,principal,boarding_supervisor'])->prefix('boarding')->name('boarding.')->group(function (): void {
+        Route::get('/', BoardingDashboardController::class)->name('dashboard');
+
+        // Master Data CRUD
+        Route::resource('dormitories', BoardingDormitoryController::class);
+        Route::resource('rooms', BoardingRoomController::class);
+        Route::resource('beds', BoardingBedController::class);
+        Route::resource('supervisors', BoardingSupervisorController::class)->parameters([
+            'supervisors' => 'supervisor',
+        ]);
+
+        // Student Assignments
+        Route::get('assignments', [BoardingStudentAssignmentController::class, 'index'])->name('assignments.index');
+        Route::get('assignments/create', [BoardingStudentAssignmentController::class, 'create'])->name('assignments.create');
+        Route::post('assignments', [BoardingStudentAssignmentController::class, 'store'])->name('assignments.store');
+        Route::get('assignments/{assignment}', [BoardingStudentAssignmentController::class, 'show'])->name('assignments.show');
+        Route::put('assignments/{assignment}/end', [BoardingStudentAssignmentController::class, 'end'])->name('assignments.end');
+        Route::post('assignments/{assignment}/move', [BoardingStudentAssignmentController::class, 'move'])->name('assignments.move');
+
+        // Leave Requests
+        Route::get('leave-requests', [BoardingLeaveRequestController::class, 'index'])->name('leave-requests.index');
+        Route::get('leave-requests/create', [BoardingLeaveRequestController::class, 'create'])->name('leave-requests.create');
+        Route::post('leave-requests', [BoardingLeaveRequestController::class, 'store'])->name('leave-requests.store');
+        Route::get('leave-requests/{leaveRequest}', [BoardingLeaveRequestController::class, 'show'])->name('leave-requests.show');
+        Route::post('leave-requests/{leaveRequest}/approve', [BoardingLeaveRequestController::class, 'approve'])->name('leave-requests.approve');
+        Route::post('leave-requests/{leaveRequest}/reject', [BoardingLeaveRequestController::class, 'reject'])->name('leave-requests.reject');
+        Route::post('leave-requests/{leaveRequest}/mark-returned', [BoardingLeaveRequestController::class, 'markReturned'])->name('leave-requests.mark-returned');
+        Route::post('leave-requests/{leaveRequest}/cancel', [BoardingLeaveRequestController::class, 'cancel'])->name('leave-requests.cancel');
+
+        // Health Logs
+        Route::get('health-logs', [BoardingHealthLogController::class, 'index'])->name('health-logs.index');
+        Route::get('health-logs/create', [BoardingHealthLogController::class, 'create'])->name('health-logs.create');
+        Route::post('health-logs', [BoardingHealthLogController::class, 'store'])->name('health-logs.store');
+        Route::get('health-logs/{healthLog}', [BoardingHealthLogController::class, 'show'])->name('health-logs.show');
+
+        // Discipline Logs
+        Route::get('discipline-logs', [BoardingDisciplineLogController::class, 'index'])->name('discipline-logs.index');
+        Route::get('discipline-logs/create', [BoardingDisciplineLogController::class, 'create'])->name('discipline-logs.create');
+        Route::post('discipline-logs', [BoardingDisciplineLogController::class, 'store'])->name('discipline-logs.store');
+        Route::get('discipline-logs/{disciplineLog}', [BoardingDisciplineLogController::class, 'show'])->name('discipline-logs.show');
+
+        // Roll Calls
+        Route::get('roll-calls', [BoardingRollCallController::class, 'index'])->name('roll-calls.index');
+        Route::get('roll-calls/create', [BoardingRollCallController::class, 'create'])->name('roll-calls.create');
+        Route::post('roll-calls', [BoardingRollCallController::class, 'store'])->name('roll-calls.store');
+        Route::get('roll-calls/{rollCall}', [BoardingRollCallController::class, 'show'])->name('roll-calls.show');
+        Route::post('roll-calls/{rollCall}/records', [BoardingRollCallController::class, 'storeRecords'])->name('roll-calls.records.store');
+        Route::post('roll-calls/{rollCall}/close', [BoardingRollCallController::class, 'close'])->name('roll-calls.close');
+
+        // Reports
+        Route::get('reports', BoardingReportController::class)->name('reports.dashboard');
+    });
+
+    // Parent Boarding Portal Route
+    Route::get('/portal/parent/boarding', ParentBoardingPortalController::class)
+        ->middleware(['role:parent'])
+        ->name('portal.parent.boarding');
+
+    // Student Boarding Portal Route
+    Route::get('/portal/student/boarding', StudentBoardingPortalController::class)
+        ->middleware(['role:student'])
+        ->name('portal.student.boarding');
 });

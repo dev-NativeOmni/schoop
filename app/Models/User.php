@@ -66,6 +66,11 @@ class User extends Authenticatable
         return $this->hasOne(Student::class);
     }
 
+    public function boardingSupervisorProfile(): HasOne
+    {
+        return $this->hasOne(BoardingSupervisorProfile::class);
+    }
+
     public function hasRole(string|array $roles): bool
     {
         $roleName = $this->role?->name;
@@ -105,5 +110,10 @@ class User extends Authenticatable
     public function isStudent(): bool
     {
         return $this->hasRole('student');
+    }
+
+    public function isBoardingSupervisor(): bool
+    {
+        return $this->hasRole('boarding_supervisor');
     }
 }

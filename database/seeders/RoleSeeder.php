@@ -31,6 +31,11 @@ class RoleSeeder extends Seeder
                 'description' => 'Input setoran dan pantau target.',
             ],
             [
+                'name' => 'boarding_supervisor',
+                'label' => 'Pembina Asrama',
+                'description' => 'Mengelola asrama, perizinan, kesehatan, disiplin, dan absen asrama.',
+            ],
+            [
                 'name' => 'parent',
                 'label' => 'Orang Tua',
                 'description' => 'Lihat progres anak.',

@@ -74,6 +74,14 @@ class SystemModuleSeeder extends Seeder
                 'sort_order' => 70,
                 'is_core' => false,
             ],
+            [
+                'module_key' => 'boarding',
+                'name' => 'Boarding',
+                'description' => 'Boarding school management, dormitory, room assignment, leave request, health log, discipline log, and roll call.',
+                'route_name' => 'boarding.dashboard',
+                'sort_order' => 80,
+                'is_core' => false,
+            ],
         ];
 
         foreach ($modules as $module) {

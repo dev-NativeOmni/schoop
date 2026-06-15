@@ -112,5 +112,30 @@ class Student extends Model
     {
         return $this->hasMany(FinanceLedgerEntry::class);
     }
+
+    public function boardingAssignments(): HasMany
+    {
+        return $this->hasMany(BoardingStudentAssignment::class);
+    }
+
+    public function activeBoardingAssignment(): HasOne
+    {
+        return $this->hasOne(BoardingStudentAssignment::class)->where('status', 'active');
+    }
+
+    public function boardingLeaveRequests(): HasMany
+    {
+        return $this->hasMany(BoardingLeaveRequest::class);
+    }
+
+    public function boardingHealthLogs(): HasMany
+    {
+        return $this->hasMany(BoardingHealthLog::class);
+    }
+
+    public function boardingDisciplineLogs(): HasMany
+    {
+        return $this->hasMany(BoardingDisciplineLog::class);
+    }
 }
 

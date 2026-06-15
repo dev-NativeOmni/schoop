@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             FinanceFeeCategorySeeder::class,
             // Phase 15 — SchoolOS Mini
             SystemModuleSeeder::class,
+            // Phase 16 — Boarding School Management System
+            BoardingDormitorySeeder::class,
         ]);
     }
 }
