@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="HafizPlus">
+  <rect width="512" height="512" rx="112" fill="#1f2937"/>
+  <rect x="118" y="104" width="276" height="304" rx="32" fill="#a3e635"/>
+  <path d="M176 164h94c38 0 68 30 68 68v116h-70V232c0-16-12-28-28-28h-64v144h-70V164h70Z" fill="#1f2937"/>
+  <path d="M268 164h70v184h-70z" fill="#1f2937" opacity=".72"/>
+</svg>

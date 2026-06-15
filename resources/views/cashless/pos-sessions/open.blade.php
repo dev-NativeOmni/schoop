@@ -1,0 +1,5 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="max-w-7xl mx-auto px-4 py-6"><x-cashless.shell title="Buka Session POS"><form method="POST" action="{{ route('cashless.pos-sessions.store') }}" class="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">@csrf<div class="grid gap-4 md:grid-cols-2"><label class="text-sm font-bold dark:text-slate-200">Merchant <select name="cashless_merchant_id" class="mt-1 w-full rounded-lg dark:border-slate-700 dark:bg-slate-950">@foreach($merchants as $merchant)<option value="{{ $merchant->id }}">{{ $merchant->name }}</option>@endforeach</select></label><label class="text-sm font-bold dark:text-slate-200">Shift <input name="shift_name" class="mt-1 w-full rounded-lg dark:border-slate-700 dark:bg-slate-950"></label></div><label class="mt-4 block text-sm font-bold dark:text-slate-200">Catatan <textarea name="opening_note" class="mt-1 w-full rounded-lg dark:border-slate-700 dark:bg-slate-950"></textarea></label><button class="mt-5 rounded-lg bg-lime-500 px-4 py-2 text-sm font-black text-white">Buka</button></form></x-cashless.shell></div>
+@endsection

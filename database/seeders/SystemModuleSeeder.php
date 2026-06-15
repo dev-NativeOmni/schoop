@@ -82,6 +82,30 @@ class SystemModuleSeeder extends Seeder
                 'sort_order' => 80,
                 'is_core' => false,
             ],
+            [
+                'module_key' => 'white_label',
+                'name' => 'White Label',
+                'description' => 'Visual branding profile, theme builder, PWA manifests, and custom domain resolver.',
+                'route_name' => 'white-label.dashboard',
+                'sort_order' => 95,
+                'is_core' => false,
+            ],
+            [
+                'module_key' => 'cashless',
+                'name' => 'Cashless Kantin / Merchant POS',
+                'description' => 'Closed-loop wallet santri, POS kantin, refund, settlement, dan laporan merchant.',
+                'route_name' => 'cashless.reports.dashboard',
+                'sort_order' => 100,
+                'is_core' => false,
+            ],
+            [
+                'module_key' => 'saas_ops',
+                'name' => 'SaaS Operations',
+                'description' => 'Subscription, tenant billing, onboarding, support, incident, release, knowledge base, and usage health operations.',
+                'route_name' => 'saas-ops.dashboard',
+                'sort_order' => 110,
+                'is_core' => false,
+            ],
         ];
 
         foreach ($modules as $module) {

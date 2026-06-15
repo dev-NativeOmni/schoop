@@ -10,9 +10,13 @@
 
     $hasAdminOrSuperAdmin = $isSuperAdmin || $isAdmin;
     $hasInternalAccess = $hasAdminOrSuperAdmin || $isTeacher || $isPrincipal;
-    $hasFinanceAccess = $hasAdminOrSuperAdmin || $isPrincipal;
+    $hasFinanceAccess = $hasAdminOrSuperAdmin || $isPrincipal || $user->hasRole('finance');
     $hasBoardingAccess = $hasAdminOrSuperAdmin || $isPrincipal || $isBoardingSupervisor;
     $roleName = $user->role?->name;
+    $hasCashlessAccess = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'finance', 'cashier', 'merchant', 'principal', 'kepala_sekolah'], true);
+    $canManageCashless = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'finance'], true);
+    $canUseCashlessPos = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'cashier', 'merchant'], true);
+    $hasSaasOpsAccess = in_array($roleName, ['super_admin', 'operations_manager', 'support_staff', 'customer_success', 'sales'], true);
     $canViewSchoolOs = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'kepala_sekolah', 'principal', 'teacher', 'guru', 'guru_tahfidz', 'parent', 'student'], true);
     $canManageSchoolOs = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah'], true);
     $canManageTenancy = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'kepala_sekolah', 'principal'], true);
@@ -34,37 +38,50 @@
             <div class="flex items-center space-x-6">
                 <!-- Logo -->
                 <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 group shrink-0">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25 group-hover:scale-105 transition-all">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                    </div>
-                    <span class="text-base font-extrabold tracking-tight text-white">Hafiz<span class="text-[#A3E635]">Plus</span></span>
+                    @php
+                        $activeSchoolId = app(\App\Services\Tenancy\TenantContextService::class)->activeSchoolId();
+                        $resolvedBrand = null;
+                        if ($activeSchoolId) {
+                            $publishedSettings = app(\App\Services\WhiteLabel\WhiteLabelPublicationService::class)->getActivePublishedSettings($activeSchoolId);
+                            $resolvedBrand = $publishedSettings['brand'];
+                        }
+                    @endphp
+                    @if($resolvedBrand && $resolvedBrand->logo_path)
+                        <img src="{{ Storage::disk('public')->url($resolvedBrand->logo_path) }}" alt="Logo" class="h-9 w-9 object-contain bg-white/20 p-1 rounded-xl">
+                        <span class="text-base font-extrabold tracking-tight text-white">{{ $resolvedBrand->display_name }}</span>
+                    @else
+                        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25 group-hover:scale-105 transition-all">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                        </div>
+                        <span class="text-base font-extrabold tracking-tight text-white">Hafiz<span class="text-[#A3E635]">Plus</span></span>
+                    @endif
                 </a>
 
                 <!-- Desktop Navigation Links -->
                 <div class="hidden lg:flex items-center space-x-0.5 text-xs font-semibold">
                     <!-- Dashboard -->
                     @php $active = request()->routeIs('dashboard*'); @endphp
-                    <a href="{{ route('dashboard') }}" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none">
+                    <a href="{{ route('dashboard') }}" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
                         @if ($active)
                             <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>
-                            <span class="text-[11px] tracking-wide font-black text-[#A3E635] mt-1">Dashboard</span>
+                            <span class="text-[11px] tracking-wide font-black mt-1">Dashboard</span>
                         @else
                             <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-                            <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors">Dashboard</span>
+                            <span class="text-[11px] tracking-wide mt-1 transition-colors">Dashboard</span>
                         @endif
                     </a>
 
                     <!-- Al-Qur'an -->
                     @php $active = request()->routeIs('quran*'); @endphp
-                    <a href="{{ route('quran.mushaf') }}" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none">
+                    <a href="{{ route('quran.mushaf') }}" class="flex flex-col items-center justify-center px-4 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
                         @if ($active)
                             <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" /></svg>
-                            <span class="whitespace-nowrap text-[11px] tracking-wide font-black text-[#A3E635] mt-1">Al-Qur'an</span>
+                            <span class="whitespace-nowrap text-[11px] tracking-wide font-black mt-1">Al-Qur'an</span>
                         @else
                             <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-                            <span class="whitespace-nowrap text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors">Al-Qur'an</span>
+                            <span class="whitespace-nowrap text-[11px] tracking-wide mt-1 transition-colors">Al-Qur'an</span>
                         @endif
                     </a>
 
@@ -72,13 +89,13 @@
                     @if ($canViewSchoolOs)
                         @php $active = request()->routeIs('schoolos.*'); @endphp
                         <div class="relative" @click.outside="openDropdown === 'schoolos' && (openDropdown = null)">
-                            <button @click="openDropdown = openDropdown === 'schoolos' ? null : 'schoolos'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none">
+                            <button @click="openDropdown = openDropdown === 'schoolos' ? null : 'schoolos'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
                                 @if ($active)
                                     <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.939.831a1 1 0 00.788 0l7-3a1 1 0 000-1.839l-7-3zM3.102 9.758a1 1 0 00-.802 1.006c.058 1.2.347 2.483.945 3.515.542.937 1.385 1.764 2.502 2.221a6.927 6.927 0 005.506 0c1.117-.457 1.96-1.284 2.502-2.221.598-1.032.887-2.316.945-3.515a1 1 0 00-.802-1.006l-4.702-.94a3.016 3.016 0 01-.788 0l-4.702.94z" /></svg>
-                                    <span class="text-[11px] tracking-wide font-black text-[#A3E635] mt-1 flex items-center justify-center gap-0.5 w-full">SchoolOS <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    <span class="text-[11px] tracking-wide font-black mt-1 flex items-center justify-center gap-0.5 w-full">SchoolOS <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
                                 @else
                                     <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4.263 8.535l7.24-3.62a.75.75 0 01.674 0l7.24 3.62a.75.75 0 010 1.342l-7.24 3.62a.75.75 0 01-.674 0L4.263 9.876a.75.75 0 010-1.342z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6.31 12.593v3.136c0 .716.495 1.344 1.196 1.492a10.875 10.875 0 008.99 0c.701-.148 1.196-.776 1.196-1.492v-3.136" /></svg>
-                                    <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">SchoolOS <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    <span class="text-[11px] tracking-wide mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">SchoolOS <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
                                 @endif
                             </button>
                             <div x-show="openDropdown === 'schoolos'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-52 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
@@ -96,10 +113,10 @@
                     @if ($hasAdminOrSuperAdmin)
                         @php $active = request()->routeIs('master-data.*'); @endphp
                         <div class="relative" @click.outside="openDropdown === 'master' && (openDropdown = null)">
-                            <button @click="openDropdown = openDropdown === 'master' ? null : 'master'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none">
+                            <button @click="openDropdown = openDropdown === 'master' ? null : 'master'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
                                 @if ($active)
                                     <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path d="M3 12v3c0 1.657 3.134 3 7 3s7-1.343 7-3v-3c0 1.657-3.134 3-7 3s-7-1.343-7-3z" /><path d="M3 7v3c0 1.657 3.134 3 7 3s7-1.343 7-3V7c0 1.657-3.134 3-7 3S3 8.657 3 7z" /><path d="M10 2c-3.866 0-7 1.343-7 3s3.134 3 7 3 7-1.343 7-3-3.134-3-7-3z" /></svg>
-                                    <span class="text-[11px] tracking-wide font-black text-[#A3E635] mt-1 flex items-center justify-center gap-0.5 w-full">Data Master <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    <span class="text-[11px] tracking-wide font-black mt-1 flex items-center justify-center gap-0.5 w-full">Data Master <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
                                 @else
                                     <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75M3.75 10.125v3.75m16.5 0v3.75M3.75 13.875v3.75" /></svg>
                                     <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">Data Master <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
@@ -121,13 +138,13 @@
                     @if ($canManageTenancy)
                         @php $active = request()->routeIs('tenancy.*'); @endphp
                         <div class="relative" @click.outside="openDropdown === 'tenancy' && (openDropdown = null)">
-                            <button @click="openDropdown = openDropdown === 'tenancy' ? null : 'tenancy'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none">
+                            <button @click="openDropdown = openDropdown === 'tenancy' ? null : 'tenancy'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
                                 @if ($active)
                                     <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.724 1.724 0 01-2.573 1.066c-1.543-.94-3.31.826-2.37 2.37a1.724 1.724 0 01-1.065 2.572c-1.56.38-1.56 2.6 0 2.98a1.724 1.724 0 011.066 2.573c-.94 1.543.826 3.31 2.37 2.37.996.608 2.296.07 2.572-1.065.38-1.56 2.6-1.56 2.98 0a1.724 1.724 0 012.573 1.066c1.543.94 3.31-.826 2.37-2.37.996-.608 2.296-.07 2.572 1.065.38 1.56 2.6 1.56 2.98 0a1.724 1.724 0 011.066-2.573c.94-1.543-.826-3.31-2.37-2.37.996-.608 2.296-.07 2.572 1.065z" clip-rule="evenodd" /><path fill-rule="evenodd" d="M10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>
-                                    <span class="text-[11px] tracking-wide font-black text-[#A3E635] mt-1 flex items-center justify-center gap-0.5 w-full">Tenancy <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    <span class="text-[11px] tracking-wide font-black mt-1 flex items-center justify-center gap-0.5 w-full">Tenancy <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
                                 @else
                                     <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572 1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                    <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">Tenancy <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    <span class="text-[11px] tracking-wide mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">Tenancy <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
                                 @endif
                             </button>
                             <div x-show="openDropdown === 'tenancy'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-52 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
@@ -136,6 +153,7 @@
                                 <a href="{{ route('tenancy.memberships.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">User Memberships</a>
                                 <a href="{{ route('tenancy.settings.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Settings</a>
                                 <a href="{{ route('tenancy.modules.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Modules</a>
+                                <a href="{{ route('white-label.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">White-Label Builder</a>
                                 <a href="{{ route('tenancy.audit-logs.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Audit Logs</a>
                             </div>
                         </div>
@@ -145,13 +163,13 @@
                         <!-- Tahfizh Dropdown -->
                         @php $active = request()->routeIs('reports.tahfizh.*') || request()->routeIs('tahfizh.*'); @endphp
                         <div class="relative" @click.outside="openDropdown === 'tahfizh' && (openDropdown = null)">
-                            <button @click="openDropdown = openDropdown === 'tahfizh' ? null : 'tahfizh'" class="flex flex-col items-center justify-center w-20 py-1.5 group transition-all rounded-lg focus:outline-none">
+                            <button @click="openDropdown = openDropdown === 'tahfizh' ? null : 'tahfizh'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
                                 @if ($active)
                                     <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" /></svg>
-                                    <span class="text-[11px] tracking-wide font-black text-[#A3E635] mt-1 flex items-center justify-center gap-0.5 w-full">Tahfizh <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    <span class="text-[11px] tracking-wide font-black mt-1 flex items-center justify-center gap-0.5 w-full">Tahfizh <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
                                 @else
                                     <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
-                                    <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">Tahfizh <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    <span class="text-[11px] tracking-wide mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">Tahfizh <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
                                 @endif
                             </button>
                             <div x-show="openDropdown === 'tahfizh'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-52 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
@@ -170,13 +188,13 @@
                         <!-- Mutabaah Dropdown -->
                         @php $active = request()->routeIs('mutabaah.*'); @endphp
                         <div class="relative" @click.outside="openDropdown === 'mutabaah' && (openDropdown = null)">
-                            <button @click="openDropdown = openDropdown === 'mutabaah' ? null : 'mutabaah'" class="flex flex-col items-center justify-center w-20 py-1.5 group transition-all rounded-lg focus:outline-none">
+                            <button @click="openDropdown = openDropdown === 'mutabaah' ? null : 'mutabaah'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
                                 @if ($active)
                                     <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A1 1 0 0113 2.586L18.414 8a1 1 0 01.293.707V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 2h6v2H6V6zm0 4h6v2H6v-2zm0 4h6v2H6v-2z" clip-rule="evenodd" /></svg>
-                                    <span class="text-[11px] tracking-wide font-black text-[#A3E635] mt-1 flex items-center justify-center gap-0.5 w-full">Mutabaah <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    <span class="text-[11px] tracking-wide font-black mt-1 flex items-center justify-center gap-0.5 w-full">Mutabaah <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
                                 @else
                                     <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                    <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">Mutabaah <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    <span class="text-[11px] tracking-wide mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">Mutabaah <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
                                 @endif
                             </button>
                             <div x-show="openDropdown === 'mutabaah'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-52 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
@@ -193,10 +211,10 @@
                         <!-- Kehadiran Dropdown -->
                         @php $active = request()->routeIs('attendance.*'); @endphp
                         <div class="relative" @click.outside="openDropdown === 'attendance' && (openDropdown = null)">
-                            <button @click="openDropdown = openDropdown === 'attendance' ? null : 'attendance'" class="flex flex-col items-center justify-center w-20 py-1.5 group transition-all rounded-lg focus:outline-none">
+                            <button @click="openDropdown = openDropdown === 'attendance' ? null : 'attendance'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
                                 @if ($active)
                                     <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1-1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2h-1V2a1 1 0 10-2 0v1H7V2a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6zm0 4a1 1 0 100 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
-                                    <span class="text-[11px] tracking-wide font-black text-[#A3E635] mt-1 flex items-center justify-center gap-0.5 w-full">Kehadiran <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    <span class="text-[11px] tracking-wide font-black mt-1 flex items-center justify-center gap-0.5 w-full">Kehadiran <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
                                 @else
                                     <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>
                                     <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">Kehadiran <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
@@ -214,10 +232,10 @@
                         <!-- Tahsin Dropdown -->
                         @php $active = request()->routeIs('tahsin.*'); @endphp
                         <div class="relative" @click.outside="openDropdown === 'tahsin' && (openDropdown = null)">
-                            <button @click="openDropdown = openDropdown === 'tahsin' ? null : 'tahsin'" class="flex flex-col items-center justify-center w-20 py-1.5 group transition-all rounded-lg focus:outline-none">
+                            <button @click="openDropdown = openDropdown === 'tahsin' ? null : 'tahsin'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
                                 @if ($active)
                                     <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                                    <span class="text-[11px] tracking-wide font-black text-[#A3E635] mt-1 flex items-center justify-center gap-0.5 w-full">Tahsin <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    <span class="text-[11px] tracking-wide font-black mt-1 flex items-center justify-center gap-0.5 w-full">Tahsin <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
                                 @else
                                     <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 21l5.438-3.125 5.437 3.125-1.687-6.096L21 11.25l-6.219-.469L12 5.25 9.219 10.781 3 11.25l4.875 3.656z" /></svg>
                                     <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">Tahsin <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
@@ -239,10 +257,10 @@
                     @if ($hasFinanceAccess)
                         @php $active = request()->routeIs('finance.*'); @endphp
                         <div class="relative" @click.outside="openDropdown === 'finance' && (openDropdown = null)">
-                            <button @click="openDropdown = openDropdown === 'finance' ? null : 'finance'" class="flex flex-col items-center justify-center w-20 py-1.5 group transition-all rounded-lg focus:outline-none">
+                            <button @click="openDropdown = openDropdown === 'finance' ? null : 'finance'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
                                 @if ($active)
                                     <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM6 11a1 1 0 110 2H5a1 1 0 110-2h1z" /></svg>
-                                    <span class="text-[11px] tracking-wide font-black text-[#A3E635] mt-1 flex items-center justify-center gap-0.5 w-full">Keuangan <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    <span class="text-[11px] tracking-wide font-black mt-1 flex items-center justify-center gap-0.5 w-full">Keuangan <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
                                 @else
                                     <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg>
                                     <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">Keuangan <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
@@ -260,14 +278,62 @@
                         </div>
                     @endif
 
+                    @if ($hasCashlessAccess)
+                        @php $active = request()->routeIs('cashless.*'); @endphp
+                        <div class="relative" @click.outside="openDropdown === 'cashless' && (openDropdown = null)">
+                            <button @click="openDropdown = openDropdown === 'cashless' ? null : 'cashless'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
+                                <svg class="h-5 w-5 {{ $active ? 'text-[#A3E635]' : 'text-slate-400 group-hover:text-[#A3E635]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125V6m-19.5 0h19.5m-19.5 0v11.25c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125V6" /></svg>
+                                <span class="text-[11px] tracking-wide mt-1 flex items-center justify-center gap-0.5 w-full {{ $active ? 'font-black text-[#A3E635]' : 'text-slate-400 group-hover:text-white' }}">Cashless <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                            </button>
+                            <div x-show="openDropdown === 'cashless'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-56 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
+                                <a href="{{ route('cashless.reports.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Laporan Cashless</a>
+                                @if ($canManageCashless)
+                                    <a href="{{ route('cashless.merchants.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Merchant</a>
+                                    <a href="{{ route('cashless.products.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Produk Merchant</a>
+                                    <a href="{{ route('cashless.wallets.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Wallet Santri</a>
+                                    <a href="{{ route('cashless.top-ups.create') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Top Up Wallet</a>
+                                    <a href="{{ route('cashless.refunds.create') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Refund / Void</a>
+                                    <a href="{{ route('cashless.settlements.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Settlement</a>
+                                @endif
+                                @if ($canUseCashlessPos)
+                                    <a href="{{ route('cashless.pos.cashier') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">POS Kasir</a>
+                                    <a href="{{ route('cashless.pos-sessions.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Session POS</a>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
+
+                    @if ($hasSaasOpsAccess)
+                        @php $active = request()->routeIs('saas-ops.*'); @endphp
+                        <div class="relative" @click.outside="openDropdown === 'saasops' && (openDropdown = null)">
+                            <button @click="openDropdown = openDropdown === 'saasops' ? null : 'saasops'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
+                                <svg class="h-5 w-5 {{ $active ? 'text-[#A3E635]' : 'text-slate-400 group-hover:text-[#A3E635]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h15.75c.621 0 1.125.504 1.125 1.125v6.75C21 20.496 20.496 21 19.875 21H4.125A1.125 1.125 0 013 19.875v-6.75zM4.5 10.5L12 3l7.5 7.5M9 21v-6h6v6" /></svg>
+                                <span class="text-[11px] tracking-wide mt-1 flex items-center justify-center gap-0.5 w-full {{ $active ? 'font-black text-[#A3E635]' : 'text-slate-400 group-hover:text-white' }}">SaaS Ops <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                            </button>
+                            <div x-show="openDropdown === 'saasops'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-60 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
+                                <a href="{{ route('saas-ops.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Product Scale Dashboard</a>
+                                <a href="{{ route('saas-ops.subscription-plans.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Subscription Plans</a>
+                                <a href="{{ route('saas-ops.school-subscriptions.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">School Subscriptions</a>
+                                <a href="{{ route('saas-ops.tenant-invoices.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Invoices</a>
+                                <a href="{{ route('saas-ops.implementation-projects.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Implementation Projects</a>
+                                <a href="{{ route('saas-ops.support-tickets.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Support Tickets</a>
+                                <a href="{{ route('saas-ops.incident-reports.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Incidents</a>
+                                <a href="{{ route('saas-ops.release-notes.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Release Notes</a>
+                                <a href="{{ route('saas-ops.knowledge-base.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Knowledge Base</a>
+                                <a href="{{ route('saas-ops.customer-success-notes.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Customer Success</a>
+                                <a href="{{ route('saas-ops.usage-snapshots.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Usage Snapshots</a>
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Boarding Dropdown -->
                     @if ($hasBoardingAccess)
                         @php $active = request()->routeIs('boarding.*'); @endphp
                         <div class="relative" @click.outside="openDropdown === 'boarding' && (openDropdown = null)">
-                            <button @click="openDropdown = openDropdown === 'boarding' ? null : 'boarding'" class="flex flex-col items-center justify-center w-20 py-1.5 group transition-all rounded-lg focus:outline-none">
+                            <button @click="openDropdown = openDropdown === 'boarding' ? null : 'boarding'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
                                 @if ($active)
                                     <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>
-                                    <span class="text-[11px] tracking-wide font-black text-[#A3E635] mt-1 flex items-center justify-center gap-0.5 w-full">Boarding <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    <span class="text-[11px] tracking-wide font-black mt-1 flex items-center justify-center gap-0.5 w-full">Boarding <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
                                 @else
                                     <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                                     <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">Boarding <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
@@ -312,6 +378,7 @@
                                 <a href="{{ route('portal.parent.attendance') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Kehadiran Anak</a>
                                 <a href="{{ route('portal.parent.tahsin') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tahsin Anak</a>
                                 <a href="{{ route('portal.parent.finance') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Keuangan Anak</a>
+                                <a href="{{ route('portal.parent.cashless') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Cashless Anak</a>
                                 <a href="{{ route('portal.parent.boarding') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Boarding Anak</a>
                             </div>
                         </div>
@@ -336,6 +403,7 @@
                                 <a href="{{ route('portal.student.attendance') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Kehadiran Saya</a>
                                 <a href="{{ route('portal.student.tahsin') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tahsin Saya</a>
                                 <a href="{{ route('portal.student.finance') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Keuangan Saya</a>
+                                <a href="{{ route('portal.student.cashless') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Cashless Saya</a>
                                 <a href="{{ route('portal.student.boarding') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Boarding Saya</a>
                             </div>
                         </div>
@@ -470,6 +538,42 @@
             </div>
         @endif
 
+        @if ($hasCashlessAccess)
+            <div class="py-1 border-t border-slate-750">
+                <p class="px-3 py-1 text-[10px] font-bold text-slate-455 uppercase tracking-wider">Cashless</p>
+                <a href="{{ route('cashless.reports.dashboard') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Laporan Cashless</a>
+                @if ($canManageCashless)
+                    <a href="{{ route('cashless.merchants.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Merchant</a>
+                    <a href="{{ route('cashless.products.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Produk</a>
+                    <a href="{{ route('cashless.wallets.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Wallet Santri</a>
+                    <a href="{{ route('cashless.top-ups.create') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Top Up</a>
+                    <a href="{{ route('cashless.refunds.create') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Refund / Void</a>
+                    <a href="{{ route('cashless.settlements.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Settlement</a>
+                @endif
+                @if ($canUseCashlessPos)
+                    <a href="{{ route('cashless.pos.cashier') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">POS Kasir</a>
+                    <a href="{{ route('cashless.pos-sessions.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Session POS</a>
+                @endif
+            </div>
+        @endif
+
+        @if ($hasSaasOpsAccess)
+            <div class="py-1 border-t border-slate-750">
+                <p class="px-3 py-1 text-[10px] font-bold text-slate-455 uppercase tracking-wider">SaaS Operations</p>
+                <a href="{{ route('saas-ops.dashboard') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Product Scale Dashboard</a>
+                <a href="{{ route('saas-ops.subscription-plans.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Subscription Plans</a>
+                <a href="{{ route('saas-ops.school-subscriptions.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">School Subscriptions</a>
+                <a href="{{ route('saas-ops.tenant-invoices.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Tenant Invoices</a>
+                <a href="{{ route('saas-ops.implementation-projects.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Implementation Projects</a>
+                <a href="{{ route('saas-ops.support-tickets.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Support Tickets</a>
+                <a href="{{ route('saas-ops.incident-reports.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Incidents</a>
+                <a href="{{ route('saas-ops.release-notes.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Release Notes</a>
+                <a href="{{ route('saas-ops.knowledge-base.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Knowledge Base</a>
+                <a href="{{ route('saas-ops.customer-success-notes.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Customer Success</a>
+                <a href="{{ route('saas-ops.usage-snapshots.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Usage Snapshots</a>
+            </div>
+        @endif
+
         @if ($hasBoardingAccess)
             <div class="py-1 border-t border-slate-750">
                 <p class="px-3 py-1 text-[10px] font-bold text-slate-455 uppercase tracking-wider">Boarding</p>
@@ -499,6 +603,7 @@
                 <a href="{{ route('portal.parent.attendance') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Kehadiran Anak</a>
                 <a href="{{ route('portal.parent.tahsin') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Tahsin Anak</a>
                 <a href="{{ route('portal.parent.finance') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Keuangan Anak</a>
+                <a href="{{ route('portal.parent.cashless') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Cashless Anak</a>
                 <a href="{{ route('portal.parent.boarding') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Boarding Anak</a>
             </div>
         @endif
@@ -511,6 +616,7 @@
                 <a href="{{ route('portal.student.attendance') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Kehadiran Saya</a>
                 <a href="{{ route('portal.student.tahsin') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Tahsin Saya</a>
                 <a href="{{ route('portal.student.finance') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Keuangan Saya</a>
+                <a href="{{ route('portal.student.cashless') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Cashless Saya</a>
                 <a href="{{ route('portal.student.boarding') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Boarding Saya</a>
             </div>
         @endif

@@ -1,0 +1,2 @@
+@extends('layouts.app')
+@section('content')<div class="max-w-7xl mx-auto px-4 py-6"><x-saas-ops.shell title="{{ $note->school?->name }}" subtitle="{{ $note->note_type }}"><div class="rounded-xl border bg-white p-5 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200">{{ $note->content }}<br>Next follow-up: {{ $note->next_follow_up_at?->format('d M Y') }}</div></x-saas-ops.shell></div>@endsection

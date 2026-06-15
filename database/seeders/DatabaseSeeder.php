@@ -29,6 +29,12 @@ class DatabaseSeeder extends Seeder
             BoardingDormitorySeeder::class,
             // Phase 17 — Multi-Tenant Foundation
             TenantModuleSeeder::class,
+            // Phase 18 — White-Label School App Builder
+            DefaultWhiteLabelSeeder::class,
+            CashlessMerchantSeeder::class,
+            SaasSubscriptionPlanSeeder::class,
+            SlaPolicySeeder::class,
+            OnboardingChecklistItemSeeder::class,
         ]);
     }
 }

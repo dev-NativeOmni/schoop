@@ -14,3 +14,11 @@ Schedule::command('app:backup-database')
     ->onFailure(function (): void {
         logger()->error('Scheduled database backup failed.');
     });
+
+Schedule::command('app:capture-product-usage-snapshots')
+    ->dailyAt('23:30')
+    ->withoutOverlapping();
+
+Schedule::command('app:check-support-sla-breaches')
+    ->hourly()
+    ->withoutOverlapping();

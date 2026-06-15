@@ -15,6 +15,8 @@ use App\Services\Reports\MonthlyTahfizhReportService;
 use App\Services\Reports\QuarterlyTahfizhReportService;
 use App\Services\Reports\ReportPeriodResolver;
 use App\Services\Reports\TahfizhDashboardSummaryService;
+use App\Services\Tenancy\TenantContextService;
+use App\Services\WhiteLabel\WhiteLabelPublicationService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
@@ -103,6 +105,7 @@ class TahfizhExportController extends Controller
             'periodEnd' => $periodEnd,
             'generatedBy' => $request->user(),
             'generatedAt' => now(),
+            'pdfBrand' => $this->pdfBranding($request->user()),
         ])->setPaper('a4', 'landscape');
 
         return $pdf->download($filename);
@@ -175,6 +178,7 @@ class TahfizhExportController extends Controller
             'periodLabel' => $periodLabel,
             'generatedBy' => $request->user(),
             'generatedAt' => now(),
+            'pdfBrand' => $this->pdfBranding($request->user()),
         ])->setPaper('a4', 'landscape');
 
         return $pdf->download($filename);
@@ -236,6 +240,7 @@ class TahfizhExportController extends Controller
             'periodEnd' => $periodEnd,
             'generatedBy' => $request->user(),
             'generatedAt' => now(),
+            'pdfBrand' => $this->pdfBranding($request->user()),
         ])->setPaper('a4', 'portrait');
 
         return $pdf->download($filename);
@@ -248,5 +253,30 @@ class TahfizhExportController extends Controller
         }
 
         return (int) $value;
+    }
+
+    private function pdfBranding(User $user): array
+    {
+        $schoolId = app(TenantContextService::class)->activeSchoolId() ?: $user->school_id;
+
+        if (! $schoolId) {
+            return [
+                'name' => 'HafizPlus School Platform',
+                'tagline' => 'Tahfizh Monitoring App',
+                'primary_color' => '#111827',
+            ];
+        }
+
+        $settings = app(WhiteLabelPublicationService::class)->getActivePublishedSettings((int) $schoolId);
+        $brand = $settings['brand'];
+        $theme = $settings['theme'];
+
+        return [
+            'name' => $brand->display_name ?: 'HafizPlus School Platform',
+            'tagline' => $brand->tagline ?: 'Tahfizh Monitoring App',
+            'primary_color' => preg_match('/^#[0-9A-Fa-f]{6}$/', (string) $theme->primary_color)
+                ? $theme->primary_color
+                : '#111827',
+        ];
     }
 }

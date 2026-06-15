@@ -77,10 +77,33 @@ use App\Http\Controllers\Tenancy\TenantMembershipController;
 use App\Http\Controllers\Tenancy\TenantModuleController;
 use App\Http\Controllers\Tenancy\TenantSettingController;
 use App\Http\Controllers\Tenancy\TenantSwitcherController;
+use App\Http\Controllers\Cashless\CashlessMerchantController;
+use App\Http\Controllers\Cashless\CashlessProductController;
+use App\Http\Controllers\Cashless\CashlessWalletController;
+use App\Http\Controllers\Cashless\CashlessTopUpController;
+use App\Http\Controllers\Cashless\CashlessPosSessionController;
+use App\Http\Controllers\Cashless\CashlessPosController;
+use App\Http\Controllers\Cashless\CashlessRefundController;
+use App\Http\Controllers\Cashless\CashlessSettlementController;
+use App\Http\Controllers\Cashless\CashlessReportController;
+use App\Http\Controllers\Portal\ParentCashlessPortalController;
+use App\Http\Controllers\Portal\StudentCashlessPortalController;
+use App\Http\Controllers\SaasOps\CustomerSuccessNoteController;
+use App\Http\Controllers\SaasOps\ImplementationProjectController;
+use App\Http\Controllers\SaasOps\IncidentReportController;
+use App\Http\Controllers\SaasOps\KnowledgeBaseArticleController;
+use App\Http\Controllers\SaasOps\OnboardingChecklistController;
+use App\Http\Controllers\SaasOps\ProductScaleDashboardController;
+use App\Http\Controllers\SaasOps\ProductUsageSnapshotController;
+use App\Http\Controllers\SaasOps\ReleaseNoteController;
+use App\Http\Controllers\SaasOps\SaasSchoolSubscriptionController;
+use App\Http\Controllers\SaasOps\SaasSubscriptionPlanController;
+use App\Http\Controllers\SaasOps\SaasTenantInvoiceController;
+use App\Http\Controllers\SaasOps\SlaPolicyController;
+use App\Http\Controllers\SaasOps\SupportTicketController;
 
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+Route::get('/', [App\Http\Controllers\Public\TenantPublicLandingController::class, 'index'])->name('tenant.public.landing');
+Route::get('/manifest.json', [App\Http\Controllers\Public\TenantPwaManifestController::class, 'show'])->name('tenant.pwa.manifest');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
@@ -506,9 +529,17 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
         ->middleware(['role:parent'])
         ->name('portal.parent.finance');
 
+    Route::get('/portal/parent/cashless', ParentCashlessPortalController::class)
+        ->middleware(['role:parent'])
+        ->name('portal.parent.cashless');
+
     Route::get('/portal/student/finance', [StudentFinancePortalController::class, 'index'])
         ->middleware(['role:student'])
         ->name('portal.student.finance');
+
+    Route::get('/portal/student/cashless', StudentCashlessPortalController::class)
+        ->middleware(['role:student'])
+        ->name('portal.student.cashless');
 
     Route::prefix('schoolos')
         ->name('schoolos.')
@@ -613,6 +644,49 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
         ->middleware(['role:student'])
         ->name('portal.student.boarding');
 
+    // Phase 20 — Company/Product Scale & SaaS Operations
+    Route::middleware(['role:super_admin,operations_manager,support_staff,customer_success,sales,admin,admin_sekolah,principal,kepala_sekolah,teacher,merchant'])
+        ->prefix('saas-ops')
+        ->name('saas-ops.')
+        ->group(function (): void {
+            Route::get('/dashboard', [ProductScaleDashboardController::class, 'index'])->name('dashboard');
+
+            Route::resource('subscription-plans', SaasSubscriptionPlanController::class);
+
+            Route::get('school-subscriptions/create', [SaasSchoolSubscriptionController::class, 'create'])->name('school-subscriptions.create');
+            Route::post('school-subscriptions', [SaasSchoolSubscriptionController::class, 'store'])->name('school-subscriptions.store');
+            Route::get('school-subscriptions', [SaasSchoolSubscriptionController::class, 'index'])->name('school-subscriptions.index');
+            Route::get('school-subscriptions/{subscription}', [SaasSchoolSubscriptionController::class, 'show'])->name('school-subscriptions.show');
+            Route::post('school-subscriptions/{subscription}/activate', [SaasSchoolSubscriptionController::class, 'activate'])->name('school-subscriptions.activate');
+            Route::post('school-subscriptions/{subscription}/suspend', [SaasSchoolSubscriptionController::class, 'suspend'])->name('school-subscriptions.suspend');
+            Route::post('school-subscriptions/{subscription}/cancel', [SaasSchoolSubscriptionController::class, 'cancel'])->name('school-subscriptions.cancel');
+
+            Route::get('tenant-invoices', [SaasTenantInvoiceController::class, 'index'])->name('tenant-invoices.index');
+            Route::get('tenant-invoices/create', [SaasTenantInvoiceController::class, 'create'])->name('tenant-invoices.create');
+            Route::post('tenant-invoices', [SaasTenantInvoiceController::class, 'store'])->name('tenant-invoices.store');
+            Route::get('tenant-invoices/{invoice}', [SaasTenantInvoiceController::class, 'show'])->name('tenant-invoices.show');
+            Route::post('tenant-invoices/{invoice}/issue', [SaasTenantInvoiceController::class, 'issue'])->name('tenant-invoices.issue');
+            Route::post('tenant-invoices/{invoice}/payments', [SaasTenantInvoiceController::class, 'storePayment'])->name('tenant-invoices.payments.store');
+            Route::post('tenant-invoices/{invoice}/void', [SaasTenantInvoiceController::class, 'void'])->name('tenant-invoices.void');
+
+            Route::resource('implementation-projects', ImplementationProjectController::class);
+            Route::get('implementation-projects/{project}/onboarding', [OnboardingChecklistController::class, 'show'])->name('onboarding.show');
+            Route::post('implementation-projects/{project}/onboarding/{record}/complete', [OnboardingChecklistController::class, 'complete'])->name('onboarding.complete');
+
+            Route::resource('support-tickets', SupportTicketController::class)->only(['index', 'create', 'store', 'show']);
+            Route::post('support-tickets/{ticket}/messages', [SupportTicketController::class, 'storeMessage'])->name('support-tickets.messages.store');
+            Route::post('support-tickets/{ticket}/assign', [SupportTicketController::class, 'assign'])->name('support-tickets.assign');
+            Route::post('support-tickets/{ticket}/resolve', [SupportTicketController::class, 'resolve'])->name('support-tickets.resolve');
+            Route::post('support-tickets/{ticket}/close', [SupportTicketController::class, 'close'])->name('support-tickets.close');
+
+            Route::resource('sla-policies', SlaPolicyController::class);
+            Route::resource('incident-reports', IncidentReportController::class);
+            Route::resource('release-notes', ReleaseNoteController::class);
+            Route::resource('knowledge-base', KnowledgeBaseArticleController::class);
+            Route::resource('customer-success-notes', CustomerSuccessNoteController::class)->only(['index', 'create', 'store', 'show']);
+            Route::get('usage-snapshots', [ProductUsageSnapshotController::class, 'index'])->name('usage-snapshots.index');
+        });
+
     // Tenancy Management Routes
     Route::middleware(['tenant.resolve'])->group(function (): void {
         Route::get('/tenancy', [TenantDashboardController::class, 'index'])->name('tenancy.dashboard');
@@ -631,6 +705,75 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
             Route::put('/tenancy/modules/{tenantModule}', [TenantModuleController::class, 'update'])->name('tenancy.modules.update');
 
             Route::get('/tenancy/audit-logs', [TenantAuditLogController::class, 'index'])->name('tenancy.audit-logs.index');
+
+            // Phase 19 — Cashless Kantin / Merchant POS
+            Route::prefix('cashless')->name('cashless.')->group(function (): void {
+                Route::get('/reports/dashboard', [CashlessReportController::class, 'dashboard'])->name('reports.dashboard');
+                Route::get('/reports/wallet-transactions', [CashlessReportController::class, 'walletTransactions'])->name('reports.wallet-transactions');
+                Route::get('/reports/merchant-sales', [CashlessReportController::class, 'merchantSales'])->name('reports.merchant-sales');
+
+                Route::resource('merchants', CashlessMerchantController::class)->except(['destroy']);
+                Route::resource('products', CashlessProductController::class)->except(['destroy']);
+
+                Route::get('/wallets', [CashlessWalletController::class, 'index'])->name('wallets.index');
+                Route::get('/wallets/{wallet}', [CashlessWalletController::class, 'show'])->name('wallets.show');
+                Route::patch('/wallets/{wallet}/freeze', [CashlessWalletController::class, 'freeze'])->name('wallets.freeze');
+                Route::patch('/wallets/{wallet}/unfreeze', [CashlessWalletController::class, 'unfreeze'])->name('wallets.unfreeze');
+
+                Route::get('/top-ups/create', [CashlessTopUpController::class, 'create'])->name('top-ups.create');
+                Route::post('/top-ups', [CashlessTopUpController::class, 'store'])->name('top-ups.store');
+                Route::patch('/top-ups/{transaction}/void', [CashlessTopUpController::class, 'void'])->name('top-ups.void');
+
+                Route::get('/pos-sessions', [CashlessPosSessionController::class, 'index'])->name('pos-sessions.index');
+                Route::get('/pos-sessions/open', [CashlessPosSessionController::class, 'open'])->name('pos-sessions.open');
+                Route::post('/pos-sessions', [CashlessPosSessionController::class, 'store'])->name('pos-sessions.store');
+                Route::get('/pos-sessions/{posSession}', [CashlessPosSessionController::class, 'show'])->name('pos-sessions.show');
+                Route::patch('/pos-sessions/{posSession}/close', [CashlessPosSessionController::class, 'close'])->name('pos-sessions.close');
+
+                Route::get('/pos/cashier', [CashlessPosController::class, 'cashier'])->name('pos.cashier');
+                Route::post('/pos/sales', [CashlessPosController::class, 'store'])->name('pos.sales.store');
+                Route::get('/pos/receipt/{sale}', [CashlessPosController::class, 'receipt'])->name('pos.receipt');
+
+                Route::get('/refunds/create', [CashlessRefundController::class, 'create'])->name('refunds.create');
+                Route::post('/refunds', [CashlessRefundController::class, 'store'])->name('refunds.store');
+
+                Route::get('/settlements', [CashlessSettlementController::class, 'index'])->name('settlements.index');
+                Route::post('/settlements', [CashlessSettlementController::class, 'store'])->name('settlements.store');
+                Route::get('/settlements/{settlement}', [CashlessSettlementController::class, 'show'])->name('settlements.show');
+                Route::patch('/settlements/{settlement}/approve', [CashlessSettlementController::class, 'approve'])->name('settlements.approve');
+                Route::patch('/settlements/{settlement}/void', [CashlessSettlementController::class, 'void'])->name('settlements.void');
+            });
+
+            // White-Label School App Builder Routes
+            Route::prefix('white-label')->name('white-label.')->group(function (): void {
+                Route::get('/', [App\Http\Controllers\WhiteLabel\WhiteLabelDashboardController::class, 'index'])->name('dashboard');
+                
+                // Brand Profile
+                Route::get('/brand', [App\Http\Controllers\WhiteLabel\SchoolBrandProfileController::class, 'show'])->name('brand.show');
+                Route::get('/brand/edit', [App\Http\Controllers\WhiteLabel\SchoolBrandProfileController::class, 'edit'])->name('brand.edit');
+                Route::put('/brand', [App\Http\Controllers\WhiteLabel\SchoolBrandProfileController::class, 'update'])->name('brand.update');
+                
+                // Theme Builder
+                Route::get('/theme/edit', [App\Http\Controllers\WhiteLabel\SchoolThemeSettingController::class, 'edit'])->name('themes.edit');
+                Route::put('/theme', [App\Http\Controllers\WhiteLabel\SchoolThemeSettingController::class, 'update'])->name('themes.update');
+                Route::get('/theme/preview', [App\Http\Controllers\WhiteLabel\SchoolThemeSettingController::class, 'preview'])->name('themes.preview');
+                
+                // Domain Mapping
+                Route::post('/domains/{domain}/verify', [App\Http\Controllers\WhiteLabel\SchoolDomainMappingController::class, 'verify'])->name('domains.verify');
+                Route::post('/domains/{domain}/activate', [App\Http\Controllers\WhiteLabel\SchoolDomainMappingController::class, 'activate'])->name('domains.activate');
+                Route::post('/domains/{domain}/disable', [App\Http\Controllers\WhiteLabel\SchoolDomainMappingController::class, 'disable'])->name('domains.disable');
+                Route::resource('/domains', App\Http\Controllers\WhiteLabel\SchoolDomainMappingController::class)->names('domains');
+                
+                // PWA Settings
+                Route::get('/pwa', [App\Http\Controllers\WhiteLabel\SchoolPwaSettingController::class, 'show'])->name('pwa.show');
+                Route::get('/pwa/edit', [App\Http\Controllers\WhiteLabel\SchoolPwaSettingController::class, 'edit'])->name('pwa.edit');
+                Route::put('/pwa', [App\Http\Controllers\WhiteLabel\SchoolPwaSettingController::class, 'update'])->name('pwa.update');
+                
+                // Preview, Publish & Rollback
+                Route::get('/preview', [App\Http\Controllers\WhiteLabel\WhiteLabelPreviewController::class, 'show'])->name('preview.show');
+                Route::post('/publish', [App\Http\Controllers\WhiteLabel\WhiteLabelPreviewController::class, 'publish'])->name('publish');
+                Route::post('/rollback/{id}', [App\Http\Controllers\WhiteLabel\WhiteLabelPreviewController::class, 'rollback'])->name('rollback');
+            });
         });
     });
 });

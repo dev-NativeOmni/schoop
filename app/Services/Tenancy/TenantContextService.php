@@ -13,6 +13,10 @@ class TenantContextService
 
     public function activeSchoolId(): ?int
     {
+        if (app()->bound('resolved_domain_school_id')) {
+            return (int) app('resolved_domain_school_id');
+        }
+
         $schoolId = Session::get(self::SESSION_KEY);
 
         return $schoolId ? (int) $schoolId : null;

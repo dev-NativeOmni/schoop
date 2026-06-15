@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->web(prepend: [
+            \App\Http\Middleware\ResolveTenantFromDomain::class,
+        ]);
         $middleware->alias([
             'role' => CheckRole::class,
             'tenant.resolve' => \App\Http\Middleware\ResolveTenantContext::class,

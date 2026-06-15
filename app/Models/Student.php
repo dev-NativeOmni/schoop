@@ -115,6 +115,16 @@ class Student extends Model
         return $this->hasMany(FinanceLedgerEntry::class);
     }
 
+    public function cashlessWallet(): HasOne
+    {
+        return $this->hasOne(CashlessWallet::class);
+    }
+
+    public function cashlessTransactions(): HasMany
+    {
+        return $this->hasMany(CashlessWalletTransaction::class);
+    }
+
     public function boardingAssignments(): HasMany
     {
         return $this->hasMany(BoardingStudentAssignment::class);
@@ -140,4 +150,3 @@ class Student extends Model
         return $this->hasMany(BoardingDisciplineLog::class);
     }
 }
-

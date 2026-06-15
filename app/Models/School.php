@@ -90,4 +90,39 @@ class School extends Model
     {
         return $this->hasMany(TenantModule::class);
     }
+
+    public function brandProfile()
+    {
+        return $this->hasOne(SchoolBrandProfile::class);
+    }
+
+    public function themeSetting()
+    {
+        return $this->hasOne(SchoolThemeSetting::class);
+    }
+
+    public function domainMappings()
+    {
+        return $this->hasMany(SchoolDomainMapping::class);
+    }
+
+    public function pwaSetting()
+    {
+        return $this->hasOne(SchoolPwaSetting::class);
+    }
+
+    public function whiteLabelPublications()
+    {
+        return $this->hasMany(WhiteLabelPublication::class);
+    }
+
+    public function cashlessMerchants(): HasMany
+    {
+        return $this->hasMany(CashlessMerchant::class);
+    }
+
+    public function cashlessWallets(): HasMany
+    {
+        return $this->hasMany(CashlessWallet::class);
+    }
 }

@@ -12,7 +12,7 @@
 
         .header {
             margin-bottom: 18px;
-            border-bottom: 2px solid #111827;
+            border-bottom: 2px solid {{ $pdfBrand['primary_color'] ?? '#111827' }};
             padding-bottom: 10px;
         }
 
@@ -50,7 +50,9 @@
 </head>
 <body>
     <div class="header">
-        <h1>Laporan Tahfizh Triwulan</h1>
+        <h1>{{ $pdfBrand['name'] ?? 'HafizPlus School Platform' }}</h1>
+        <strong>Laporan Tahfizh Triwulan</strong><br>
+        <span>{{ $pdfBrand['tagline'] ?? 'Tahfizh Monitoring App' }}</span>
         <div class="meta">
             {{ $periodLabel }}<br>
             Periode: {{ $periodStart->format('d/m/Y') }} - {{ $periodEnd->format('d/m/Y') }}<br>
@@ -97,7 +99,7 @@
     </table>
 
     <div class="footer">
-        Dokumen ini dihasilkan otomatis oleh HafizPlus School Platform.
+        Dokumen ini dihasilkan otomatis oleh {{ $pdfBrand['name'] ?? 'HafizPlus School Platform' }}.
     </div>
 </body>
 </html>

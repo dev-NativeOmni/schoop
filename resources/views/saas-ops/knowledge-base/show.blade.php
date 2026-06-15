@@ -1,0 +1,2 @@
+@extends('layouts.app')
+@section('content')<div class="max-w-7xl mx-auto px-4 py-6"><x-saas-ops.shell title="{{ $article->title }}" subtitle="{{ $article->category }} - {{ $article->visibility }}"><a class="rounded-lg bg-lime-500 px-4 py-2 text-sm font-black text-white" href="{{ route('saas-ops.knowledge-base.edit',$article) }}">Edit</a><div class="rounded-xl border bg-white p-5 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200">{!! nl2br(e($article->body)) !!}</div></x-saas-ops.shell></div>@endsection
