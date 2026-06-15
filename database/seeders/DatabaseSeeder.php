@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
             SystemModuleSeeder::class,
             // Phase 16 — Boarding School Management System
             BoardingDormitorySeeder::class,
+            // Phase 17 — Multi-Tenant Foundation
+            TenantModuleSeeder::class,
         ]);
     }
 }

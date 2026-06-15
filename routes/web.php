@@ -71,6 +71,12 @@ use App\Http\Controllers\Boarding\BoardingRollCallController;
 use App\Http\Controllers\Boarding\BoardingReportController;
 use App\Http\Controllers\Portal\ParentBoardingPortalController;
 use App\Http\Controllers\Portal\StudentBoardingPortalController;
+use App\Http\Controllers\Tenancy\TenantAuditLogController;
+use App\Http\Controllers\Tenancy\TenantDashboardController;
+use App\Http\Controllers\Tenancy\TenantMembershipController;
+use App\Http\Controllers\Tenancy\TenantModuleController;
+use App\Http\Controllers\Tenancy\TenantSettingController;
+use App\Http\Controllers\Tenancy\TenantSwitcherController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -606,4 +612,25 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
     Route::get('/portal/student/boarding', StudentBoardingPortalController::class)
         ->middleware(['role:student'])
         ->name('portal.student.boarding');
+
+    // Tenancy Management Routes
+    Route::middleware(['tenant.resolve'])->group(function (): void {
+        Route::get('/tenancy', [TenantDashboardController::class, 'index'])->name('tenancy.dashboard');
+
+        Route::get('/tenancy/switch', [TenantSwitcherController::class, 'index'])->name('tenancy.switcher');
+        Route::post('/tenancy/switch', [TenantSwitcherController::class, 'switch'])->name('tenancy.switch');
+
+        Route::middleware(['tenant.access'])->group(function (): void {
+            Route::resource('/tenancy/memberships', TenantMembershipController::class)
+                ->names('tenancy.memberships');
+
+            Route::get('/tenancy/settings', [TenantSettingController::class, 'index'])->name('tenancy.settings.index');
+            Route::put('/tenancy/settings', [TenantSettingController::class, 'update'])->name('tenancy.settings.update');
+
+            Route::get('/tenancy/modules', [TenantModuleController::class, 'index'])->name('tenancy.modules.index');
+            Route::put('/tenancy/modules/{tenantModule}', [TenantModuleController::class, 'update'])->name('tenancy.modules.update');
+
+            Route::get('/tenancy/audit-logs', [TenantAuditLogController::class, 'index'])->name('tenancy.audit-logs.index');
+        });
+    });
 });

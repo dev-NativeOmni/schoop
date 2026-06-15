@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AttendanceRecord extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
         'school_id',
         'attendance_session_id',

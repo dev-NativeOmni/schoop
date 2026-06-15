@@ -116,4 +116,16 @@ class User extends Authenticatable
     {
         return $this->hasRole('boarding_supervisor');
     }
+
+    public function schoolMemberships()
+    {
+        return $this->hasMany(UserSchoolMembership::class);
+    }
+
+    public function accessibleSchools()
+    {
+        return $this->belongsToMany(School::class, 'user_school_memberships')
+            ->withPivot(['role_id', 'membership_status', 'is_default', 'last_accessed_at'])
+            ->withTimestamps();
+    }
 }

@@ -19,6 +19,6 @@
 | 14 | Student Finance Ledger | Done |
 | 15 | SchoolOS Mini | Done |
 | 16 | Boarding School Management System | Done |
-| 17 | Multi-Tenant Foundation | Pending |
+| 17 | Multi-Tenant Foundation | Done |
 | 18 | White-Label School App Builder | Pending |
 | 19 | Cashless Kantin / Merchant POS | Pending |

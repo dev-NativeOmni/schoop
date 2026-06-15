@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StudentPayment extends Model
 {
+    use BelongsToTenant;
+
     public const METHOD_CASH = 'cash';
     public const METHOD_BANK_TRANSFER = 'bank_transfer';
     public const METHOD_QRIS_EXTERNAL = 'qris_external';

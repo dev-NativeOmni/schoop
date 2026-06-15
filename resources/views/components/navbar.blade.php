@@ -15,6 +15,8 @@
     $roleName = $user->role?->name;
     $canViewSchoolOs = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'kepala_sekolah', 'principal', 'teacher', 'guru', 'guru_tahfidz', 'parent', 'student'], true);
     $canManageSchoolOs = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah'], true);
+    $canManageTenancy = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'kepala_sekolah', 'principal'], true);
+    $activeSchool = app(\App\Services\Tenancy\TenantContextService::class)->activeSchool();
 
     // Parent dynamic student parameter
     $firstChild = null;
@@ -111,6 +113,30 @@
                                 <a href="{{ route('master-data.class-rooms.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Kelas</a>
                                 <a href="{{ route('master-data.teachers.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Guru</a>
                                 <a href="{{ route('master-data.students.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Siswa</a>
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Tenancy Dropdown -->
+                    @if ($canManageTenancy)
+                        @php $active = request()->routeIs('tenancy.*'); @endphp
+                        <div class="relative" @click.outside="openDropdown === 'tenancy' && (openDropdown = null)">
+                            <button @click="openDropdown = openDropdown === 'tenancy' ? null : 'tenancy'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none">
+                                @if ($active)
+                                    <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.724 1.724 0 01-2.573 1.066c-1.543-.94-3.31.826-2.37 2.37a1.724 1.724 0 01-1.065 2.572c-1.56.38-1.56 2.6 0 2.98a1.724 1.724 0 011.066 2.573c-.94 1.543.826 3.31 2.37 2.37.996.608 2.296.07 2.572-1.065.38-1.56 2.6-1.56 2.98 0a1.724 1.724 0 012.573 1.066c1.543.94 3.31-.826 2.37-2.37.996-.608 2.296-.07 2.572 1.065.38 1.56 2.6 1.56 2.98 0a1.724 1.724 0 011.066-2.573c.94-1.543-.826-3.31-2.37-2.37.996-.608 2.296-.07 2.572 1.065z" clip-rule="evenodd" /><path fill-rule="evenodd" d="M10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>
+                                    <span class="text-[11px] tracking-wide font-black text-[#A3E635] mt-1 flex items-center justify-center gap-0.5 w-full">Tenancy <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                @else
+                                    <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572 1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">Tenancy <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                @endif
+                            </button>
+                            <div x-show="openDropdown === 'tenancy'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-52 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
+                                <a href="{{ route('tenancy.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Dashboard</a>
+                                <a href="{{ route('tenancy.switcher') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Ganti Sekolah</a>
+                                <a href="{{ route('tenancy.memberships.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">User Memberships</a>
+                                <a href="{{ route('tenancy.settings.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Settings</a>
+                                <a href="{{ route('tenancy.modules.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Modules</a>
+                                <a href="{{ route('tenancy.audit-logs.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Audit Logs</a>
                             </div>
                         </div>
                     @endif
@@ -319,6 +345,15 @@
 
             <!-- Right side elements -->
             <div class="flex items-center space-x-3 shrink-0">
+                <!-- Active School Badge -->
+                @if (isset($activeSchool) && $activeSchool)
+                    <div class="hidden md:flex items-center space-x-1.5 px-3 py-1 bg-slate-800/80 border border-slate-700/60 rounded-xl text-slate-300 text-xs font-bold shadow-inner">
+                        <svg class="h-3.5 w-3.5 text-[#A3E635]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        <span>{{ $activeSchool->name }}</span>
+                    </div>
+                @endif
                 <!-- Notifications Link -->
                 @php $activeNotif = request()->routeIs('notifications.*'); @endphp
                 <a href="{{ route('notifications.index') }}" class="relative rounded-full p-2 text-slate-400 hover:bg-slate-800 hover:text-[#A3E635] transition-colors focus:outline-none">

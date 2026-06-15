@@ -18,12 +18,21 @@ class School extends Model
         'primary_color',
         'secondary_color',
         'is_active',
+        'tenant_code',
+        'slug',
+        'tenant_status',
+        'is_tenant_enabled',
+        'tenant_activated_at',
+        'tenant_suspended_at',
     ];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
+            'is_tenant_enabled' => 'boolean',
+            'tenant_activated_at' => 'datetime',
+            'tenant_suspended_at' => 'datetime',
         ];
     }
 
@@ -65,5 +74,20 @@ class School extends Model
     public function tahfizhDebts(): HasMany
     {
         return $this->hasMany(TahfizhDebt::class);
+    }
+
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(UserSchoolMembership::class);
+    }
+
+    public function tenantSettings(): HasMany
+    {
+        return $this->hasMany(TenantSetting::class);
+    }
+
+    public function tenantModules(): HasMany
+    {
+        return $this->hasMany(TenantModule::class);
     }
 }

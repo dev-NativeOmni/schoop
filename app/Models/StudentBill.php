@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StudentBill extends Model
 {
+    use BelongsToTenant;
+
     public const STATUS_DRAFT = 'draft';
     public const STATUS_POSTED = 'posted';
     public const STATUS_PARTIAL = 'partial';

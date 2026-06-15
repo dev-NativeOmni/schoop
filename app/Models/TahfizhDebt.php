@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TahfizhDebt extends Model
 {
+    use BelongsToTenant;
+
     public const PERIOD_DAILY = 'daily';
     public const PERIOD_WEEKLY = 'weekly';
     public const PERIOD_MONTHLY = 'monthly';

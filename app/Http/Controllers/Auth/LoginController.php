@@ -52,6 +52,20 @@ class LoginController extends Controller
             $user->forceFill([
                 'last_login_at' => now(),
             ])->save();
+
+            // Resolve active school context
+            $schoolId = app(\App\Services\Tenancy\TenantContextService::class)->resolveForUser($user);
+
+            if (!$schoolId && !$user->hasRole('super_admin')) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return back()
+                    ->withErrors([
+                        'login' => 'Akun Anda belum terhubung ke sekolah. Hubungi admin.',
+                    ])
+                    ->onlyInput('login');
+            }
         }
 
         return redirect()->intended(route('dashboard'));

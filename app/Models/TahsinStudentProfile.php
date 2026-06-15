@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TahsinStudentProfile extends Model
 {
+    use BelongsToTenant;
+
     public const STATUS_NOT_STARTED = 'not_started';
     public const STATUS_IN_PROGRESS = 'in_progress';
     public const STATUS_PASSED = 'passed';
