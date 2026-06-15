@@ -101,6 +101,14 @@ use App\Http\Controllers\SaasOps\SaasSubscriptionPlanController;
 use App\Http\Controllers\SaasOps\SaasTenantInvoiceController;
 use App\Http\Controllers\SaasOps\SlaPolicyController;
 use App\Http\Controllers\SaasOps\SupportTicketController;
+use App\Http\Controllers\DeveloperPortal\ApiClientController;
+use App\Http\Controllers\DeveloperPortal\ApiDocumentationPageController;
+use App\Http\Controllers\DeveloperPortal\ApiRequestLogController;
+use App\Http\Controllers\DeveloperPortal\ApiScopeController;
+use App\Http\Controllers\DeveloperPortal\DeveloperPortalDashboardController;
+use App\Http\Controllers\DeveloperPortal\PartnerIntegrationController;
+use App\Http\Controllers\DeveloperPortal\WebhookDeliveryController;
+use App\Http\Controllers\DeveloperPortal\WebhookEndpointController;
 
 Route::get('/', [App\Http\Controllers\Public\TenantPublicLandingController::class, 'index'])->name('tenant.public.landing');
 Route::get('/manifest.json', [App\Http\Controllers\Public\TenantPwaManifestController::class, 'show'])->name('tenant.pwa.manifest');
@@ -685,6 +693,37 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
             Route::resource('knowledge-base', KnowledgeBaseArticleController::class);
             Route::resource('customer-success-notes', CustomerSuccessNoteController::class)->only(['index', 'create', 'store', 'show']);
             Route::get('usage-snapshots', [ProductUsageSnapshotController::class, 'index'])->name('usage-snapshots.index');
+        });
+
+    // Phase 22 — External API, Partner Integration & Developer Portal
+    Route::middleware(['role:super_admin,operations_manager,support_staff,customer_success,admin,admin_sekolah'])
+        ->prefix('developer-portal')
+        ->name('developer-portal.')
+        ->group(function (): void {
+            Route::get('/dashboard', DeveloperPortalDashboardController::class)->name('dashboard');
+
+            Route::post('api-clients/{apiClient}/tokens', [ApiClientController::class, 'generateToken'])->name('api-clients.tokens.generate');
+            Route::post('api-clients/{apiClient}/tokens/rotate', [ApiClientController::class, 'rotateToken'])->name('api-clients.tokens.rotate');
+            Route::delete('api-clients/{apiClient}/tokens/{token}', [ApiClientController::class, 'revokeToken'])->name('api-clients.tokens.revoke');
+            Route::resource('api-clients', ApiClientController::class)->except(['destroy']);
+            Route::delete('api-clients/{apiClient}/revoke', [ApiClientController::class, 'destroy'])->name('api-clients.revoke');
+
+            Route::get('api-scopes', [ApiScopeController::class, 'index'])->name('api-scopes.index');
+            Route::get('api-scopes/{apiScope}', [ApiScopeController::class, 'show'])->name('api-scopes.show');
+
+            Route::post('partner-integrations/{partnerIntegration}/approve', [PartnerIntegrationController::class, 'approve'])->name('partner-integrations.approve');
+            Route::resource('partner-integrations', PartnerIntegrationController::class);
+
+            Route::resource('webhooks', WebhookEndpointController::class)->parameters(['webhooks' => 'webhook']);
+
+            Route::get('webhook-deliveries', [WebhookDeliveryController::class, 'index'])->name('webhook-deliveries.index');
+            Route::get('webhook-deliveries/{delivery}', [WebhookDeliveryController::class, 'show'])->name('webhook-deliveries.show');
+            Route::post('webhook-deliveries/{delivery}/retry', [WebhookDeliveryController::class, 'retry'])->name('webhook-deliveries.retry');
+
+            Route::get('request-logs', [ApiRequestLogController::class, 'index'])->name('request-logs.index');
+            Route::get('request-logs/{log}', [ApiRequestLogController::class, 'show'])->name('request-logs.show');
+
+            Route::resource('docs', ApiDocumentationPageController::class)->parameters(['docs' => 'doc']);
         });
 
     // Tenancy Management Routes

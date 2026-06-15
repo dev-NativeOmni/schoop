@@ -22,3 +22,12 @@ Schedule::command('app:capture-product-usage-snapshots')
 Schedule::command('app:check-support-sla-breaches')
     ->hourly()
     ->withoutOverlapping();
+
+// Phase 22 - External API & Webhooks
+Schedule::command('app:retry-failed-webhooks')
+    ->everyTenMinutes()
+    ->withoutOverlapping();
+
+Schedule::command('app:prune-api-request-logs --days=90')
+    ->dailyAt('02:30')
+    ->withoutOverlapping();

@@ -9,7 +9,59 @@ use App\Http\Controllers\Api\Mobile\V1\Parent\ParentMobilePortalController;
 use App\Http\Controllers\Api\Mobile\V1\Student\StudentMobilePortalController;
 use App\Http\Controllers\Api\Mobile\V1\Teacher\TeacherMobilePortalController;
 use App\Http\Controllers\Api\Mobile\V1\Tenant\MobileTenantController;
+use App\Http\Controllers\Api\V1\AttendanceApiController;
+use App\Http\Controllers\Api\V1\CashlessApiController;
+use App\Http\Controllers\Api\V1\ClassRoomApiController;
+use App\Http\Controllers\Api\V1\FinanceApiController;
+use App\Http\Controllers\Api\V1\StudentApiController;
+use App\Http\Controllers\Api\V1\TahfizhApiController;
+use App\Http\Controllers\Api\V1\WebhookTestController;
 use Illuminate\Support\Facades\Route;
+
+Route::prefix('v1')
+    ->middleware([
+        'api.request_log',
+        'api.client',
+        'api.rate_limit',
+    ])
+    ->name('api.v1.')
+    ->group(function (): void {
+        Route::get('/students', [StudentApiController::class, 'index'])
+            ->middleware('api.scope:students:read')
+            ->name('students.index');
+
+        Route::get('/students/{student}', [StudentApiController::class, 'show'])
+            ->middleware('api.scope:students:read')
+            ->name('students.show');
+
+        Route::get('/classes', [ClassRoomApiController::class, 'index'])
+            ->middleware('api.scope:classes:read')
+            ->name('classes.index');
+
+        Route::get('/attendance-records', [AttendanceApiController::class, 'index'])
+            ->middleware('api.scope:attendance:read')
+            ->name('attendance-records.index');
+
+        Route::post('/attendance-records', [AttendanceApiController::class, 'store'])
+            ->middleware('api.scope:attendance:write')
+            ->name('attendance-records.store');
+
+        Route::get('/tahfizh/progress', [TahfizhApiController::class, 'progress'])
+            ->middleware('api.scope:tahfizh:read')
+            ->name('tahfizh.progress');
+
+        Route::get('/finance/bills', [FinanceApiController::class, 'bills'])
+            ->middleware('api.scope:finance:read')
+            ->name('finance.bills');
+
+        Route::get('/cashless/transactions', [CashlessApiController::class, 'transactions'])
+            ->middleware('api.scope:cashless:read')
+            ->name('cashless.transactions');
+
+        Route::post('/webhooks/test', [WebhookTestController::class, 'store'])
+            ->middleware('api.scope:webhooks:manage')
+            ->name('webhooks.test');
+    });
 
 Route::prefix('mobile/v1')
     ->middleware(['mobile.response'])

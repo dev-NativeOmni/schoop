@@ -112,3 +112,32 @@ Risk notes:
 - No offline cashless transaction is included.
 - No app store publishing is performed in Phase 21.
 - Mobile checkout stays server-authoritative and uses existing cashless ledger services.
+
+## Phase 22 - External API, Partner Integration & Developer Portal
+
+Status: Done
+
+Output:
+
+- API Client Management.
+- API Token Management with hashed one-time Bearer tokens.
+- API Scope Management.
+- External API v1.
+- API Request Logging.
+- API Rate Limiting.
+- Partner Integration Registry.
+- Webhook Endpoint Management.
+- Webhook Delivery Log.
+- Developer Portal UI.
+- API Documentation pages.
+- API Versioning Policy.
+- API Security Policy.
+- Webhook Policy.
+- Partner Onboarding Checklist.
+
+Risk notes:
+
+- Phase 22 does not include payment gateway production.
+- Phase 22 does not include auto QRIS, virtual account, bank callback, or merchant payout automation.
+- Phase 22 does not include a public developer marketplace.
+- All external APIs must remain tenant-aware, scope-based, logged, and rate-limited.

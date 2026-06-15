@@ -36,6 +36,8 @@ class DatabaseSeeder extends Seeder
             SlaPolicySeeder::class,
             OnboardingChecklistItemSeeder::class,
             MobileAppVersionSeeder::class,
+            ApiScopeSeeder::class,
+            ApiDocumentationPageSeeder::class,
         ]);
     }
 }

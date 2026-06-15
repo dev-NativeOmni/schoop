@@ -24,6 +24,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'mobile.tenant' => \App\Http\Middleware\EnsureMobileTenantContext::class,
             'mobile.version' => \App\Http\Middleware\EnsureMobileAppVersion::class,
             'mobile.response' => \App\Http\Middleware\MobileApiResponseMiddleware::class,
+            'api.client' => \App\Http\Middleware\AuthenticateApiClient::class,
+            'api.scope' => \App\Http\Middleware\EnsureApiScope::class,
+            'api.request_log' => \App\Http\Middleware\LogExternalApiRequest::class,
+            'api.rate_limit' => \App\Http\Middleware\ApplyApiRateLimit::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

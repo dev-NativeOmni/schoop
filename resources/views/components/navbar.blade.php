@@ -17,6 +17,7 @@
     $canManageCashless = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'finance'], true);
     $canUseCashlessPos = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'cashier', 'merchant'], true);
     $hasSaasOpsAccess = in_array($roleName, ['super_admin', 'operations_manager', 'support_staff', 'customer_success', 'sales'], true);
+    $hasDeveloperPortalAccess = in_array($roleName, ['super_admin', 'operations_manager', 'support_staff', 'customer_success', 'admin', 'admin_sekolah'], true);
     $canViewSchoolOs = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'kepala_sekolah', 'principal', 'teacher', 'guru', 'guru_tahfidz', 'parent', 'student'], true);
     $canManageSchoolOs = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah'], true);
     $canManageTenancy = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'kepala_sekolah', 'principal'], true);
@@ -326,6 +327,26 @@
                         </div>
                     @endif
 
+                    @if ($hasDeveloperPortalAccess)
+                        @php $active = request()->routeIs('developer-portal.*'); @endphp
+                        <div class="relative" @click.outside="openDropdown === 'developerportal' && (openDropdown = null)">
+                            <button @click="openDropdown = openDropdown === 'developerportal' ? null : 'developerportal'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
+                                <svg class="h-5 w-5 {{ $active ? 'text-[#A3E635]' : 'text-slate-400 group-hover:text-[#A3E635]' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-1.5-1.5v-10.5a1.5 1.5 0 011.5-1.5h7.5a1.5 1.5 0 011.5 1.5v10.5a1.5 1.5 0 01-1.5 1.5h-7.5zM9.75 9.75h4.5m-4.5 3h4.5m-4.5 3h2.25" /></svg>
+                                <span class="text-[11px] tracking-wide mt-1 flex items-center justify-center gap-0.5 w-full {{ $active ? 'font-black text-[#A3E635]' : 'text-slate-400 group-hover:text-white' }}">Dev Portal <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                            </button>
+                            <div x-show="openDropdown === 'developerportal'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-60 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
+                                <a href="{{ route('developer-portal.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Developer Dashboard</a>
+                                <a href="{{ route('developer-portal.api-clients.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">API Clients</a>
+                                <a href="{{ route('developer-portal.api-scopes.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">API Scopes</a>
+                                <a href="{{ route('developer-portal.partner-integrations.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Partner Integrations</a>
+                                <a href="{{ route('developer-portal.webhooks.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Webhooks</a>
+                                <a href="{{ route('developer-portal.webhook-deliveries.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Webhook Deliveries</a>
+                                <a href="{{ route('developer-portal.request-logs.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Request Logs</a>
+                                <a href="{{ route('developer-portal.docs.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">API Docs</a>
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Boarding Dropdown -->
                     @if ($hasBoardingAccess)
                         @php $active = request()->routeIs('boarding.*'); @endphp
@@ -571,6 +592,19 @@
                 <a href="{{ route('saas-ops.knowledge-base.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Knowledge Base</a>
                 <a href="{{ route('saas-ops.customer-success-notes.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Customer Success</a>
                 <a href="{{ route('saas-ops.usage-snapshots.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Usage Snapshots</a>
+            </div>
+        @endif
+
+        @if ($hasDeveloperPortalAccess)
+            <div class="py-1 border-t border-slate-750">
+                <p class="px-3 py-1 text-[10px] font-bold text-slate-455 uppercase tracking-wider">Developer Portal</p>
+                <a href="{{ route('developer-portal.dashboard') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Developer Dashboard</a>
+                <a href="{{ route('developer-portal.api-clients.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">API Clients</a>
+                <a href="{{ route('developer-portal.api-scopes.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">API Scopes</a>
+                <a href="{{ route('developer-portal.partner-integrations.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Partner Integrations</a>
+                <a href="{{ route('developer-portal.webhooks.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Webhooks</a>
+                <a href="{{ route('developer-portal.request-logs.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Request Logs</a>
+                <a href="{{ route('developer-portal.docs.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">API Docs</a>
             </div>
         @endif
 
