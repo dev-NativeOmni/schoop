@@ -39,6 +39,8 @@ class DatabaseSeeder extends Seeder
             ApiScopeSeeder::class,
             ApiDocumentationPageSeeder::class,
             AnalyticsMetricDefinitionSeeder::class,
+            LmsCourseTypeSeeder::class,
+            LmsSampleCourseSeeder::class,
         ]);
     }
 }

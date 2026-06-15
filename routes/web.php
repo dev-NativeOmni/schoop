@@ -662,6 +662,47 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
         ->middleware(['role:student'])
         ->name('portal.student.boarding');
 
+    // Phase 24 — LMS Lite & Learning Content Routes
+    Route::middleware(['auth', 'role:super_admin,admin,principal,teacher'])->prefix('lms')->name('lms.')->group(function (): void {
+        Route::get('/', [\App\Http\Controllers\Lms\LmsDashboardController::class, 'index'])->name('dashboard');
+        Route::resource('courses', \App\Http\Controllers\Lms\LmsCourseController::class);
+        Route::resource('modules', \App\Http\Controllers\Lms\LmsCourseModuleController::class);
+        Route::post('modules/reorder', [\App\Http\Controllers\Lms\LmsCourseModuleController::class, 'reorder'])->name('modules.reorder');
+        Route::resource('lessons', \App\Http\Controllers\Lms\LmsLessonController::class);
+        Route::post('lessons/reorder', [\App\Http\Controllers\Lms\LmsLessonController::class, 'reorder'])->name('lessons.reorder');
+        Route::resource('resources', \App\Http\Controllers\Lms\LmsLessonResourceController::class);
+        Route::resource('enrollments', \App\Http\Controllers\Lms\LmsEnrollmentController::class);
+        Route::resource('assignments', \App\Http\Controllers\Lms\LmsAssignmentController::class);
+        Route::post('submissions/{submission}/grade', [\App\Http\Controllers\Lms\LmsAssignmentSubmissionController::class, 'grade'])->name('submissions.grade');
+        Route::resource('quizzes', \App\Http\Controllers\Lms\LmsQuizController::class);
+        Route::resource('quizzes.questions', \App\Http\Controllers\Lms\LmsQuizQuestionController::class);
+        Route::get('attempts/{attempt}', [\App\Http\Controllers\Lms\LmsQuizAttemptController::class, 'show'])->name('attempts.show');
+        Route::get('reports', [\App\Http\Controllers\Lms\LmsProgressReportController::class, 'index'])->name('reports.index');
+    });
+
+    // LMS Secure Private File Access Route (authenticated users only)
+    Route::get('/lms/private-file/{type}/{id}', [\App\Http\Controllers\Lms\LmsLessonResourceController::class, 'downloadPrivateFile'])
+        ->middleware(['auth'])
+        ->name('lms.private-file.download');
+
+    // Portal Student LMS Routes
+    Route::middleware(['auth', 'role:student'])->prefix('portal/student/lms')->name('portal.student.lms.')->group(function (): void {
+        Route::get('/', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'index'])->name('index');
+        Route::get('/course/{course}', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'showCourse'])->name('course.show');
+        Route::get('/lesson/{lesson}', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'showLesson'])->name('lesson.show');
+        Route::post('/lesson/{lesson}/complete', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'completeLesson'])->name('lesson.complete');
+        Route::post('/assignment/{assignment}/submit', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'submitAssignment'])->name('assignment.submit');
+        Route::post('/quiz/{quiz}/start', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'startQuiz'])->name('quiz.start');
+        Route::get('/quiz/attempt/{attempt}', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'showQuizAttempt'])->name('quiz.attempt.show');
+        Route::post('/quiz/attempt/{attempt}/submit', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'submitQuizAttempt'])->name('quiz.attempt.submit');
+    });
+
+    // Portal Parent LMS Routes
+    Route::middleware(['auth', 'role:parent'])->prefix('portal/parent/lms')->name('portal.parent.lms.')->group(function (): void {
+        Route::get('/', [\App\Http\Controllers\Portal\ParentLmsPortalController::class, 'index'])->name('index');
+        Route::get('/student/{student}/course/{course}', [\App\Http\Controllers\Portal\ParentLmsPortalController::class, 'showChildProgress'])->name('child.course.show');
+    });
+
     // Phase 20 — Company/Product Scale & SaaS Operations
     Route::middleware(['role:super_admin,operations_manager,support_staff,customer_success,sales,admin,admin_sekolah,principal,kepala_sekolah,teacher,merchant'])
         ->prefix('saas-ops')
