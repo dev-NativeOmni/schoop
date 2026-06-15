@@ -26,6 +26,7 @@
 | 21 | Native Mobile Companion Apps & App Store Distribution | Partial |
 | 22 | External API, Partner Integration & Developer Portal | Done |
 | 23 | Advanced Analytics & Executive Intelligence | Done |
+| 24 | LMS Lite & Learning Content | Done |
 
 ## Phase 19 - Cashless Kantin / Merchant POS
 
@@ -168,3 +169,20 @@ Catatan:
 - Phase 23 tidak mengirim data siswa ke external analytics provider.
 - Phase 23 tidak mengambil keputusan otomatis.
 
+## Phase 24 — LMS Lite & Learning Content
+
+Status: Done
+
+Output:
+- Multi-tenant LMS courses, modules, lessons management.
+- Light assignments with private file attachments (executable files blocked, max 10MB).
+- Light quizzes with server-side multiple choice/true-false/short-answer grading.
+- Lesson progress tracking and real-time student course progress calculation.
+- Student LMS portal (syllabus path, lesson viewer, quiz attempt, assignment submit).
+- Parent LMS portal (child progress monitoring, score summaries).
+- Artisan commands: progress recalculation, daily analytics snapshot, activity logs prune.
+- Snapshot integration with Phase 23 analytics.
+
+Catatan:
+- Video streaming hosting is not included (uses YouTube/Vimeo embed codes).
+- Correct answer keys are strictly processed server-side and never exposed to client browsers.
