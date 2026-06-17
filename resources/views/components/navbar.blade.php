@@ -48,7 +48,7 @@
                         }
                     @endphp
                     @if($resolvedBrand && $resolvedBrand->logo_path)
-                        <img src="{{ Storage::disk('public')->url($resolvedBrand->logo_path) }}" alt="Logo" class="h-9 w-9 object-contain bg-white/20 p-1 rounded-xl">
+                        <img src="{{ asset('storage/' . $resolvedBrand->logo_path) }}" alt="Logo" class="h-9 w-9 object-contain bg-white/20 p-1 rounded-xl">
                         <span class="text-base font-extrabold tracking-tight text-white">{{ $resolvedBrand->display_name }}</span>
                     @else
                         <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25 group-hover:scale-105 transition-all">
