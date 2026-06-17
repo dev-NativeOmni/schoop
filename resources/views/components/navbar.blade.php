@@ -268,7 +268,6 @@
                             <div x-show="openDropdown === 'lms'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-52 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
                                 <a href="{{ route('lms.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Dashboard LMS</a>
                                 <a href="{{ route('lms.courses.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Kursus Belajar</a>
-                                <a href="{{ route('lms.quizzes.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Ujian & Kuis</a>
                                 <a href="{{ route('lms.reports.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Laporan Progress</a>
                             </div>
                         </div>
@@ -571,7 +570,6 @@
                 <p class="px-3 py-1 text-[10px] font-bold text-slate-455 uppercase tracking-wider">LMS</p>
                 <a href="{{ route('lms.dashboard') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Dashboard LMS</a>
                 <a href="{{ route('lms.courses.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Kursus Belajar</a>
-                <a href="{{ route('lms.quizzes.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Ujian & Kuis</a>
                 <a href="{{ route('lms.reports.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Laporan Progress</a>
             </div>
         @endif
