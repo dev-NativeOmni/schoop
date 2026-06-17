@@ -87,4 +87,33 @@ class DashboardController extends Controller
     {
         return view('dashboards.student');
     }
+
+    /**
+     * Update or delete the global system logo.
+     */
+    public function updateLogo(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+        ]);
+
+        if ($request->input('delete_logo') == '1') {
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png')) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete('system/logo.png');
+            }
+            return redirect()->back()->with('success', 'Logo kustom global berhasil dihapus.');
+        }
+
+        if ($request->hasFile('logo')) {
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png')) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete('system/logo.png');
+            }
+
+            $request->file('logo')->storeAs('system', 'logo.png', 'public');
+
+            return redirect()->back()->with('success', 'Logo kustom global berhasil diperbarui.');
+        }
+
+        return redirect()->back()->with('error', 'Tidak ada file logo yang diunggah.');
+    }
 }

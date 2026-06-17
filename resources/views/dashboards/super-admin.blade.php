@@ -97,5 +97,94 @@
                 </a>
             </div>
         </div>
+
+        <!-- Logo & Branding settings (Super Admin) -->
+        <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Pengaturan Logo Global</h3>
+            <p class="text-sm text-slate-500 mb-6">Logo kustom global ini digunakan sebagai logo default jika brand sekolah belum mengunggah logo kustom mereka.</p>
+            
+            <form action="{{ route('super-admin.update-logo') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                @csrf
+                <div class="flex flex-col sm:flex-row items-center gap-6">
+                    <div class="shrink-0">
+                        @php
+                            $globalLogoExists = \Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png');
+                            $globalLogoUrl = $globalLogoExists ? asset('storage/system/logo.png') : null;
+                        @endphp
+                        @if ($globalLogoUrl)
+                            <div class="p-3 bg-slate-800/80 rounded-2xl border border-slate-700/50 shadow-inner">
+                                <img id="logo-preview" class="h-16 w-16 object-contain" src="{{ $globalLogoUrl }}" alt="Global Logo">
+                            </div>
+                        @else
+                            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25">
+                                <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                            </div>
+                        @endif
+                    </div>
+                    
+                    <div class="flex-1 space-y-2 w-full">
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-350">
+                            Pilih File Gambar Logo Baru
+                        </label>
+                        <input type="file" 
+                               name="logo" 
+                               id="logo_input"
+                               accept="image/*" 
+                               class="block w-full text-sm text-slate-500
+                                      file:mr-4 file:py-2.5 file:px-5
+                                      file:rounded-2xl file:border-0
+                                      file:text-xs file:font-bold
+                                      file:bg-indigo-50 file:text-indigo-700
+                                      hover:file:bg-indigo-100
+                                      dark:file:bg-slate-800 dark:file:text-indigo-400
+                                      cursor-pointer" />
+                        <p class="text-xs text-slate-400 dark:text-slate-500">
+                            Mendukung PNG, JPG, WEBP atau SVG (Max 2MB).
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4 border-t border-slate-100 dark:border-slate-800/60">
+                    <div>
+                        @if ($globalLogoExists)
+                            <button type="submit" name="delete_logo" value="1" 
+                                    class="text-sm text-red-600 hover:text-red-500 font-bold transition flex items-center gap-1.5 py-2">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                Hapus Logo Kustom
+                            </button>
+                        @endif
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full sm:w-auto px-6 py-2.5 text-center text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-750 rounded-2xl shadow-md shadow-indigo-650/15 hover:shadow-lg transition">
+                        Simpan Logo
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
+
+    <!-- Instant Logo Preview Script -->
+    <script>
+        const logoInput = document.getElementById('logo_input');
+        if (logoInput) {
+            logoInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        const preview = document.getElementById('logo-preview');
+                        if (preview) {
+                            preview.src = event.target.result;
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    </script>
 @endsection

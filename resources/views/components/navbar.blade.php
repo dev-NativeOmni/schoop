@@ -34,10 +34,10 @@
 <nav x-data="{ open: false, openDropdown: null }" 
      class="sticky top-0 z-50 w-full border-b border-slate-750 bg-[#1F2937]/95 backdrop-blur-md shadow-lg text-white transition-all duration-300" 
      @keydown.escape="openDropdown = null">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
-            <div class="flex items-center space-x-6">
-                <!-- Logo -->
+            <!-- Left: Logo -->
+            <div class="flex items-center">
                 <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 group shrink-0">
                     @php
                         $activeSchoolId = app(\App\Services\Tenancy\TenantContextService::class)->activeSchoolId();
@@ -50,6 +50,9 @@
                     @if($resolvedBrand && $resolvedBrand->logo_path)
                         <img src="{{ asset('storage/' . $resolvedBrand->logo_path) }}" alt="Logo" class="h-9 w-9 object-contain bg-white/20 p-1 rounded-xl">
                         <span class="text-base font-extrabold tracking-tight text-white">{{ $resolvedBrand->display_name }}</span>
+                    @elseif(\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png'))
+                        <img src="{{ asset('storage/system/logo.png') }}" alt="Logo" class="h-9 w-9 object-contain bg-white/20 p-1 rounded-xl">
+                        <span class="text-base font-extrabold tracking-tight text-white">Hafiz<span class="text-[#A3E635]">Plus</span></span>
                     @else
                         <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25 group-hover:scale-105 transition-all">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -59,9 +62,10 @@
                         <span class="text-base font-extrabold tracking-tight text-white">Hafiz<span class="text-[#A3E635]">Plus</span></span>
                     @endif
                 </a>
+            </div>
 
-                <!-- Desktop Navigation Links -->
-                <div class="hidden lg:flex items-center space-x-0.5 text-xs font-semibold">
+            <!-- Center: Desktop Navigation Links -->
+            <div class="hidden lg:flex flex-1 justify-center items-center space-x-0.5 text-xs font-semibold">
                     <!-- Dashboard -->
                     @php $active = request()->routeIs('dashboard*'); @endphp
                     <a href="{{ route('dashboard') }}" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
@@ -450,7 +454,6 @@
                             </div>
                         </div>
                     @endif
-                </div>
             </div>
 
             <!-- Right side elements -->

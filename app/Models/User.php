@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password_plain',
         'is_active',
         'last_login_at',
+        'profile_picture',
     ];
 
     protected $hidden = [
@@ -39,6 +40,16 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Get the user's profile picture URL.
+     */
+    public function getProfilePictureUrlAttribute(): string
+    {
+        return $this->profile_picture 
+            ? asset('storage/' . $this->profile_picture) 
+            : 'https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=' . urlencode($this->name);
     }
 
     public function role(): BelongsTo
