@@ -119,6 +119,16 @@ use App\Http\Controllers\Analytics\SupportAnalyticsController;
 use App\Http\Controllers\Analytics\MobileApiAnalyticsController;
 use App\Http\Controllers\Analytics\ExecutiveReportController;
 use App\Http\Controllers\Analytics\MetricDictionaryController;
+use App\Http\Controllers\Ai\AiLearningDashboardController;
+use App\Http\Controllers\Ai\AiLearningProfileController;
+use App\Http\Controllers\Ai\AiRecommendationController;
+use App\Http\Controllers\Ai\AiPracticePlanController;
+use App\Http\Controllers\Ai\AiTeacherReviewQueueController;
+use App\Http\Controllers\Ai\AiFeedbackDraftController;
+use App\Http\Controllers\Ai\AiFeatureFlagController;
+use App\Http\Controllers\Ai\AiSafetyEventController;
+use App\Http\Controllers\Portal\ParentAiLearningPortalController;
+use App\Http\Controllers\Portal\StudentAiLearningPortalController;
 
 Route::get('/', [App\Http\Controllers\Public\TenantPublicLandingController::class, 'index'])->name('tenant.public.landing');
 Route::get('/manifest.json', [App\Http\Controllers\Public\TenantPwaManifestController::class, 'show'])->name('tenant.pwa.manifest');
@@ -911,4 +921,34 @@ Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->
             });
         });
     });
+
+    Route::prefix('ai-learning')->name('ai-learning.')->group(function (): void {
+        Route::get('/', [AiLearningDashboardController::class, 'index'])->name('dashboard');
+
+        Route::resource('feature-flags', AiFeatureFlagController::class)->only(['index', 'edit', 'update']);
+        Route::resource('learning-profiles', AiLearningProfileController::class)->only(['index', 'show']);
+        Route::post('learning-profiles/{student}/generate', [AiLearningProfileController::class, 'generate'])->name('learning-profiles.generate');
+        Route::post('learning-profiles/{profile}/review', [AiLearningProfileController::class, 'review'])->name('learning-profiles.review');
+        Route::post('learning-profiles/{profile}/publish', [AiLearningProfileController::class, 'publish'])->name('learning-profiles.publish');
+
+        Route::resource('recommendations', AiRecommendationController::class)->only(['index', 'show']);
+        Route::resource('practice-plans', AiPracticePlanController::class);
+        Route::post('practice-plans/{practicePlan}/publish', [AiPracticePlanController::class, 'publish'])->name('practice-plans.publish');
+
+        Route::get('feedback-drafts/create', [AiFeedbackDraftController::class, 'create'])->name('feedback-drafts.create');
+        Route::post('feedback-drafts', [AiFeedbackDraftController::class, 'store'])->name('feedback-drafts.store');
+
+        Route::get('review-queue', [AiTeacherReviewQueueController::class, 'index'])->name('review-queue.index');
+        Route::get('review-queue/{reviewItem}', [AiTeacherReviewQueueController::class, 'show'])->name('review-queue.show');
+        Route::post('review-queue/{reviewItem}/approve', [AiTeacherReviewQueueController::class, 'approve'])->name('review-queue.approve');
+        Route::post('review-queue/{reviewItem}/reject', [AiTeacherReviewQueueController::class, 'reject'])->name('review-queue.reject');
+        Route::post('review-queue/{reviewItem}/publish', [AiTeacherReviewQueueController::class, 'publish'])->name('review-queue.publish');
+
+        Route::get('safety-events', [AiSafetyEventController::class, 'index'])->name('safety-events.index');
+        Route::get('safety-events/{safetyEvent}', [AiSafetyEventController::class, 'show'])->name('safety-events.show');
+    });
+
+    Route::get('portal/parent/ai-learning', [ParentAiLearningPortalController::class, 'index'])->name('portal.parent.ai-learning');
+    Route::get('portal/student/ai-learning', [StudentAiLearningPortalController::class, 'index'])->name('portal.student.ai-learning');
+    Route::post('portal/student/ai-learning/items/{itemId}/status', [StudentAiLearningPortalController::class, 'updateStatus'])->name('portal.student.ai-learning.update-status');
 });

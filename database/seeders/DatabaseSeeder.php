@@ -41,6 +41,8 @@ class DatabaseSeeder extends Seeder
             AnalyticsMetricDefinitionSeeder::class,
             LmsCourseTypeSeeder::class,
             LmsSampleCourseSeeder::class,
+            AiFeatureFlagSeeder::class,
+            AiFeedbackTemplateSeeder::class,
         ]);
     }
 }

@@ -27,6 +27,7 @@
 | 22 | External API, Partner Integration & Developer Portal | Done |
 | 23 | Advanced Analytics & Executive Intelligence | Done |
 | 24 | LMS Lite & Learning Content | Done |
+| 25 | AI-Assisted Qur’an Learning & Product Differentiation | Done |
 
 ## Phase 19 - Cashless Kantin / Merchant POS
 
@@ -186,3 +187,25 @@ Output:
 Catatan:
 - Video streaming hosting is not included (uses YouTube/Vimeo embed codes).
 - Correct answer keys are strictly processed server-side and never exposed to client browsers.
+
+## Phase 25 — AI-Assisted Qur’an Learning & Product Differentiation
+
+Status: Done
+
+Output:
+- Multi-tenant AI feature flags per school.
+- Learning profiles generating daily summary, strengths, focus areas, and confidence score.
+- Learning signals aggregator capturing data from tahfizh, tahsin, mutabaah, attendance, and LMS.
+- Rule-based recommendation engine matching signals into training recommendations.
+- Practice plans scheduler for 3-7 days with maximum 3 items per day.
+- Teacher feedback draft service for positive and supportive child reviews.
+- Verification review queue allowing teachers to review, approve, reject, or publish AI recommendations.
+- AI safety guard filter for negative labelling and auto safety event logging.
+- IP and User-agent audit logs tracking all AI queries.
+- Parent portal guidance digest panel and student portal mandiri learning page.
+- Documentation: safety, privacy, review policies, and recommendation rules.
+
+Catatan:
+- Tidak ada Voice AI / Audio Tajwid / biometric data yang diunggah.
+- Tidak ada data murid yang dikirim ke API eksternal pihak ketiga (Google, OpenAI, dll.) secara default.
+- Seluruh keputusan penilaian akhir mutlak di tangan guru (human-in-the-loop).
