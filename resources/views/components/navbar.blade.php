@@ -252,6 +252,26 @@
                                 @endif
                             </div>
                         </div>
+
+                        <!-- LMS Dropdown -->
+                        @php $active = request()->routeIs('lms.*'); @endphp
+                        <div class="relative" @click.outside="openDropdown === 'lms' && (openDropdown = null)">
+                            <button @click="openDropdown = openDropdown === 'lms' ? null : 'lms'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
+                                @if ($active)
+                                    <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.939.831a1 1 0 00.788 0l7-3a1 1 0 000-1.839l-7-3zM3.102 9.758a1 1 0 00-.802 1.006c.058 1.2.347 2.483.945 3.515.542.937 1.385 1.764 2.502 2.221a6.927 6.927 0 005.506 0c1.117-.457 1.96-1.284 2.502-2.221.598-1.032.887-2.316.945-3.515a1 1 0 00-.802-1.006l-4.702-.94a3.016 3.016 0 01-.788 0l-4.702.94z" /></svg>
+                                    <span class="text-[11px] tracking-wide font-black mt-1 flex items-center justify-center gap-0.5 w-full">LMS <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                @else
+                                    <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                                    <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">LMS <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                @endif
+                            </button>
+                            <div x-show="openDropdown === 'lms'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-52 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
+                                <a href="{{ route('lms.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Dashboard LMS</a>
+                                <a href="{{ route('lms.courses.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Kursus Belajar</a>
+                                <a href="{{ route('lms.quizzes.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Ujian & Kuis</a>
+                                <a href="{{ route('lms.reports.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Laporan Progress</a>
+                            </div>
+                        </div>
                     @endif
 
                     <!-- Finance Dropdown -->
@@ -401,6 +421,7 @@
                                 <a href="{{ route('portal.parent.finance') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Keuangan Anak</a>
                                 <a href="{{ route('portal.parent.cashless') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Cashless Anak</a>
                                 <a href="{{ route('portal.parent.boarding') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Boarding Anak</a>
+                                <a href="{{ route('portal.parent.lms.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">LMS Anak</a>
                             </div>
                         </div>
                     @endif
@@ -426,6 +447,7 @@
                                 <a href="{{ route('portal.student.finance') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Keuangan Saya</a>
                                 <a href="{{ route('portal.student.cashless') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Cashless Saya</a>
                                 <a href="{{ route('portal.student.boarding') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Boarding Saya</a>
+                                <a href="{{ route('portal.student.lms.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">LMS Saya</a>
                             </div>
                         </div>
                     @endif
@@ -544,6 +566,14 @@
                     <a href="{{ route('tahsin.skills.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Kelola Keterampilan</a>
                 @endif
             </div>
+
+            <div class="py-1 border-t border-slate-750">
+                <p class="px-3 py-1 text-[10px] font-bold text-slate-455 uppercase tracking-wider">LMS</p>
+                <a href="{{ route('lms.dashboard') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Dashboard LMS</a>
+                <a href="{{ route('lms.courses.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Kursus Belajar</a>
+                <a href="{{ route('lms.quizzes.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Ujian & Kuis</a>
+                <a href="{{ route('lms.reports.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Laporan Progress</a>
+            </div>
         @endif
 
         @if ($hasFinanceAccess)
@@ -639,6 +669,7 @@
                 <a href="{{ route('portal.parent.finance') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Keuangan Anak</a>
                 <a href="{{ route('portal.parent.cashless') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Cashless Anak</a>
                 <a href="{{ route('portal.parent.boarding') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Boarding Anak</a>
+                <a href="{{ route('portal.parent.lms.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">LMS Anak</a>
             </div>
         @endif
 
@@ -652,6 +683,7 @@
                 <a href="{{ route('portal.student.finance') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Keuangan Saya</a>
                 <a href="{{ route('portal.student.cashless') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Cashless Saya</a>
                 <a href="{{ route('portal.student.boarding') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Boarding Saya</a>
+                <a href="{{ route('portal.student.lms.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">LMS Saya</a>
             </div>
         @endif
     </div>
