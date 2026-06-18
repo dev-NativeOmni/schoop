@@ -27,13 +27,13 @@ use App\Services\Ai\RuleBasedRecommendationEngine;
 use App\Services\Ai\PracticePlanGenerator;
 use App\Services\Ai\TeacherFeedbackDraftService;
 use App\Services\Ai\AiAccessService;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Carbon\Carbon;
 
 class Phase25AiAssistedQuranIntegrationTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private School $schoolA;
     private School $schoolB;

@@ -9,13 +9,13 @@ use App\Models\School;
 use App\Models\Student;
 use App\Models\User;
 use App\Services\DeveloperPortal\ApiClientTokenService;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
 use Tests\TestCase;
 
 class Phase22ApiIntegrationTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     protected function setUp(): void
     {

@@ -24,6 +24,14 @@
             </svg>
             <span>Profil Saya</span>
         </a>
+        @if (auth()->user()->hasRole(['admin', 'admin_sekolah', 'principal', 'kepala_sekolah', 'teacher', 'merchant', 'boarding_supervisor', 'finance', 'cashier']))
+        <a href="{{ route('saas-ops.support-tickets.index') }}" class="flex items-center space-x-2 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+            <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <span>Tiket Bantuan</span>
+        </a>
+        @endif
 
         <form method="POST" action="{{ route('logout') }}" class="mt-1 border-t border-slate-100 dark:border-slate-700/50 pt-1">
             @csrf

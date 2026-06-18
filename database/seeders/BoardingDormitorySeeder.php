@@ -43,7 +43,6 @@ class BoardingDormitorySeeder extends Seeder
                 'username' => 'pembina',
                 'phone' => '081234567890',
                 'password' => $defaultPassword,
-                'password_plain' => $encryptedPassword,
                 'is_active' => true,
             ]
         );

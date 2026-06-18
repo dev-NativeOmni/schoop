@@ -78,6 +78,33 @@ class CashlessSaleService
                 $items[] = [$product, $quantity, $subtotal];
             }
 
+            // Enforce PIN Verification
+            if ($wallet->pin !== null) {
+                $pin = $payload['pin'] ?? null;
+                if ($total >= 50000 && ($pin === null || $pin === '')) {
+                    throw new InvalidArgumentException('PIN transaksi wajib diisi untuk transaksi Rp 50.000 ke atas.');
+                }
+                if ($pin !== null && $pin !== '' && !\Illuminate\Support\Facades\Hash::check($pin, $wallet->pin)) {
+                    throw new InvalidArgumentException('PIN transaksi salah.');
+                }
+            }
+
+            // Enforce Daily Spending Limit
+            if ($wallet->daily_limit !== null) {
+                $todayStart = now()->startOfDay();
+                $todayEnd = now()->endOfDay();
+                $spentToday = (int) CashlessSale::query()
+                    ->where('cashless_wallet_id', $wallet->id)
+                    ->whereIn('status', ['posted', 'partially_refunded'])
+                    ->whereBetween('posted_at', [$todayStart, $todayEnd])
+                    ->sum(DB::raw('total_amount - refunded_amount'));
+
+                if ($spentToday + $total > $wallet->daily_limit) {
+                    $remaining = max(0, $wallet->daily_limit - $spentToday);
+                    throw new InvalidArgumentException('Limit pembelanjaan harian terlampaui. Sisa limit hari ini: Rp ' . number_format($remaining, 0, ',', '.') . '.');
+                }
+            }
+
             if ($wallet->balance < $total) {
                 $this->audit->log((int) $session->school_id, $cashier, 'sale.failed.insufficient_balance', $wallet, [
                     'student_id' => $student->id,

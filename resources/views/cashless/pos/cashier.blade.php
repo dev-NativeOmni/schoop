@@ -27,6 +27,7 @@
                 <div class="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
                     <h2 class="font-black dark:text-white">Checkout</h2>
                     <p class="mt-2 text-sm text-slate-500">Isi quantity produk yang dibeli. Produk dengan quantity 0 akan ditolak oleh validasi, jadi gunakan minimal satu item.</p>
+                    <label class="mt-4 block text-sm font-bold dark:text-slate-200">PIN Transaksi <input type="password" name="pin" maxlength="6" placeholder="Masukkan 4-6 digit PIN" class="mt-1 w-full rounded-lg dark:border-slate-700 dark:bg-slate-950"></label>
                     <label class="mt-4 block text-sm font-bold dark:text-slate-200">Catatan <textarea name="note" class="mt-1 w-full rounded-lg dark:border-slate-700 dark:bg-slate-950"></textarea></label>
                     <button class="mt-5 w-full rounded-lg bg-lime-500 px-4 py-3 text-sm font-black text-white">Submit Transaksi</button>
                 </div>

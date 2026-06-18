@@ -23,7 +23,7 @@ class StudentController extends Controller
         $query = Student::query()->with(['school', 'classRoom', 'user', 'parents.user']);
         
         if (!auth()->user()->isSuperAdmin()) {
-            $query->where('school_id', auth()->user()->school_id);
+            $query->where(['school_id' => auth()->user()->school_id]);
         }
 
         $students = $query->latest()->paginate(10);
@@ -37,20 +37,20 @@ class StudentController extends Controller
         $schoolId = auth()->user()->school_id;
 
         $schools = $isSuperAdmin
-            ? School::query()->where('is_active', true)->orderBy('name')->get()
+            ? School::query()->where(['is_active' => true])->orderByRaw('name')->get()
             : collect([auth()->user()->school]);
 
-        $classRoomsQuery = ClassRoom::query()->where('is_active', true);
+        $classRoomsQuery = ClassRoom::query()->where(['is_active' => true]);
         if (!$isSuperAdmin) {
-            $classRoomsQuery->where('school_id', $schoolId);
+            $classRoomsQuery->where(['school_id' => $schoolId]);
         }
-        $classRooms = $classRoomsQuery->orderBy('name')->get();
+        $classRooms = $classRoomsQuery->orderByRaw('name')->get();
 
         $parentsQuery = ParentProfile::query()->with('user');
         if (!$isSuperAdmin) {
-            $parentsQuery->where('school_id', $schoolId);
+            $parentsQuery->where(['school_id' => $schoolId]);
         }
-        $parents = $parentsQuery->get()->sortBy('user.name');
+        $parents = $parentsQuery->get()->sortBy(fn($parent) => $parent->user?->name);
 
         return view('master-data.students.create', [
             'schools' => $schools,
@@ -66,7 +66,7 @@ class StudentController extends Controller
             $schoolId = auth()->user()->isSuperAdmin() ? $request->integer('school_id') : auth()->user()->school_id;
 
             if ($request->boolean('create_login_account')) {
-                $role = Role::query()->where('name', 'student')->firstOrFail();
+                $role = Role::query()->where(['name' => 'student'])->firstOrFail();
 
                 $user = User::query()->create([
                     'role_id' => $role->id,
@@ -76,7 +76,6 @@ class StudentController extends Controller
                     'email' => $request->input('email'),
                     'phone' => $request->input('phone'),
                     'password' => Hash::make($request->input('password')),
-                    'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->input('password')),
                     'is_active' => $request->boolean('is_active'),
                 ]);
 
@@ -130,20 +129,20 @@ class StudentController extends Controller
         $schoolId = auth()->user()->school_id;
 
         $schools = $isSuperAdmin
-            ? School::query()->where('is_active', true)->orderBy('name')->get()
+            ? School::query()->where(['is_active' => true])->orderByRaw('name')->get()
             : collect([auth()->user()->school]);
 
-        $classRoomsQuery = ClassRoom::query()->where('is_active', true);
+        $classRoomsQuery = ClassRoom::query()->where(['is_active' => true]);
         if (!$isSuperAdmin) {
-            $classRoomsQuery->where('school_id', $schoolId);
+            $classRoomsQuery->where(['school_id' => $schoolId]);
         }
-        $classRooms = $classRoomsQuery->orderBy('name')->get();
+        $classRooms = $classRoomsQuery->orderByRaw('name')->get();
 
         $parentsQuery = ParentProfile::query()->with('user');
         if (!$isSuperAdmin) {
-            $parentsQuery->where('school_id', $schoolId);
+            $parentsQuery->where(['school_id' => $schoolId]);
         }
-        $parents = $parentsQuery->get()->sortBy('user.name');
+        $parents = $parentsQuery->get()->sortBy(fn($parent) => $parent->user?->name);
 
         return view('master-data.students.edit', [
             'student' => $student,
@@ -176,7 +175,6 @@ class StudentController extends Controller
                 if ($request->filled('password')) {
                     $student->user->update([
                         'password' => Hash::make($request->string('password')),
-                        'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->string('password')),
                     ]);
                 }
             }

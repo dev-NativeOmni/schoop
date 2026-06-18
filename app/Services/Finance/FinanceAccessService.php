@@ -52,12 +52,12 @@ class FinanceAccessService
 
     public function canManageFinance(?User $user): bool
     {
-        return $this->isAdmin($user);
+        return $this->isAdmin($user) || ($user && $user->hasRole('finance'));
     }
 
     public function canViewFinanceReport(?User $user): bool
     {
-        return $this->isAdmin($user) || $this->isPrincipal($user);
+        return $this->isAdmin($user) || $this->isPrincipal($user) || ($user && $user->hasRole('finance'));
     }
 
     public function applyStudentScope(Builder $query, User $user): Builder
@@ -74,12 +74,12 @@ class FinanceAccessService
             }
 
             return $query->whereHas('parents', function (Builder $parentQuery) use ($parentProfile): void {
-                $parentQuery->where('parent_profiles.id', $parentProfile->id);
+                $parentQuery->where(['parent_profiles.id' => $parentProfile->id]);
             });
         }
 
         if ($this->isStudent($user)) {
-            return $query->where('user_id', $user->id);
+            return $query->where(['user_id' => $user->id]);
         }
 
         return $query->whereRaw('1 = 0');

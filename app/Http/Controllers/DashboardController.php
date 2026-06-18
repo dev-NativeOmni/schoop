@@ -24,6 +24,11 @@ class DashboardController extends Controller
             'teacher' => redirect()->route('dashboard.teacher'),
             'parent' => redirect()->route('dashboard.parent'),
             'student' => redirect()->route('dashboard.student'),
+            'boarding_supervisor' => redirect()->route('boarding.dashboard'),
+            'finance' => redirect()->route('finance.reports.dashboard'),
+            'cashier' => redirect()->route('cashless.pos.cashier'),
+            'merchant' => redirect()->route('cashless.pos.cashier'),
+            'support_staff', 'customer_success', 'sales', 'operations_manager' => redirect()->route('saas-ops.dashboard'),
             default => abort(403, 'Role akun tidak dikenali.'),
         };
     }
@@ -45,9 +50,9 @@ class DashboardController extends Controller
         $schoolId = $request->user()->school_id;
 
         $stats = [
-            'total_classrooms' => ClassRoom::where('school_id', $schoolId)->count(),
-            'total_students' => Student::where('school_id', $schoolId)->count(),
-            'total_teachers' => TeacherProfile::where('school_id', $schoolId)->count(),
+            'total_classrooms' => ClassRoom::query()->where(['school_id' => $schoolId])->count(),
+            'total_students' => Student::query()->where(['school_id' => $schoolId])->count(),
+            'total_teachers' => TeacherProfile::query()->where(['school_id' => $schoolId])->count(),
         ];
 
         return view('dashboards.admin', compact('stats'));
@@ -58,9 +63,9 @@ class DashboardController extends Controller
         $schoolId = $request->user()->school_id;
 
         $stats = [
-            'total_classrooms' => ClassRoom::where('school_id', $schoolId)->count(),
-            'total_students' => Student::where('school_id', $schoolId)->count(),
-            'total_teachers' => TeacherProfile::where('school_id', $schoolId)->count(),
+            'total_classrooms' => ClassRoom::query()->where(['school_id' => $schoolId])->count(),
+            'total_students' => Student::query()->where(['school_id' => $schoolId])->count(),
+            'total_teachers' => TeacherProfile::query()->where(['school_id' => $schoolId])->count(),
         ];
 
         return view('dashboards.kepala-sekolah', compact('stats'));
@@ -71,8 +76,8 @@ class DashboardController extends Controller
         $schoolId = $request->user()->school_id;
 
         $stats = [
-            'total_classrooms' => ClassRoom::where('school_id', $schoolId)->count(),
-            'total_students' => Student::where('school_id', $schoolId)->count(),
+            'total_classrooms' => ClassRoom::query()->where(['school_id' => $schoolId])->count(),
+            'total_students' => Student::query()->where(['school_id' => $schoolId])->count(),
         ];
 
         return view('dashboards.teacher', compact('stats'));
@@ -94,7 +99,7 @@ class DashboardController extends Controller
     public function updateLogo(Request $request): RedirectResponse
     {
         $request->validate([
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         if ($request->input('delete_logo') == '1') {

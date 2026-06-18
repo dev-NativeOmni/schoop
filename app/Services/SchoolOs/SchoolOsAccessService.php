@@ -68,9 +68,7 @@ class SchoolOsAccessService
     {
         return $this->isAdmin($user)
             || $this->isPrincipal($user)
-            || $this->isTeacher($user)
-            || $this->isParent($user)
-            || $this->isStudent($user);
+            || $this->isTeacher($user);
     }
 
     public function applyStudentScope(Builder $query, User $user): Builder
@@ -87,22 +85,22 @@ class SchoolOsAccessService
             }
 
             if (! empty($teacherProfile->class_room_id)) {
-                return $query->where('class_room_id', $teacherProfile->class_room_id);
+                return $query->where(['class_room_id' => $teacherProfile->class_room_id]);
             }
 
             return $query->where(function (Builder $teacherScope) use ($user): void {
                 $teacherScope
                     ->whereHas('classRoom', function (Builder $classRoomQuery) use ($user): void {
-                        $classRoomQuery->where('homeroom_teacher_id', $user->id);
+                        $classRoomQuery->where(['homeroom_teacher_id' => $user->id]);
                     })
                     ->orWhereHas('hafalanRecords', function (Builder $recordQuery) use ($user): void {
-                        $recordQuery->where('teacher_id', $user->id);
+                        $recordQuery->where(['teacher_id' => $user->id]);
                     })
                     ->orWhereHas('tahsinProfile', function (Builder $profileQuery) use ($user): void {
-                        $profileQuery->where('assigned_teacher_id', $user->id);
+                        $profileQuery->where(['assigned_teacher_id' => $user->id]);
                     })
                     ->orWhereHas('tahsinAssessments', function (Builder $assessmentQuery) use ($user): void {
-                        $assessmentQuery->where('teacher_id', $user->id);
+                        $assessmentQuery->where(['teacher_id' => $user->id]);
                     });
             });
         }
@@ -115,12 +113,12 @@ class SchoolOsAccessService
             }
 
             return $query->whereHas('parents', function (Builder $parentQuery) use ($parentProfile): void {
-                $parentQuery->where('parent_profiles.id', $parentProfile->id);
+                $parentQuery->where(['parent_profiles.id' => $parentProfile->id]);
             });
         }
 
         if ($this->isStudent($user)) {
-            return $query->where('user_id', $user->id);
+            return $query->where(['user_id' => $user->id]);
         }
 
         return $query->whereRaw('1 = 0');

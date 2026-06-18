@@ -21,7 +21,7 @@ class TeacherController extends Controller
         $query = TeacherProfile::query()->with(['user', 'school']);
         
         if (!auth()->user()->isSuperAdmin()) {
-            $query->where('school_id', auth()->user()->school_id);
+            $query->where(['school_id' => auth()->user()->school_id]);
         }
 
         $teachers = $query->latest()->paginate(10);
@@ -32,7 +32,7 @@ class TeacherController extends Controller
     public function create(): View
     {
         $schools = auth()->user()->isSuperAdmin()
-            ? School::query()->where('is_active', true)->orderBy('name')->get()
+            ? School::query()->where(['is_active' => true])->orderByRaw('name')->get()
             : collect([auth()->user()->school]);
 
         return view('master-data.teachers.create', [
@@ -43,7 +43,7 @@ class TeacherController extends Controller
     public function store(StoreTeacherRequest $request): RedirectResponse
     {
         DB::transaction(function () use ($request): void {
-            $role = Role::query()->where('name', 'teacher')->firstOrFail();
+            $role = Role::query()->where(['name' => 'teacher'])->firstOrFail();
             $schoolId = auth()->user()->isSuperAdmin() ? $request->integer('school_id') : auth()->user()->school_id;
 
             $user = User::query()->create([
@@ -54,7 +54,6 @@ class TeacherController extends Controller
                 'email' => $request->string('email'),
                 'phone' => $request->input('phone'),
                 'password' => Hash::make($request->string('password')),
-                'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->string('password')),
                 'is_active' => $request->boolean('is_active'),
             ]);
 
@@ -94,7 +93,7 @@ class TeacherController extends Controller
         $teacher->load(['user', 'school']);
         
         $schools = auth()->user()->isSuperAdmin()
-            ? School::query()->where('is_active', true)->orderBy('name')->get()
+            ? School::query()->where(['is_active' => true])->orderByRaw('name')->get()
             : collect([auth()->user()->school]);
 
         return view('master-data.teachers.edit', [
@@ -124,7 +123,6 @@ class TeacherController extends Controller
             if ($request->filled('password')) {
                 $teacher->user->update([
                     'password' => Hash::make($request->string('password')),
-                    'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->string('password')),
                 ]);
             }
 

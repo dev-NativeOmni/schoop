@@ -36,7 +36,7 @@ class LmsResourceService
             }
 
             if (!isset($data['sort_order'])) {
-                $maxSort = LmsLessonResource::where('lesson_id', $data['lesson_id'])->max('sort_order');
+                $maxSort = LmsLessonResource::query()->where(['lesson_id' => $data['lesson_id']])->max('sort_order');
                 $data['sort_order'] = $maxSort !== null ? $maxSort + 1 : 1;
             }
 
@@ -61,10 +61,55 @@ class LmsResourceService
     public function validateFile(UploadedFile $file): void
     {
         $extension = strtolower($file->getClientOriginalExtension());
-        $blockedExtensions = ['exe', 'bat', 'cmd', 'sh', 'php', 'js', 'zip'];
+        
+        $allowedExtensions = [
+            // Documents
+            'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'rtf',
+            // Images
+            'jpg', 'jpeg', 'png', 'gif', 'webp',
+            // Audio
+            'mp3', 'wav', 'ogg', 'm4a',
+            // Video
+            'mp4', 'webm', 'avi', 'mkv',
+        ];
 
-        if (in_array($extension, $blockedExtensions, true)) {
-            throw new \InvalidArgumentException('Format file executable atau terkompresi tidak didukung untuk alasan keamanan.');
+        if (! in_array($extension, $allowedExtensions, true)) {
+            throw new \InvalidArgumentException('Format berkas tidak diizinkan demi alasan keamanan sistem.');
+        }
+
+        // Validate MIME type to prevent spoofing
+        $mimeType = $file->getMimeType();
+        $allowedMimeTypes = [
+            // Documents
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'text/plain',
+            'application/rtf',
+            // Images
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            // Audio
+            'audio/mpeg',
+            'audio/wav',
+            'audio/ogg',
+            'audio/x-m4a',
+            'audio/mp4',
+            // Video
+            'video/mp4',
+            'video/webm',
+            'video/x-msvideo',
+            'video/x-matroska',
+        ];
+
+        if (! in_array($mimeType, $allowedMimeTypes, true)) {
+            throw new \InvalidArgumentException('MIME type berkas tidak sesuai dengan tipe dokumen yang diperbolehkan.');
         }
 
         // Limit size to 10MB

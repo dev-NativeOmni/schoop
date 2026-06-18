@@ -28,6 +28,7 @@ class StoreCashlessSaleRequest extends FormRequest
             'cashless_pos_session_id' => ['required', 'exists:cashless_pos_sessions,id'],
             'student_id' => ['required', 'exists:students,id'],
             'idempotency_key' => ['required', 'string', 'max:120'],
+            'pin' => ['nullable', 'string', 'regex:/^\d{4,6}$/'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.cashless_product_id' => ['required', 'exists:cashless_products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],

@@ -31,7 +31,7 @@ class UserController extends Controller
 
         // Role filter
         if ($roleId = $request->input('role_id')) {
-            $query->where('role_id', $roleId);
+            $query->where(['role_id' => $roleId]);
         }
 
         // School filter
@@ -39,36 +39,24 @@ class UserController extends Controller
             if ($schoolId === 'null') {
                 $query->whereNull('school_id');
             } else {
-                $query->where('school_id', $schoolId);
+                $query->where(['school_id' => $schoolId]);
             }
         }
 
         $users = $query->latest()->paginate(15)->withQueryString();
 
-        // Process decrypted passwords for display
-        foreach ($users as $user) {
-            $user->decrypted_password = '-';
-            if ($user->password_plain) {
-                try {
-                    $user->decrypted_password = Crypt::decryptString($user->password_plain);
-                } catch (DecryptException $e) {
-                    $user->decrypted_password = '(Gagal dekripsi)';
-                }
-            }
-        }
-
         return view('master-data.users.index', [
             'users' => $users,
-            'roles' => Role::orderBy('name')->get(),
-            'schools' => School::where('is_active', true)->orderBy('name')->get(),
+            'roles' => Role::query()->orderByRaw('name')->get(),
+            'schools' => School::query()->where(['is_active' => true])->orderByRaw('name')->get(),
         ]);
     }
 
     public function create(): View
     {
         return view('master-data.users.create', [
-            'roles' => Role::orderBy('name')->get(),
-            'schools' => School::where('is_active', true)->orderBy('name')->get(),
+            'roles' => Role::query()->orderByRaw('name')->get(),
+            'schools' => School::query()->where(['is_active' => true])->orderByRaw('name')->get(),
         ]);
     }
 
@@ -97,7 +85,6 @@ class UserController extends Controller
             'email' => $validated['email'],
             'phone' => $validated['phone'],
             'password' => Hash::make($validated['password']),
-            'password_plain' => Crypt::encryptString($validated['password']),
             'is_active' => $request->has('is_active') ? $request->boolean('is_active') : true,
         ]);
 
@@ -110,8 +97,8 @@ class UserController extends Controller
     {
         return view('master-data.users.edit', [
             'user' => $user,
-            'roles' => Role::orderBy('name')->get(),
-            'schools' => School::where('is_active', true)->orderBy('name')->get(),
+            'roles' => Role::query()->orderByRaw('name')->get(),
+            'schools' => School::query()->where(['is_active' => true])->orderByRaw('name')->get(),
         ]);
     }
 
@@ -143,7 +130,6 @@ class UserController extends Controller
 
         if ($request->filled('password')) {
             $userData['password'] = Hash::make($validated['password']);
-            $userData['password_plain'] = Crypt::encryptString($validated['password']);
         }
 
         $user->update($userData);

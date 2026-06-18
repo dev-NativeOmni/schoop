@@ -31,7 +31,7 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         $user = $request->user();

@@ -43,7 +43,7 @@ class WebhookDeliveryService
                 $headers['X-HafizPlus-Signature'] = $this->signatures->sign($payload, $endpoint->secret_hash);
             }
 
-            $response = Http::timeout(10)->withHeaders($headers)->post($endpoint->url, $payload);
+            $response = Http::timeout(5)->withHeaders($headers)->post($endpoint->url, $payload);
             $delivery->increment('attempt_count');
 
             if ($response->successful()) {
@@ -96,7 +96,7 @@ class WebhookDeliveryService
 
         foreach ($deliveries as $delivery) {
             $delivery->update(['status' => 'retrying']);
-            $this->deliver($delivery);
+            \App\Jobs\SendWebhookJob::dispatch($delivery);
         }
 
         return $deliveries->count();

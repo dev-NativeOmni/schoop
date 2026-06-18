@@ -22,7 +22,7 @@ class ParentController extends Controller
         $query = ParentProfile::query()->with(['user', 'school', 'students']);
         
         if (!auth()->user()->isSuperAdmin()) {
-            $query->where('school_id', auth()->user()->school_id);
+            $query->where(['school_id' => auth()->user()->school_id]);
         }
 
         $parents = $query->latest()->paginate(10);
@@ -36,14 +36,14 @@ class ParentController extends Controller
         $schoolId = auth()->user()->school_id;
 
         $schools = $isSuperAdmin
-            ? School::query()->where('is_active', true)->orderBy('name')->get()
+            ? School::query()->where(['is_active' => true])->orderByRaw('name')->get()
             : collect([auth()->user()->school]);
 
         $studentsQuery = Student::query();
         if (!$isSuperAdmin) {
-            $studentsQuery->where('school_id', $schoolId);
+            $studentsQuery->where(['school_id' => $schoolId]);
         }
-        $students = $studentsQuery->orderBy('full_name')->get();
+        $students = $studentsQuery->orderByRaw('full_name')->get();
 
         return view('master-data.parents.create', [
             'schools' => $schools,
@@ -54,7 +54,7 @@ class ParentController extends Controller
     public function store(StoreParentRequest $request): RedirectResponse
     {
         DB::transaction(function () use ($request): void {
-            $role = Role::query()->where('name', 'parent')->firstOrFail();
+            $role = Role::query()->where(['name' => 'parent'])->firstOrFail();
             $schoolId = auth()->user()->isSuperAdmin() ? $request->integer('school_id') : auth()->user()->school_id;
 
             $user = User::query()->create([
@@ -65,7 +65,6 @@ class ParentController extends Controller
                 'email' => $request->string('email'),
                 'phone' => $request->input('phone'),
                 'password' => Hash::make($request->string('password')),
-                'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->string('password')),
                 'is_active' => $request->boolean('is_active'),
             ]);
 
@@ -108,14 +107,14 @@ class ParentController extends Controller
         $schoolId = auth()->user()->school_id;
 
         $schools = $isSuperAdmin
-            ? School::query()->where('is_active', true)->orderBy('name')->get()
+            ? School::query()->where(['is_active' => true])->orderByRaw('name')->get()
             : collect([auth()->user()->school]);
 
         $studentsQuery = Student::query();
         if (!$isSuperAdmin) {
-            $studentsQuery->where('school_id', $schoolId);
+            $studentsQuery->where(['school_id' => $schoolId]);
         }
-        $students = $studentsQuery->orderBy('full_name')->get();
+        $students = $studentsQuery->orderByRaw('full_name')->get();
 
         return view('master-data.parents.edit', [
             'parent' => $parent,
@@ -146,7 +145,6 @@ class ParentController extends Controller
             if ($request->filled('password')) {
                 $parent->user->update([
                     'password' => Hash::make($request->string('password')),
-                    'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->string('password')),
                 ]);
             }
 

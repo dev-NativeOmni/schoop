@@ -10,16 +10,18 @@ class TenantAccessService
 {
     public function userCanAccessSchool(User $user, int $schoolId): bool
     {
-        if ($this->isSuperAdmin($user)) {
+        if ($this->isSaaSInternal($user)) {
             return School::query()
-                ->where('id', $schoolId)
+                ->where(['id' => $schoolId])
                 ->exists();
         }
 
         $hasMembership = UserSchoolMembership::query()
-            ->where('user_id', $user->id)
-            ->where('school_id', $schoolId)
-            ->where('membership_status', 'active')
+            ->where([
+                'user_id' => $user->id,
+                'school_id' => $schoolId,
+                'membership_status' => 'active',
+            ])
             ->exists();
 
         if ($hasMembership) {
@@ -37,7 +39,7 @@ class TenantAccessService
 
         $school = School::query()->findOrFail($schoolId);
 
-        if (! $this->isSuperAdmin($user) && ($school->is_tenant_enabled === false || $school->tenant_status === 'suspended')) {
+        if (! $this->isSaaSInternal($user) && ($school->is_tenant_enabled === false || $school->tenant_status === 'suspended')) {
             abort(403, 'Tenant sekolah sedang tidak aktif.');
         }
     }
@@ -50,5 +52,10 @@ class TenantAccessService
     public function isTenantAdmin(User $user): bool
     {
         return method_exists($user, 'hasRole') && $user->hasRole(['super_admin', 'admin', 'admin_sekolah']);
+    }
+
+    public function isSaaSInternal(User $user): bool
+    {
+        return method_exists($user, 'hasRole') && $user->hasRole(['super_admin', 'operations_manager', 'support_staff', 'customer_success', 'sales']);
     }
 }

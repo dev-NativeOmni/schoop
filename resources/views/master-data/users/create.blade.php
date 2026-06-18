@@ -52,7 +52,7 @@
                     <option value="">Pilih Peran</option>
                     @foreach ($roles as $role)
                         <option value="{{ $role->id }}" data-name="{{ $role->name }}" @selected(old('role_id') == $role->id)>
-                            {{ $role->name === 'super_admin' ? 'Super Admin' : ($role->name === 'admin' ? 'Admin Sekolah' : ($role->name === 'principal' ? 'Kepala Sekolah' : ($role->name === 'teacher' ? 'Guru' : ($role->name === 'parent' ? 'Orang Tua' : ($role->name === 'student' ? 'Santri' : $role->name))))) }}
+                            {{ $role->label }}
                         </option>
                     @endforeach
                 </select>

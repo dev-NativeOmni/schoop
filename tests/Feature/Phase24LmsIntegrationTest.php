@@ -24,14 +24,14 @@ use App\Services\Lms\LmsProgressService;
 use App\Services\Lms\LmsQuizService;
 use App\Services\Lms\LmsAssignmentService;
 use App\Services\Lms\LmsAnalyticsSnapshotService;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class Phase24LmsIntegrationTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private School $schoolA;
     private School $schoolB;

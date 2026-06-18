@@ -11,14 +11,25 @@
     $hasAdminOrSuperAdmin = $isSuperAdmin || $isAdmin;
     $hasInternalAccess = $hasAdminOrSuperAdmin || $isTeacher || $isPrincipal;
     $hasFinanceAccess = $hasAdminOrSuperAdmin || $isPrincipal || $user->hasRole('finance');
+    $canManageFinance = $hasAdminOrSuperAdmin || $user->hasRole('finance');
     $hasBoardingAccess = $hasAdminOrSuperAdmin || $isPrincipal || $isBoardingSupervisor;
     $roleName = $user->role?->name;
     $hasCashlessAccess = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'finance', 'cashier', 'merchant', 'principal', 'kepala_sekolah'], true);
     $canManageCashless = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'finance'], true);
     $canUseCashlessPos = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'cashier', 'merchant'], true);
+    
+    // SaaS Operations access & granular sub-permissions
     $hasSaasOpsAccess = in_array($roleName, ['super_admin', 'operations_manager', 'support_staff', 'customer_success', 'sales'], true);
+    $canManageSaasSubscriptions = in_array($roleName, ['super_admin', 'operations_manager'], true);
+    $canManageSaasIncidents = in_array($roleName, ['super_admin', 'operations_manager', 'support_staff'], true);
+    $canViewSaasKnowledgeBase = in_array($roleName, ['super_admin', 'operations_manager', 'support_staff', 'customer_success'], true);
+    
     $hasDeveloperPortalAccess = in_array($roleName, ['super_admin', 'operations_manager', 'support_staff', 'customer_success', 'admin', 'admin_sekolah'], true);
-    $canViewSchoolOs = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'kepala_sekolah', 'principal', 'teacher', 'guru', 'guru_tahfidz', 'parent', 'student'], true);
+    $canManageDevScopes = $roleName === 'super_admin';
+    $canManageDevDocs = in_array($roleName, ['super_admin', 'operations_manager'], true);
+    $canManageDevClients = in_array($roleName, ['super_admin', 'operations_manager', 'admin', 'admin_sekolah'], true);
+
+    $canViewSchoolOs = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'kepala_sekolah', 'principal', 'teacher', 'guru', 'guru_tahfidz'], true);
     $canManageSchoolOs = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah'], true);
     $canManageTenancy = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'kepala_sekolah', 'principal'], true);
     $activeSchool = app(\App\Services\Tenancy\TenantContextService::class)->activeSchool();
@@ -155,11 +166,13 @@
                             <div x-show="openDropdown === 'tenancy'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-52 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
                                 <a href="{{ route('tenancy.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Dashboard</a>
                                 <a href="{{ route('tenancy.switcher') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Ganti Sekolah</a>
-                                <a href="{{ route('tenancy.memberships.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">User Memberships</a>
-                                <a href="{{ route('tenancy.settings.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Settings</a>
-                                <a href="{{ route('tenancy.modules.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Modules</a>
-                                <a href="{{ route('white-label.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">White-Label Builder</a>
-                                <a href="{{ route('tenancy.audit-logs.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Audit Logs</a>
+                                @if ($hasAdminOrSuperAdmin)
+                                    <a href="{{ route('tenancy.memberships.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">User Memberships</a>
+                                    <a href="{{ route('tenancy.settings.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Settings</a>
+                                    <a href="{{ route('tenancy.modules.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Modules</a>
+                                    <a href="{{ route('white-label.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">White-Label Builder</a>
+                                    <a href="{{ route('tenancy.audit-logs.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Audit Logs</a>
+                                @endif
                             </div>
                         </div>
                     @endif
@@ -258,23 +271,25 @@
                         </div>
 
                         <!-- LMS Dropdown -->
-                        @php $active = request()->routeIs('lms.*'); @endphp
-                        <div class="relative" @click.outside="openDropdown === 'lms' && (openDropdown = null)">
-                            <button @click="openDropdown = openDropdown === 'lms' ? null : 'lms'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
-                                @if ($active)
-                                    <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.939.831a1 1 0 00.788 0l7-3a1 1 0 000-1.839l-7-3zM3.102 9.758a1 1 0 00-.802 1.006c.058 1.2.347 2.483.945 3.515.542.937 1.385 1.764 2.502 2.221a6.927 6.927 0 005.506 0c1.117-.457 1.96-1.284 2.502-2.221.598-1.032.887-2.316.945-3.515a1 1 0 00-.802-1.006l-4.702-.94a3.016 3.016 0 01-.788 0l-4.702.94z" /></svg>
-                                    <span class="text-[11px] tracking-wide font-black mt-1 flex items-center justify-center gap-0.5 w-full">LMS <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
-                                @else
-                                    <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-                                    <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">LMS <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
-                                @endif
-                            </button>
-                            <div x-show="openDropdown === 'lms'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-52 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
-                                <a href="{{ route('lms.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Dashboard LMS</a>
-                                <a href="{{ route('lms.courses.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Kursus Belajar</a>
-                                <a href="{{ route('lms.reports.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Laporan Progress</a>
+                        @if ($hasInternalAccess)
+                            @php $active = request()->routeIs('lms.*'); @endphp
+                            <div class="relative" @click.outside="openDropdown === 'lms' && (openDropdown = null)">
+                                <button @click="openDropdown = openDropdown === 'lms' ? null : 'lms'" class="flex flex-col items-center justify-center px-3.5 py-1.5 group transition-all rounded-xl focus:outline-none {{ $active ? 'bg-slate-800 text-[#A3E635]' : 'hover:bg-slate-800/50 text-slate-400 group-hover:text-white' }}">
+                                    @if ($active)
+                                        <svg class="h-5 w-5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.939.831a1 1 0 00.788 0l7-3a1 1 0 000-1.839l-7-3zM3.102 9.758a1 1 0 00-.802 1.006c.058 1.2.347 2.483.945 3.515.542.937 1.385 1.764 2.502 2.221a6.927 6.927 0 005.506 0c1.117-.457 1.96-1.284 2.502-2.221.598-1.032.887-2.316.945-3.515a1 1 0 00-.802-1.006l-4.702-.94a3.016 3.016 0 01-.788 0l-4.702.94z" /></svg>
+                                        <span class="text-[11px] tracking-wide font-black mt-1 flex items-center justify-center gap-0.5 w-full">LMS <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    @else
+                                        <svg class="h-5 w-5 text-slate-400 group-hover:text-[#A3E635] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                                        <span class="text-[11px] tracking-wide text-slate-400 group-hover:text-white mt-1 transition-colors flex items-center justify-center gap-0.5 w-full">LMS <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg></span>
+                                    @endif
+                                </button>
+                                <div x-show="openDropdown === 'lms'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-52 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
+                                    <a href="{{ route('lms.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Dashboard LMS</a>
+                                    <a href="{{ route('lms.courses.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Kursus Belajar</a>
+                                    <a href="{{ route('lms.reports.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Laporan Progress</a>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     @endif
 
                     <!-- Finance Dropdown -->
@@ -294,7 +309,7 @@
                                 <a href="{{ route('finance.reports.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Dashboard Laporan</a>
                                 <a href="{{ route('finance.bills.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tagihan Siswa</a>
                                 <a href="{{ route('finance.payments.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Pembayaran Siswa</a>
-                                @if ($hasAdminOrSuperAdmin)
+                                @if ($canManageFinance)
                                     <a href="{{ route('finance.fee-categories.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Kategori Biaya</a>
                                     <a href="{{ route('finance.fee-items.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Item Biaya</a>
                                 @endif
@@ -336,15 +351,21 @@
                             </button>
                             <div x-show="openDropdown === 'saasops'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-60 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
                                 <a href="{{ route('saas-ops.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Product Scale Dashboard</a>
-                                <a href="{{ route('saas-ops.subscription-plans.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Subscription Plans</a>
-                                <a href="{{ route('saas-ops.school-subscriptions.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">School Subscriptions</a>
-                                <a href="{{ route('saas-ops.tenant-invoices.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Invoices</a>
-                                <a href="{{ route('saas-ops.implementation-projects.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Implementation Projects</a>
+                                @if ($canManageSaasSubscriptions)
+                                    <a href="{{ route('saas-ops.subscription-plans.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Subscription Plans</a>
+                                    <a href="{{ route('saas-ops.school-subscriptions.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">School Subscriptions</a>
+                                    <a href="{{ route('saas-ops.tenant-invoices.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Tenant Invoices</a>
+                                    <a href="{{ route('saas-ops.implementation-projects.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Implementation Projects</a>
+                                @endif
                                 <a href="{{ route('saas-ops.support-tickets.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Support Tickets</a>
-                                <a href="{{ route('saas-ops.incident-reports.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Incidents</a>
-                                <a href="{{ route('saas-ops.release-notes.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Release Notes</a>
-                                <a href="{{ route('saas-ops.knowledge-base.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Knowledge Base</a>
-                                <a href="{{ route('saas-ops.customer-success-notes.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Customer Success</a>
+                                @if ($canManageSaasIncidents)
+                                    <a href="{{ route('saas-ops.incident-reports.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Incidents</a>
+                                    <a href="{{ route('saas-ops.release-notes.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Release Notes</a>
+                                @endif
+                                @if ($canViewSaasKnowledgeBase)
+                                    <a href="{{ route('saas-ops.knowledge-base.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Knowledge Base</a>
+                                    <a href="{{ route('saas-ops.customer-success-notes.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Customer Success</a>
+                                @endif
                                 <a href="{{ route('saas-ops.usage-snapshots.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Usage Snapshots</a>
                             </div>
                         </div>
@@ -359,12 +380,18 @@
                             </button>
                             <div x-show="openDropdown === 'developerportal'" x-transition:enter="transition ease-out duration-150" class="absolute left-0 mt-3 w-60 rounded-2xl border border-slate-700 bg-[#1F2937]/95 backdrop-blur-md p-2 shadow-2xl z-50 text-white" style="display: none;">
                                 <a href="{{ route('developer-portal.dashboard') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Developer Dashboard</a>
-                                <a href="{{ route('developer-portal.api-clients.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">API Clients</a>
-                                <a href="{{ route('developer-portal.api-scopes.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">API Scopes</a>
-                                <a href="{{ route('developer-portal.partner-integrations.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Partner Integrations</a>
-                                <a href="{{ route('developer-portal.webhooks.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Webhooks</a>
-                                <a href="{{ route('developer-portal.webhook-deliveries.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Webhook Deliveries</a>
-                                <a href="{{ route('developer-portal.request-logs.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Request Logs</a>
+                                @if ($canManageDevClients)
+                                    <a href="{{ route('developer-portal.api-clients.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">API Clients</a>
+                                @endif
+                                @if ($canManageDevScopes)
+                                    <a href="{{ route('developer-portal.api-scopes.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">API Scopes</a>
+                                @endif
+                                @if ($canManageDevClients)
+                                    <a href="{{ route('developer-portal.partner-integrations.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Partner Integrations</a>
+                                    <a href="{{ route('developer-portal.webhooks.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Webhooks</a>
+                                    <a href="{{ route('developer-portal.webhook-deliveries.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Webhook Deliveries</a>
+                                    <a href="{{ route('developer-portal.request-logs.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">Request Logs</a>
+                                @endif
                                 <a href="{{ route('developer-portal.docs.index') }}" class="block rounded-xl px-3 py-2 text-slate-300 hover:bg-[#A3E635] hover:text-[#1F2937] transition font-bold text-xs">API Docs</a>
                             </div>
                         </div>
@@ -526,6 +553,21 @@
             </div>
         @endif
 
+        @if ($canManageTenancy)
+            <div class="py-1 border-t border-slate-750">
+                <p class="px-3 py-1 text-[10px] font-bold text-slate-455 uppercase tracking-wider">Tenancy</p>
+                <a href="{{ route('tenancy.dashboard') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Tenant Dashboard</a>
+                <a href="{{ route('tenancy.switcher') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Ganti Sekolah</a>
+                @if ($hasAdminOrSuperAdmin)
+                    <a href="{{ route('tenancy.memberships.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">User Memberships</a>
+                    <a href="{{ route('tenancy.settings.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Tenant Settings</a>
+                    <a href="{{ route('tenancy.modules.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Tenant Modules</a>
+                    <a href="{{ route('white-label.dashboard') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">White-Label Builder</a>
+                    <a href="{{ route('tenancy.audit-logs.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Tenant Audit Logs</a>
+                @endif
+            </div>
+        @endif
+
         @if ($hasInternalAccess)
             <div class="py-1 border-t border-slate-750">
                 <p class="px-3 py-1 text-[10px] font-bold text-slate-455 uppercase tracking-wider">Halaqah & Tahfizh</p>
@@ -583,7 +625,7 @@
                 <a href="{{ route('finance.reports.dashboard') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Dashboard Keuangan</a>
                 <a href="{{ route('finance.bills.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Tagihan Siswa</a>
                 <a href="{{ route('finance.payments.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Pembayaran Siswa</a>
-                @if ($hasAdminOrSuperAdmin)
+                @if ($canManageFinance)
                     <a href="{{ route('finance.fee-categories.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Kategori Biaya</a>
                     <a href="{{ route('finance.fee-items.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Item Biaya</a>
                 @endif
@@ -613,15 +655,21 @@
             <div class="py-1 border-t border-slate-750">
                 <p class="px-3 py-1 text-[10px] font-bold text-slate-455 uppercase tracking-wider">SaaS Operations</p>
                 <a href="{{ route('saas-ops.dashboard') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Product Scale Dashboard</a>
-                <a href="{{ route('saas-ops.subscription-plans.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Subscription Plans</a>
-                <a href="{{ route('saas-ops.school-subscriptions.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">School Subscriptions</a>
-                <a href="{{ route('saas-ops.tenant-invoices.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Tenant Invoices</a>
-                <a href="{{ route('saas-ops.implementation-projects.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Implementation Projects</a>
+                @if ($canManageSaasSubscriptions)
+                    <a href="{{ route('saas-ops.subscription-plans.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Subscription Plans</a>
+                    <a href="{{ route('saas-ops.school-subscriptions.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">School Subscriptions</a>
+                    <a href="{{ route('saas-ops.tenant-invoices.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Tenant Invoices</a>
+                    <a href="{{ route('saas-ops.implementation-projects.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Implementation Projects</a>
+                @endif
                 <a href="{{ route('saas-ops.support-tickets.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Support Tickets</a>
-                <a href="{{ route('saas-ops.incident-reports.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Incidents</a>
-                <a href="{{ route('saas-ops.release-notes.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Release Notes</a>
-                <a href="{{ route('saas-ops.knowledge-base.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Knowledge Base</a>
-                <a href="{{ route('saas-ops.customer-success-notes.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Customer Success</a>
+                @if ($canManageSaasIncidents)
+                    <a href="{{ route('saas-ops.incident-reports.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Incidents</a>
+                    <a href="{{ route('saas-ops.release-notes.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Release Notes</a>
+                @endif
+                @if ($canViewSaasKnowledgeBase)
+                    <a href="{{ route('saas-ops.knowledge-base.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Knowledge Base</a>
+                    <a href="{{ route('saas-ops.customer-success-notes.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Customer Success</a>
+                @endif
                 <a href="{{ route('saas-ops.usage-snapshots.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Usage Snapshots</a>
             </div>
         @endif
@@ -630,11 +678,17 @@
             <div class="py-1 border-t border-slate-750">
                 <p class="px-3 py-1 text-[10px] font-bold text-slate-455 uppercase tracking-wider">Developer Portal</p>
                 <a href="{{ route('developer-portal.dashboard') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Developer Dashboard</a>
-                <a href="{{ route('developer-portal.api-clients.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">API Clients</a>
-                <a href="{{ route('developer-portal.api-scopes.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">API Scopes</a>
-                <a href="{{ route('developer-portal.partner-integrations.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Partner Integrations</a>
-                <a href="{{ route('developer-portal.webhooks.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Webhooks</a>
-                <a href="{{ route('developer-portal.request-logs.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Request Logs</a>
+                @if ($canManageDevClients)
+                    <a href="{{ route('developer-portal.api-clients.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">API Clients</a>
+                @endif
+                @if ($canManageDevScopes)
+                    <a href="{{ route('developer-portal.api-scopes.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">API Scopes</a>
+                @endif
+                @if ($canManageDevClients)
+                    <a href="{{ route('developer-portal.partner-integrations.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Partner Integrations</a>
+                    <a href="{{ route('developer-portal.webhooks.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Webhooks</a>
+                    <a href="{{ route('developer-portal.request-logs.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">Request Logs</a>
+                @endif
                 <a href="{{ route('developer-portal.docs.index') }}" class="block rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-slate-800 transition">API Docs</a>
             </div>
         @endif

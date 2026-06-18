@@ -516,7 +516,7 @@ Route::middleware('auth')->group(function (): void {
     // Student Finance Ledger Routes
     Route::prefix('finance')
         ->name('finance.')
-        ->middleware(['role:super_admin,admin,principal'])
+        ->middleware(['role:super_admin,admin,principal,finance'])
         ->group(function (): void {
             Route::get('/reports/dashboard', [FinanceReportController::class, 'dashboard'])
                 ->name('reports.dashboard');
@@ -562,9 +562,13 @@ Route::middleware('auth')->group(function (): void {
         ->middleware(['role:parent'])
         ->name('portal.parent.finance');
 
-    Route::get('/portal/parent/cashless', ParentCashlessPortalController::class)
+    Route::get('/portal/parent/cashless', [ParentCashlessPortalController::class, 'index'])
         ->middleware(['role:parent'])
         ->name('portal.parent.cashless');
+
+    Route::put('/portal/parent/cashless/{wallet}', [ParentCashlessPortalController::class, 'update'])
+        ->middleware(['role:parent'])
+        ->name('portal.parent.cashless.update');
 
     Route::get('/portal/student/finance', [StudentFinancePortalController::class, 'index'])
         ->middleware(['role:student'])
@@ -719,46 +723,58 @@ Route::middleware('auth')->group(function (): void {
     });
 
     // Phase 20 — Company/Product Scale & SaaS Operations
-    Route::middleware(['role:super_admin,operations_manager,support_staff,customer_success,sales,admin,admin_sekolah,principal,kepala_sekolah,teacher,merchant'])
+    Route::middleware(['role:super_admin,operations_manager,support_staff,customer_success,sales,admin,admin_sekolah,principal,kepala_sekolah,teacher,merchant,boarding_supervisor,finance,cashier'])
         ->prefix('saas-ops')
         ->name('saas-ops.')
         ->group(function (): void {
-            Route::get('/dashboard', [ProductScaleDashboardController::class, 'index'])->name('dashboard');
+            // Internal operations roles only
+            Route::middleware(['role:super_admin,operations_manager,support_staff,customer_success,sales'])->group(function (): void {
+                Route::get('/dashboard', [ProductScaleDashboardController::class, 'index'])->name('dashboard');
+                Route::get('usage-snapshots', [ProductUsageSnapshotController::class, 'index'])->name('usage-snapshots.index');
+            });
 
-            Route::resource('subscription-plans', SaasSubscriptionPlanController::class);
+            Route::middleware(['role:super_admin,operations_manager'])->group(function (): void {
+                Route::resource('subscription-plans', SaasSubscriptionPlanController::class);
 
-            Route::get('school-subscriptions/create', [SaasSchoolSubscriptionController::class, 'create'])->name('school-subscriptions.create');
-            Route::post('school-subscriptions', [SaasSchoolSubscriptionController::class, 'store'])->name('school-subscriptions.store');
-            Route::get('school-subscriptions', [SaasSchoolSubscriptionController::class, 'index'])->name('school-subscriptions.index');
-            Route::get('school-subscriptions/{subscription}', [SaasSchoolSubscriptionController::class, 'show'])->name('school-subscriptions.show');
-            Route::post('school-subscriptions/{subscription}/activate', [SaasSchoolSubscriptionController::class, 'activate'])->name('school-subscriptions.activate');
-            Route::post('school-subscriptions/{subscription}/suspend', [SaasSchoolSubscriptionController::class, 'suspend'])->name('school-subscriptions.suspend');
-            Route::post('school-subscriptions/{subscription}/cancel', [SaasSchoolSubscriptionController::class, 'cancel'])->name('school-subscriptions.cancel');
+                Route::get('school-subscriptions/create', [SaasSchoolSubscriptionController::class, 'create'])->name('school-subscriptions.create');
+                Route::post('school-subscriptions', [SaasSchoolSubscriptionController::class, 'store'])->name('school-subscriptions.store');
+                Route::get('school-subscriptions', [SaasSchoolSubscriptionController::class, 'index'])->name('school-subscriptions.index');
+                Route::get('school-subscriptions/{subscription}', [SaasSchoolSubscriptionController::class, 'show'])->name('school-subscriptions.show');
+                Route::post('school-subscriptions/{subscription}/activate', [SaasSchoolSubscriptionController::class, 'activate'])->name('school-subscriptions.activate');
+                Route::post('school-subscriptions/{subscription}/suspend', [SaasSchoolSubscriptionController::class, 'suspend'])->name('school-subscriptions.suspend');
+                Route::post('school-subscriptions/{subscription}/cancel', [SaasSchoolSubscriptionController::class, 'cancel'])->name('school-subscriptions.cancel');
 
-            Route::get('tenant-invoices', [SaasTenantInvoiceController::class, 'index'])->name('tenant-invoices.index');
-            Route::get('tenant-invoices/create', [SaasTenantInvoiceController::class, 'create'])->name('tenant-invoices.create');
-            Route::post('tenant-invoices', [SaasTenantInvoiceController::class, 'store'])->name('tenant-invoices.store');
-            Route::get('tenant-invoices/{invoice}', [SaasTenantInvoiceController::class, 'show'])->name('tenant-invoices.show');
-            Route::post('tenant-invoices/{invoice}/issue', [SaasTenantInvoiceController::class, 'issue'])->name('tenant-invoices.issue');
-            Route::post('tenant-invoices/{invoice}/payments', [SaasTenantInvoiceController::class, 'storePayment'])->name('tenant-invoices.payments.store');
-            Route::post('tenant-invoices/{invoice}/void', [SaasTenantInvoiceController::class, 'void'])->name('tenant-invoices.void');
+                Route::get('tenant-invoices', [SaasTenantInvoiceController::class, 'index'])->name('tenant-invoices.index');
+                Route::get('tenant-invoices/create', [SaasTenantInvoiceController::class, 'create'])->name('tenant-invoices.create');
+                Route::post('tenant-invoices', [SaasTenantInvoiceController::class, 'store'])->name('tenant-invoices.store');
+                Route::get('tenant-invoices/{invoice}', [SaasTenantInvoiceController::class, 'show'])->name('tenant-invoices.show');
+                Route::post('tenant-invoices/{invoice}/issue', [SaasTenantInvoiceController::class, 'issue'])->name('tenant-invoices.issue');
+                Route::post('tenant-invoices/{invoice}/payments', [SaasTenantInvoiceController::class, 'storePayment'])->name('tenant-invoices.payments.store');
+                Route::post('tenant-invoices/{invoice}/void', [SaasTenantInvoiceController::class, 'void'])->name('tenant-invoices.void');
 
-            Route::resource('implementation-projects', ImplementationProjectController::class);
-            Route::get('implementation-projects/{project}/onboarding', [OnboardingChecklistController::class, 'show'])->name('onboarding.show');
-            Route::post('implementation-projects/{project}/onboarding/{record}/complete', [OnboardingChecklistController::class, 'complete'])->name('onboarding.complete');
+                Route::resource('implementation-projects', ImplementationProjectController::class);
+                Route::get('implementation-projects/{project}/onboarding', [OnboardingChecklistController::class, 'show'])->name('onboarding.show');
+                Route::post('implementation-projects/{project}/onboarding/{record}/complete', [OnboardingChecklistController::class, 'complete'])->name('onboarding.complete');
 
+                Route::resource('sla-policies', SlaPolicyController::class);
+            });
+
+            Route::middleware(['role:super_admin,operations_manager,support_staff'])->group(function (): void {
+                Route::resource('incident-reports', IncidentReportController::class);
+                Route::resource('release-notes', ReleaseNoteController::class);
+            });
+
+            Route::middleware(['role:super_admin,operations_manager,support_staff,customer_success'])->group(function (): void {
+                Route::resource('knowledge-base', KnowledgeBaseArticleController::class);
+                Route::resource('customer-success-notes', CustomerSuccessNoteController::class)->only(['index', 'create', 'store', 'show']);
+            });
+
+            // Support tickets accessible to both school users and SaaS operations staff
             Route::resource('support-tickets', SupportTicketController::class)->only(['index', 'create', 'store', 'show']);
             Route::post('support-tickets/{ticket}/messages', [SupportTicketController::class, 'storeMessage'])->name('support-tickets.messages.store');
             Route::post('support-tickets/{ticket}/assign', [SupportTicketController::class, 'assign'])->name('support-tickets.assign');
             Route::post('support-tickets/{ticket}/resolve', [SupportTicketController::class, 'resolve'])->name('support-tickets.resolve');
             Route::post('support-tickets/{ticket}/close', [SupportTicketController::class, 'close'])->name('support-tickets.close');
-
-            Route::resource('sla-policies', SlaPolicyController::class);
-            Route::resource('incident-reports', IncidentReportController::class);
-            Route::resource('release-notes', ReleaseNoteController::class);
-            Route::resource('knowledge-base', KnowledgeBaseArticleController::class);
-            Route::resource('customer-success-notes', CustomerSuccessNoteController::class)->only(['index', 'create', 'store', 'show']);
-            Route::get('usage-snapshots', [ProductUsageSnapshotController::class, 'index'])->name('usage-snapshots.index');
         });
 
     // Phase 22 — External API, Partner Integration & Developer Portal
@@ -844,7 +860,7 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/tenancy/switch', [TenantSwitcherController::class, 'index'])->name('tenancy.switcher');
         Route::post('/tenancy/switch', [TenantSwitcherController::class, 'switch'])->name('tenancy.switch');
 
-        Route::middleware(['tenant.access'])->group(function (): void {
+        Route::middleware(['tenant.access', 'role:super_admin,admin,admin_sekolah'])->group(function (): void {
             Route::resource('/tenancy/memberships', TenantMembershipController::class)
                 ->names('tenancy.memberships');
 
@@ -857,45 +873,51 @@ Route::middleware('auth')->group(function (): void {
             Route::get('/tenancy/audit-logs', [TenantAuditLogController::class, 'index'])->name('tenancy.audit-logs.index');
 
             // Phase 19 — Cashless Kantin / Merchant POS
-            Route::prefix('cashless')->name('cashless.')->group(function (): void {
-                Route::get('/reports/dashboard', [CashlessReportController::class, 'dashboard'])->name('reports.dashboard');
-                Route::get('/reports/wallet-transactions', [CashlessReportController::class, 'walletTransactions'])->name('reports.wallet-transactions');
-                Route::get('/reports/merchant-sales', [CashlessReportController::class, 'merchantSales'])->name('reports.merchant-sales');
+            Route::prefix('cashless')->name('cashless.')->middleware(['role:super_admin,admin,finance,cashier,merchant,principal'])->group(function (): void {
+                Route::middleware(['role:super_admin,admin,finance,principal'])->group(function (): void {
+                    Route::get('/reports/dashboard', [CashlessReportController::class, 'dashboard'])->name('reports.dashboard');
+                    Route::get('/reports/wallet-transactions', [CashlessReportController::class, 'walletTransactions'])->name('reports.wallet-transactions');
+                    Route::get('/reports/merchant-sales', [CashlessReportController::class, 'merchantSales'])->name('reports.merchant-sales');
+                });
 
-                Route::resource('merchants', CashlessMerchantController::class)->except(['destroy']);
-                Route::resource('products', CashlessProductController::class)->except(['destroy']);
+                Route::middleware(['role:super_admin,admin,finance'])->group(function (): void {
+                    Route::resource('merchants', CashlessMerchantController::class)->except(['destroy']);
+                    Route::resource('products', CashlessProductController::class)->except(['destroy']);
 
-                Route::get('/wallets', [CashlessWalletController::class, 'index'])->name('wallets.index');
-                Route::get('/wallets/{wallet}', [CashlessWalletController::class, 'show'])->name('wallets.show');
-                Route::patch('/wallets/{wallet}/freeze', [CashlessWalletController::class, 'freeze'])->name('wallets.freeze');
-                Route::patch('/wallets/{wallet}/unfreeze', [CashlessWalletController::class, 'unfreeze'])->name('wallets.unfreeze');
+                    Route::get('/wallets', [CashlessWalletController::class, 'index'])->name('wallets.index');
+                    Route::get('/wallets/{wallet}', [CashlessWalletController::class, 'show'])->name('wallets.show');
+                    Route::patch('/wallets/{wallet}/freeze', [CashlessWalletController::class, 'freeze'])->name('wallets.freeze');
+                    Route::patch('/wallets/{wallet}/unfreeze', [CashlessWalletController::class, 'unfreeze'])->name('wallets.unfreeze');
 
-                Route::get('/top-ups/create', [CashlessTopUpController::class, 'create'])->name('top-ups.create');
-                Route::post('/top-ups', [CashlessTopUpController::class, 'store'])->name('top-ups.store');
-                Route::patch('/top-ups/{transaction}/void', [CashlessTopUpController::class, 'void'])->name('top-ups.void');
+                    Route::get('/top-ups/create', [CashlessTopUpController::class, 'create'])->name('top-ups.create');
+                    Route::post('/top-ups', [CashlessTopUpController::class, 'store'])->name('top-ups.store');
+                    Route::patch('/top-ups/{transaction}/void', [CashlessTopUpController::class, 'void'])->name('top-ups.void');
 
-                Route::get('/pos-sessions', [CashlessPosSessionController::class, 'index'])->name('pos-sessions.index');
-                Route::get('/pos-sessions/open', [CashlessPosSessionController::class, 'open'])->name('pos-sessions.open');
-                Route::post('/pos-sessions', [CashlessPosSessionController::class, 'store'])->name('pos-sessions.store');
-                Route::get('/pos-sessions/{posSession}', [CashlessPosSessionController::class, 'show'])->name('pos-sessions.show');
-                Route::patch('/pos-sessions/{posSession}/close', [CashlessPosSessionController::class, 'close'])->name('pos-sessions.close');
+                    Route::get('/refunds/create', [CashlessRefundController::class, 'create'])->name('refunds.create');
+                    Route::post('/refunds', [CashlessRefundController::class, 'store'])->name('refunds.store');
 
-                Route::get('/pos/cashier', [CashlessPosController::class, 'cashier'])->name('pos.cashier');
-                Route::post('/pos/sales', [CashlessPosController::class, 'store'])->name('pos.sales.store');
-                Route::get('/pos/receipt/{sale}', [CashlessPosController::class, 'receipt'])->name('pos.receipt');
+                    Route::get('/settlements', [CashlessSettlementController::class, 'index'])->name('settlements.index');
+                    Route::post('/settlements', [CashlessSettlementController::class, 'store'])->name('settlements.store');
+                    Route::get('/settlements/{settlement}', [CashlessSettlementController::class, 'show'])->name('settlements.show');
+                    Route::patch('/settlements/{settlement}/approve', [CashlessSettlementController::class, 'approve'])->name('settlements.approve');
+                    Route::patch('/settlements/{settlement}/void', [CashlessSettlementController::class, 'void'])->name('settlements.void');
+                });
 
-                Route::get('/refunds/create', [CashlessRefundController::class, 'create'])->name('refunds.create');
-                Route::post('/refunds', [CashlessRefundController::class, 'store'])->name('refunds.store');
+                Route::middleware(['role:super_admin,admin,cashier,merchant'])->group(function (): void {
+                    Route::get('/pos-sessions', [CashlessPosSessionController::class, 'index'])->name('pos-sessions.index');
+                    Route::get('/pos-sessions/open', [CashlessPosSessionController::class, 'open'])->name('pos-sessions.open');
+                    Route::post('/pos-sessions', [CashlessPosSessionController::class, 'store'])->name('pos-sessions.store');
+                    Route::get('/pos-sessions/{posSession}', [CashlessPosSessionController::class, 'show'])->name('pos-sessions.show');
+                    Route::patch('/pos-sessions/{posSession}/close', [CashlessPosSessionController::class, 'close'])->name('pos-sessions.close');
 
-                Route::get('/settlements', [CashlessSettlementController::class, 'index'])->name('settlements.index');
-                Route::post('/settlements', [CashlessSettlementController::class, 'store'])->name('settlements.store');
-                Route::get('/settlements/{settlement}', [CashlessSettlementController::class, 'show'])->name('settlements.show');
-                Route::patch('/settlements/{settlement}/approve', [CashlessSettlementController::class, 'approve'])->name('settlements.approve');
-                Route::patch('/settlements/{settlement}/void', [CashlessSettlementController::class, 'void'])->name('settlements.void');
+                    Route::get('/pos/cashier', [CashlessPosController::class, 'cashier'])->name('pos.cashier');
+                    Route::post('/pos/sales', [CashlessPosController::class, 'store'])->name('pos.sales.store');
+                    Route::get('/pos/receipt/{sale}', [CashlessPosController::class, 'receipt'])->name('pos.receipt');
+                });
             });
 
             // White-Label School App Builder Routes
-            Route::prefix('white-label')->name('white-label.')->group(function (): void {
+            Route::prefix('white-label')->name('white-label.')->middleware(['role:super_admin,admin,admin_sekolah'])->group(function (): void {
                 Route::get('/', [App\Http\Controllers\WhiteLabel\WhiteLabelDashboardController::class, 'index'])->name('dashboard');
                 
                 // Brand Profile

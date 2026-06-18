@@ -56,7 +56,7 @@ class LoginController extends Controller
             // Resolve active school context
             $schoolId = app(\App\Services\Tenancy\TenantContextService::class)->resolveForUser($user);
 
-            if (!$schoolId && !$user->hasRole('super_admin')) {
+            if (!$schoolId && !$user->hasRole(['super_admin', 'operations_manager', 'support_staff', 'customer_success', 'sales'])) {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();

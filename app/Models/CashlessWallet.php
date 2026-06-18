@@ -15,17 +15,24 @@ class CashlessWallet extends Model
         'school_id',
         'student_id',
         'wallet_number',
+        'pin',
         'balance',
+        'daily_limit',
         'status',
         'frozen_at',
         'frozen_by',
         'freeze_reason',
     ];
 
+    protected $hidden = [
+        'pin',
+    ];
+
     protected function casts(): array
     {
         return [
             'balance' => 'integer',
+            'daily_limit' => 'integer',
             'frozen_at' => 'datetime',
         ];
     }

@@ -12,12 +12,12 @@ use App\Models\TenantHealthScore;
 use App\Models\ExecutiveReportRun;
 use App\Models\AnalyticsAccessLog;
 use App\Services\Analytics\AnalyticsPrivacyGuard;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class Phase23AnalyticsIntegrationTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private School $schoolA;
     private School $schoolB;

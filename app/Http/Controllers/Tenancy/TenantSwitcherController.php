@@ -16,10 +16,10 @@ class TenantSwitcherController extends Controller
         $user = auth()->user();
 
         $schools = $user->hasRole(['super_admin'])
-            ? School::query()->orderBy('name')->get()
+            ? School::query()->orderByRaw('name')->get()
             : $user->accessibleSchools()
                 ->wherePivot('membership_status', 'active')
-                ->orderBy('name')
+                ->orderByRaw('name')
                 ->get();
 
         return view('tenancy.switcher', compact('schools'));
@@ -29,7 +29,7 @@ class TenantSwitcherController extends Controller
     {
         $tenantContext->setActiveSchool($request->user(), (int) $request->validated('school_id'));
 
-        return redirect()->route('schoolos.dashboard')
+        return redirect()->route('dashboard')
             ->with('success', 'Sekolah aktif berhasil diganti.');
     }
 }

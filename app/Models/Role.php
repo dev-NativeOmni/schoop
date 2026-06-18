@@ -25,4 +25,25 @@ class Role extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function getLabelAttribute($value): string
+    {
+        return match ($this->name) {
+            'super_admin' => 'Super Admin',
+            'admin' => 'Admin Sekolah',
+            'principal' => 'Kepala Sekolah',
+            'teacher' => 'Guru Tahfidz',
+            'boarding_supervisor' => 'Pembina Asrama',
+            'parent' => 'Orang Tua',
+            'student' => 'Santri',
+            'finance' => 'Finance / Keuangan',
+            'cashier' => 'Kasir',
+            'merchant' => 'Merchant / Kantin',
+            'support_staff' => 'Support Staff',
+            'customer_success' => 'Customer Success',
+            'sales' => 'Sales',
+            'operations_manager' => 'Operations Manager',
+            default => $value ?? ucfirst(str_replace('_', ' ', $this->name)),
+        };
+    }
 }

@@ -42,7 +42,6 @@ class InitialUserSeeder extends Seeder
                 'username' => 'superadmin',
                 'phone' => null,
                 'password' => $defaultPassword,
-                'password_plain' => $encryptedPassword,
                 'is_active' => true,
             ]
         );
@@ -56,7 +55,6 @@ class InitialUserSeeder extends Seeder
                 'username' => 'admin',
                 'phone' => null,
                 'password' => $defaultPassword,
-                'password_plain' => $encryptedPassword,
                 'is_active' => true,
             ]
         );
@@ -70,7 +68,6 @@ class InitialUserSeeder extends Seeder
                 'username' => 'kepalasekolah',
                 'phone' => null,
                 'password' => $defaultPassword,
-                'password_plain' => $encryptedPassword,
                 'is_active' => true,
             ]
         );
@@ -84,7 +81,6 @@ class InitialUserSeeder extends Seeder
                 'username' => 'guru',
                 'phone' => null,
                 'password' => $defaultPassword,
-                'password_plain' => $encryptedPassword,
                 'is_active' => true,
             ]
         );
@@ -111,7 +107,6 @@ class InitialUserSeeder extends Seeder
                 'username' => 'guru2',
                 'phone' => null,
                 'password' => $defaultPassword,
-                'password_plain' => $encryptedPassword,
                 'is_active' => true,
             ]
         );
@@ -138,7 +133,6 @@ class InitialUserSeeder extends Seeder
                 'username' => 'ortu',
                 'phone' => null,
                 'password' => $defaultPassword,
-                'password_plain' => $encryptedPassword,
                 'is_active' => true,
             ]
         );
@@ -164,7 +158,6 @@ class InitialUserSeeder extends Seeder
                 'username' => 'ortu2',
                 'phone' => null,
                 'password' => $defaultPassword,
-                'password_plain' => $encryptedPassword,
                 'is_active' => true,
             ]
         );
@@ -190,7 +183,6 @@ class InitialUserSeeder extends Seeder
                 'username' => 'santri',
                 'phone' => null,
                 'password' => $defaultPassword,
-                'password_plain' => $encryptedPassword,
                 'is_active' => true,
             ]
         );
@@ -231,7 +223,6 @@ class InitialUserSeeder extends Seeder
                 'username' => 'santri2',
                 'phone' => null,
                 'password' => $defaultPassword,
-                'password_plain' => $encryptedPassword,
                 'is_active' => true,
             ]
         );
@@ -272,7 +263,6 @@ class InitialUserSeeder extends Seeder
                 'username' => 'santri3',
                 'phone' => null,
                 'password' => $defaultPassword,
-                'password_plain' => $encryptedPassword,
                 'is_active' => true,
             ]
         );
