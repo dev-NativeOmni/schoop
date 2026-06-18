@@ -45,6 +45,19 @@ class UserController extends Controller
 
         $users = $query->latest()->paginate(15)->withQueryString();
 
+        if ($request->user()?->isSuperAdmin()) {
+            foreach ($users as $user) {
+                $user->decrypted_password = '-';
+                if ($user->password_plain) {
+                    try {
+                        $user->decrypted_password = Crypt::decryptString($user->password_plain);
+                    } catch (DecryptException $e) {
+                        $user->decrypted_password = '[Error]';
+                    }
+                }
+            }
+        }
+
         return view('master-data.users.index', [
             'users' => $users,
             'roles' => Role::query()->orderByRaw('name')->get(),
@@ -85,6 +98,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             'phone' => $validated['phone'],
             'password' => Hash::make($validated['password']),
+            'password_plain' => Crypt::encryptString($validated['password']),
             'is_active' => $request->has('is_active') ? $request->boolean('is_active') : true,
         ]);
 
@@ -130,6 +144,7 @@ class UserController extends Controller
 
         if ($request->filled('password')) {
             $userData['password'] = Hash::make($validated['password']);
+            $userData['password_plain'] = Crypt::encryptString($validated['password']);
         }
 
         $user->update($userData);

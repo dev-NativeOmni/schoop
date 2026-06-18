@@ -76,6 +76,7 @@ class StudentController extends Controller
                     'email' => $request->input('email'),
                     'phone' => $request->input('phone'),
                     'password' => Hash::make($request->input('password')),
+                    'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->input('password')),
                     'is_active' => $request->boolean('is_active'),
                 ]);
 
@@ -175,6 +176,7 @@ class StudentController extends Controller
                 if ($request->filled('password')) {
                     $student->user->update([
                         'password' => Hash::make($request->string('password')),
+                        'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->string('password')),
                     ]);
                 }
             }

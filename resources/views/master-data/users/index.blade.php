@@ -88,6 +88,9 @@
                         <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Nama Lengkap</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Username</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Peran / Sekolah</th>
+                        @if(auth()->user()?->isSuperAdmin())
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-44">Password</th>
+                        @endif
                         <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center w-24">Status</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center w-28">Aksi</th>
                     </tr>
@@ -106,10 +109,27 @@
                                 <span class="inline-flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 px-2 py-1 text-xs font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 mb-1">
                                     {{ $user->role?->label }}
                                 </span>
-                                <div class="text-xs text-slate-500 dark:text-slate-450 font-semibold">
+                                <div class="text-xs text-slate-500 dark:text-slate-455 font-semibold">
                                     {{ $user->school?->name ?? 'Akses Global (Super Admin)' }}
                                 </div>
                             </td>
+                            @if(auth()->user()?->isSuperAdmin())
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span id="pwd-text-{{ $user->id }}" class="font-mono text-sm text-slate-700 dark:text-slate-350" style="display: none;">
+                                            {{ $user->decrypted_password ?? '-' }}
+                                        </span>
+                                        <span id="pwd-masked-{{ $user->id }}" class="font-mono text-sm text-slate-400">
+                                            ••••••••
+                                        </span>
+                                        <button type="button" onclick="togglePlaintextPassword({{ $user->id }})" class="text-slate-400 hover:text-slate-650 dark:hover:text-slate-200 transition-colors">
+                                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path id="pwd-icon-{{ $user->id }}" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            @endif
                             <td class="px-6 py-4 text-center">
                                 @if($user->is_active)
                                     <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-150 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/50">Aktif</span>
@@ -161,6 +181,26 @@
         <div class="pt-4">
             {{ $users->links() }}
         </div>
+    @endif
+
+    @if(auth()->user()?->isSuperAdmin())
+        <script>
+            function togglePlaintextPassword(userId) {
+                const textEl = document.getElementById(`pwd-text-${userId}`);
+                const maskedEl = document.getElementById(`pwd-masked-${userId}`);
+                const pathEl = document.getElementById(`pwd-icon-${userId}`);
+                
+                if (textEl.style.display === 'none') {
+                    textEl.style.display = 'inline';
+                    maskedEl.style.display = 'none';
+                    pathEl.setAttribute('d', 'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21');
+                } else {
+                    textEl.style.display = 'none';
+                    maskedEl.style.display = 'inline';
+                    pathEl.setAttribute('d', 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z');
+                }
+            }
+        </script>
     @endif
 
 </div>
