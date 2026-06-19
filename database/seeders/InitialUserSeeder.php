@@ -15,7 +15,7 @@ class InitialUserSeeder extends Seeder
 {
     public function run(): void
     {
-        $school = School::query()->where('code', 'ALAZHAR7')->firstOrFail();
+        $school = School::query()->where(['code' => 'ALAZHAR7'])->firstOrFail();
 
         $roles = Role::query()
             ->whereIn('name', [
@@ -27,7 +27,7 @@ class InitialUserSeeder extends Seeder
                 'student',
             ])
             ->get()
-            ->keyBy('name');
+            ->keyBy(fn($role) => $role->name);
 
         $plainPassword = 'password';
         $defaultPassword = Hash::make($plainPassword);
