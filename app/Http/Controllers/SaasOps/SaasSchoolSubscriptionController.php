@@ -8,6 +8,7 @@ use App\Models\SaasSchoolSubscription;
 use App\Models\SaasSubscriptionPlan;
 use App\Models\School;
 use App\Services\SaasOps\SaasOperationsAccessService;
+use App\Services\SaasOps\PlanModuleAccessService;
 use App\Services\SaasOps\SubscriptionStatusService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,7 +16,11 @@ use Illuminate\View\View;
 
 class SaasSchoolSubscriptionController extends Controller
 {
-    public function __construct(private readonly SaasOperationsAccessService $access, private readonly SubscriptionStatusService $statuses) {}
+    public function __construct(
+        private readonly SaasOperationsAccessService $access,
+        private readonly SubscriptionStatusService $statuses,
+        private readonly PlanModuleAccessService $planAccess,
+    ) {}
 
     public function index(): View
     {
@@ -34,6 +39,7 @@ class SaasSchoolSubscriptionController extends Controller
     public function store(StoreSaasSchoolSubscriptionRequest $request): RedirectResponse
     {
         $subscription = SaasSchoolSubscription::query()->create($request->validated());
+        $this->planAccess->syncTenantModulesForSubscription($subscription);
 
         return redirect()->route('saas-ops.school-subscriptions.show', $subscription)->with('success', 'Subscription sekolah berhasil dibuat.');
     }
@@ -49,6 +55,7 @@ class SaasSchoolSubscriptionController extends Controller
     public function activate(SaasSchoolSubscription $subscription): RedirectResponse
     {
         $this->statuses->activate($subscription, auth()->user());
+        $this->planAccess->syncTenantModulesForSubscription($subscription);
 
         return back()->with('success', 'Subscription diaktifkan.');
     }

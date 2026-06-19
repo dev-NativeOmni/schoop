@@ -21,6 +21,9 @@ class TenantModuleSeeder extends Seeder
             ['module_key' => 'finance', 'module_name' => 'Finance'],
             ['module_key' => 'schoolos', 'module_name' => 'SchoolOS'],
             ['module_key' => 'boarding', 'module_name' => 'Boarding'],
+            ['module_key' => 'white_label', 'module_name' => 'White Label'],
+            ['module_key' => 'cashless', 'module_name' => 'Cashless Kantin / Merchant POS'],
+            ['module_key' => 'lms', 'module_name' => 'LMS Lite'],
         ];
 
         School::query()->each(function (School $school) use ($modules): void {

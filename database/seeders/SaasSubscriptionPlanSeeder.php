@@ -18,10 +18,10 @@ class SaasSubscriptionPlanSeeder extends Seeder
         }
 
         $plans = [
-            ['code' => 'basic', 'name' => 'Basic', 'billing_cycle' => 'monthly', 'features' => ['Tahfizh', 'Parent Portal']],
-            ['code' => 'standard', 'name' => 'Standard', 'billing_cycle' => 'monthly', 'features' => ['Reports', 'Notification']],
-            ['code' => 'pro', 'name' => 'Pro', 'billing_cycle' => 'monthly', 'features' => ['Mutabaah', 'Attendance', 'Tahsin']],
-            ['code' => 'enterprise', 'name' => 'Enterprise', 'billing_cycle' => 'yearly', 'features' => ['Multi-campus', 'White-label', 'Boarding', 'Finance', 'Cashless']],
+            ['code' => 'basic', 'name' => 'Basic', 'billing_cycle' => 'monthly', 'features' => ['Tahfizh', 'Parent Portal'], 'allowed_modules' => ['schoolos', 'tahfizh']],
+            ['code' => 'standard', 'name' => 'Standard', 'billing_cycle' => 'monthly', 'features' => ['Reports', 'Notification'], 'allowed_modules' => ['schoolos', 'tahfizh', 'reports', 'notifications', 'exports']],
+            ['code' => 'pro', 'name' => 'Pro', 'billing_cycle' => 'monthly', 'features' => ['Mutabaah', 'Attendance', 'Tahsin'], 'allowed_modules' => ['schoolos', 'tahfizh', 'reports', 'notifications', 'exports', 'mutabaah', 'attendance', 'tahsin']],
+            ['code' => 'enterprise', 'name' => 'Enterprise', 'billing_cycle' => 'yearly', 'features' => ['Multi-campus', 'White-label', 'Boarding', 'Finance', 'Cashless', 'LMS'], 'allowed_modules' => ['schoolos', 'tahfizh', 'reports', 'notifications', 'exports', 'mutabaah', 'attendance', 'tahsin', 'finance', 'boarding', 'white_label', 'cashless', 'lms']],
         ];
 
         foreach ($plans as $plan) {

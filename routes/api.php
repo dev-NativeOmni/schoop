@@ -107,23 +107,23 @@ Route::prefix('mobile/v1')
                 Route::prefix('parent')->name('parent.')->group(function (): void {
                     Route::get('children', [ParentMobilePortalController::class, 'children'])->name('children');
                     Route::get('children/{student}/summary', [ParentMobilePortalController::class, 'summary'])->name('children.summary');
-                    Route::get('children/{student}/tahfizh', [ParentMobilePortalController::class, 'tahfizh'])->name('children.tahfizh');
-                    Route::get('children/{student}/mutabaah', [ParentMobilePortalController::class, 'mutabaah'])->name('children.mutabaah');
-                    Route::get('children/{student}/attendance', [ParentMobilePortalController::class, 'attendance'])->name('children.attendance');
-                    Route::get('children/{student}/tahsin', [ParentMobilePortalController::class, 'tahsin'])->name('children.tahsin');
-                    Route::get('children/{student}/finance', [ParentMobilePortalController::class, 'finance'])->name('children.finance');
-                    Route::get('children/{student}/cashless', [ParentMobilePortalController::class, 'cashless'])->name('children.cashless');
-                    Route::get('children/{student}/notifications', [ParentMobilePortalController::class, 'notifications'])->name('children.notifications');
+                    Route::get('children/{student}/tahfizh', [ParentMobilePortalController::class, 'tahfizh'])->middleware('module:tahfizh')->name('children.tahfizh');
+                    Route::get('children/{student}/mutabaah', [ParentMobilePortalController::class, 'mutabaah'])->middleware('module:mutabaah')->name('children.mutabaah');
+                    Route::get('children/{student}/attendance', [ParentMobilePortalController::class, 'attendance'])->middleware('module:attendance')->name('children.attendance');
+                    Route::get('children/{student}/tahsin', [ParentMobilePortalController::class, 'tahsin'])->middleware('module:tahsin')->name('children.tahsin');
+                    Route::get('children/{student}/finance', [ParentMobilePortalController::class, 'finance'])->middleware('module:finance')->name('children.finance');
+                    Route::get('children/{student}/cashless', [ParentMobilePortalController::class, 'cashless'])->middleware('module:cashless')->name('children.cashless');
+                    Route::get('children/{student}/notifications', [ParentMobilePortalController::class, 'notifications'])->middleware('module:notifications')->name('children.notifications');
                 });
 
                 Route::prefix('student/me')->name('student.me.')->group(function (): void {
                     Route::get('summary', [StudentMobilePortalController::class, 'summary'])->name('summary');
-                    Route::get('tahfizh', [StudentMobilePortalController::class, 'tahfizh'])->name('tahfizh');
-                    Route::get('mutabaah', [StudentMobilePortalController::class, 'mutabaah'])->name('mutabaah');
-                    Route::get('attendance', [StudentMobilePortalController::class, 'attendance'])->name('attendance');
-                    Route::get('tahsin', [StudentMobilePortalController::class, 'tahsin'])->name('tahsin');
-                    Route::get('finance', [StudentMobilePortalController::class, 'finance'])->name('finance');
-                    Route::get('cashless', [StudentMobilePortalController::class, 'cashless'])->name('cashless');
+                    Route::get('tahfizh', [StudentMobilePortalController::class, 'tahfizh'])->middleware('module:tahfizh')->name('tahfizh');
+                    Route::get('mutabaah', [StudentMobilePortalController::class, 'mutabaah'])->middleware('module:mutabaah')->name('mutabaah');
+                    Route::get('attendance', [StudentMobilePortalController::class, 'attendance'])->middleware('module:attendance')->name('attendance');
+                    Route::get('tahsin', [StudentMobilePortalController::class, 'tahsin'])->middleware('module:tahsin')->name('tahsin');
+                    Route::get('finance', [StudentMobilePortalController::class, 'finance'])->middleware('module:finance')->name('finance');
+                    Route::get('cashless', [StudentMobilePortalController::class, 'cashless'])->middleware('module:cashless')->name('cashless');
                     Route::get('qr-card', [StudentMobilePortalController::class, 'qrCard'])->name('qr-card');
                     Route::get('notifications', [StudentMobilePortalController::class, 'notifications'])->name('notifications');
                 });
@@ -133,19 +133,19 @@ Route::prefix('mobile/v1')
                     Route::get('classes', [TeacherMobilePortalController::class, 'classes'])->name('classes');
                     Route::get('students', [TeacherMobilePortalController::class, 'students'])->name('students');
                     Route::get('students/{student}/summary', [TeacherMobilePortalController::class, 'studentSummary'])->name('students.summary');
-                    Route::post('tahfizh/records', [TeacherMobilePortalController::class, 'storeTahfizhRecord'])->name('tahfizh.records.store');
-                    Route::get('tahfizh/records', [TeacherMobilePortalController::class, 'tahfizhRecords'])->name('tahfizh.records.index');
-                    Route::post('mutabaah/records', [TeacherMobilePortalController::class, 'storeMutabaahRecords'])->name('mutabaah.records.store');
-                    Route::get('attendance/sessions', [TeacherMobilePortalController::class, 'attendanceSessions'])->name('attendance.sessions');
-                    Route::post('attendance/scan', [TeacherMobilePortalController::class, 'scanAttendance'])->name('attendance.scan');
-                    Route::post('attendance/manual-records', [TeacherMobilePortalController::class, 'storeManualAttendance'])->name('attendance.manual-records.store');
-                    Route::post('tahsin/assessments', [TeacherMobilePortalController::class, 'storeTahsinAssessment'])->name('tahsin.assessments.store');
+                    Route::post('tahfizh/records', [TeacherMobilePortalController::class, 'storeTahfizhRecord'])->middleware('module:tahfizh')->name('tahfizh.records.store');
+                    Route::get('tahfizh/records', [TeacherMobilePortalController::class, 'tahfizhRecords'])->middleware('module:tahfizh')->name('tahfizh.records.index');
+                    Route::post('mutabaah/records', [TeacherMobilePortalController::class, 'storeMutabaahRecords'])->middleware('module:mutabaah')->name('mutabaah.records.store');
+                    Route::get('attendance/sessions', [TeacherMobilePortalController::class, 'attendanceSessions'])->middleware('module:attendance')->name('attendance.sessions');
+                    Route::post('attendance/scan', [TeacherMobilePortalController::class, 'scanAttendance'])->middleware('module:attendance')->name('attendance.scan');
+                    Route::post('attendance/manual-records', [TeacherMobilePortalController::class, 'storeManualAttendance'])->middleware('module:attendance')->name('attendance.manual-records.store');
+                    Route::post('tahsin/assessments', [TeacherMobilePortalController::class, 'storeTahsinAssessment'])->middleware('module:tahsin')->name('tahsin.assessments.store');
                     Route::get('notifications', [MobileNotificationController::class, 'teacher'])->name('notifications');
                 });
 
                 Route::prefix('merchant')
                     ->name('merchant.')
-                    ->middleware('throttle:mobile-checkout')
+                    ->middleware(['throttle:mobile-checkout', 'module:cashless'])
                     ->group(function (): void {
                         Route::get('profile', [MerchantMobilePosController::class, 'profile'])->name('profile');
                         Route::get('products', [MerchantMobilePosController::class, 'products'])->name('products');

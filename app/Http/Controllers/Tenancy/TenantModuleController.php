@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenancy;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenancy\UpdateTenantModuleRequest;
 use App\Models\TenantModule;
+use App\Services\SaasOps\PlanModuleAccessService;
 use App\Services\Tenancy\TenantContextService;
 use App\Services\Tenancy\TenantModuleService;
 use Illuminate\Http\RedirectResponse;
@@ -15,7 +16,11 @@ class TenantModuleController extends Controller
     protected TenantModuleService $moduleService;
     protected TenantContextService $contextService;
 
-    public function __construct(TenantModuleService $moduleService, TenantContextService $contextService)
+    public function __construct(
+        TenantModuleService $moduleService,
+        TenantContextService $contextService,
+        private readonly PlanModuleAccessService $planAccess,
+    )
     {
         $this->moduleService = $moduleService;
         $this->contextService = $contextService;
@@ -29,7 +34,10 @@ class TenantModuleController extends Controller
             ->orderBy('module_key')
             ->get();
 
-        return view('tenancy.modules.index', compact('modules'));
+        $subscription = $this->planAccess->currentSubscription((int) $schoolId);
+        $allowedModules = $this->planAccess->allowedModulesForPlan($subscription?->plan);
+
+        return view('tenancy.modules.index', compact('modules', 'allowedModules'));
     }
 
     public function update(UpdateTenantModuleRequest $request, TenantModule $tenantModule): RedirectResponse

@@ -6,11 +6,13 @@ use App\Models\MobileAppVersion;
 use App\Models\School;
 use App\Models\TenantModule;
 use App\Models\User;
+use App\Services\SaasOps\PlanModuleAccessService;
 
 class MobileBootstrapService
 {
     public function __construct(
         private readonly MobileAuthService $auth,
+        private readonly PlanModuleAccessService $planAccess,
     ) {}
 
     public function config(User $user, School $school, ?string $platform = null, ?string $appVersion = null): array
@@ -52,7 +54,7 @@ class MobileBootstrapService
                 'parent_portal' => true,
                 'student_portal' => true,
                 'teacher_workflow' => true,
-                'merchant_pos' => $this->moduleEnabled($school, 'cashless'),
+                'merchant_pos' => $this->moduleEnabled($school, 'cashless', $user),
                 'push_notifications' => false,
                 'offline_cashless' => false,
             ],
@@ -68,7 +70,7 @@ class MobileBootstrapService
                 'email' => $school->brandProfile?->public_contact_email ?? $school->email,
                 'phone' => $school->brandProfile?->public_contact_phone ?? $school->phone,
             ],
-            'navigation' => $this->navigationForRole($user),
+            'navigation' => $this->navigationForRole($user, $school),
         ];
     }
 
@@ -88,6 +90,7 @@ class MobileBootstrapService
             ->where('school_id', $school->id)
             ->orderBy('module_key')
             ->get()
+            ->filter(fn (TenantModule $module): bool => $this->planAccess->canAccessModule(null, (int) $school->id, $module->module_key))
             ->map(fn (TenantModule $module): array => [
                 'key' => $module->module_key,
                 'name' => $module->module_name,
@@ -97,23 +100,45 @@ class MobileBootstrapService
             ->all();
     }
 
-    private function moduleEnabled(School $school, string $key): bool
+    private function moduleEnabled(School $school, string $key, ?User $user = null): bool
     {
-        return TenantModule::query()
-            ->where('school_id', $school->id)
-            ->where('module_key', $key)
-            ->where('is_enabled', true)
-            ->exists();
+        return $this->planAccess->canAccessModule($user, (int) $school->id, $key);
     }
 
-    private function navigationForRole(User $user): array
+    private function navigationForRole(User $user, School $school): array
     {
-        return match ($user->role?->name) {
+        $items = match ($user->role?->name) {
             'parent' => ['children', 'progress', 'attendance', 'finance', 'cashless', 'notifications'],
             'student' => ['summary', 'tahfizh', 'attendance', 'cashless', 'qr-card', 'notifications'],
             'teacher' => ['dashboard', 'classes', 'students', 'tahfizh-input', 'attendance', 'tahsin', 'notifications'],
             'cashier', 'merchant' => ['merchant-profile', 'products', 'pos-session', 'checkout', 'sales'],
             default => ['dashboard', 'notifications'],
         };
+
+        $moduleByNavigationItem = [
+            'progress' => 'tahfizh',
+            'tahfizh' => 'tahfizh',
+            'tahfizh-input' => 'tahfizh',
+            'attendance' => 'attendance',
+            'tahsin' => 'tahsin',
+            'finance' => 'finance',
+            'cashless' => 'cashless',
+            'qr-card' => 'cashless',
+            'merchant-profile' => 'cashless',
+            'products' => 'cashless',
+            'pos-session' => 'cashless',
+            'checkout' => 'cashless',
+            'sales' => 'cashless',
+            'notifications' => 'notifications',
+        ];
+
+        return collect($items)
+            ->filter(function (string $item) use ($moduleByNavigationItem, $school, $user): bool {
+                $moduleKey = $moduleByNavigationItem[$item] ?? null;
+
+                return ! $moduleKey || $this->moduleEnabled($school, $moduleKey, $user);
+            })
+            ->values()
+            ->all();
     }
 }

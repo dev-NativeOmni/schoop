@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => CheckRole::class,
             'tenant.resolve' => \App\Http\Middleware\ResolveTenantContext::class,
             'tenant.access' => \App\Http\Middleware\EnsureTenantAccess::class,
+            'module' => \App\Http\Middleware\EnsureModuleAccess::class,
             'mobile.auth' => \App\Http\Middleware\AuthenticateMobileAccessToken::class,
             'mobile.tenant' => \App\Http\Middleware\EnsureMobileTenantContext::class,
             'mobile.version' => \App\Http\Middleware\EnsureMobileAppVersion::class,

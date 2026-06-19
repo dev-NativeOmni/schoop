@@ -191,7 +191,7 @@ Route::middleware('auth')->group(function (): void {
     });
 
     // Tahfizh Setoran Routes
-    Route::middleware('role:super_admin,admin,teacher')
+    Route::middleware('role:super_admin,admin,teacher', 'module:tahfizh')
         ->prefix('tahfizh')
         ->name('tahfizh.')
         ->group(function (): void {
@@ -202,7 +202,7 @@ Route::middleware('auth')->group(function (): void {
                 ->name('hafalan-records.store');
         });
 
-    Route::middleware('role:super_admin,admin,teacher,principal')
+    Route::middleware('role:super_admin,admin,teacher,principal', 'module:tahfizh')
         ->prefix('tahfizh')
         ->name('tahfizh.')
         ->group(function (): void {
@@ -213,7 +213,7 @@ Route::middleware('auth')->group(function (): void {
                 ->name('hafalan-records.show');
         });
 
-    Route::middleware('role:super_admin,admin,teacher')
+    Route::middleware('role:super_admin,admin,teacher', 'module:tahfizh')
         ->prefix('tahfizh')
         ->name('tahfizh.')
         ->group(function (): void {
@@ -228,7 +228,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
     // Tahfizh Targets and Debts Routes
-    Route::middleware('role:super_admin,admin')
+    Route::middleware('role:super_admin,admin', 'module:tahfizh')
         ->prefix('tahfizh')
         ->name('tahfizh.')
         ->group(function (): void {
@@ -251,7 +251,7 @@ Route::middleware('auth')->group(function (): void {
                 ->name('debts.calculate');
         });
 
-    Route::middleware('role:super_admin,admin,principal,teacher')
+    Route::middleware('role:super_admin,admin,principal,teacher', 'module:tahfizh')
         ->prefix('tahfizh')
         ->name('tahfizh.')
         ->group(function (): void {
@@ -269,7 +269,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
     // Tahfizh Reports Routes
-    Route::middleware('role:super_admin,admin,principal,teacher')
+    Route::middleware('role:super_admin,admin,principal,teacher', 'module:tahfizh')
         ->prefix('reports/tahfizh')
         ->name('reports.tahfizh.')
         ->group(function (): void {
@@ -290,7 +290,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
     // Parent Portal Routes
-    Route::middleware('role:parent')
+    Route::middleware('role:parent', 'module:tahfizh')
         ->prefix('portal/parent')
         ->name('portal.parent.')
         ->group(function (): void {
@@ -308,7 +308,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
     // Student Portal Routes
-    Route::middleware('role:student')
+    Route::middleware('role:student', 'module:tahfizh')
         ->prefix('portal/student')
         ->name('portal.student.')
         ->group(function (): void {
@@ -325,6 +325,7 @@ Route::middleware('auth')->group(function (): void {
     // Notification Center Routes
     Route::prefix('notifications')
         ->name('notifications.')
+        ->middleware('module:notifications')
         ->group(function (): void {
             Route::get('/', [NotificationCenterController::class, 'index'])
                 ->name('index');
@@ -343,7 +344,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
 // Announcement Routes
-    Route::middleware('role:super_admin,admin')
+    Route::middleware('role:super_admin,admin', 'module:notifications')
         ->prefix('notifications/announcements')
         ->name('notifications.announcements.')
         ->group(function (): void {
@@ -355,7 +356,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
     // Export Routes
-    Route::middleware('role:super_admin,admin,principal,teacher')
+    Route::middleware('role:super_admin,admin,principal,teacher', 'module:exports')
         ->prefix('exports/tahfizh')
         ->name('exports.tahfizh.')
         ->group(function (): void {
@@ -391,7 +392,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
     // Mutabaah Routes
-    Route::middleware('role:super_admin,admin,teacher,principal')
+    Route::middleware('role:super_admin,admin,teacher,principal', 'module:mutabaah')
         ->prefix('mutabaah')
         ->name('mutabaah.')
         ->group(function (): void {
@@ -408,7 +409,7 @@ Route::middleware('auth')->group(function (): void {
                 ->name('daily.store');
         });
 
-    Route::middleware('role:super_admin,admin')
+    Route::middleware('role:super_admin,admin', 'module:mutabaah')
         ->prefix('mutabaah')
         ->name('mutabaah.')
         ->group(function (): void {
@@ -417,18 +418,18 @@ Route::middleware('auth')->group(function (): void {
 
     // Parent Mutabaah Portal Route
     Route::get('/portal/parent/mutabaah/{student}', [ParentMutabaahPortalController::class, 'show'])
-        ->middleware('role:parent')
+        ->middleware('role:parent', 'module:mutabaah')
         ->name('portal.parent.mutabaah');
 
     // Student Mutabaah Portal Route
     Route::get('/portal/student/mutabaah', [StudentMutabaahPortalController::class, 'index'])
-        ->middleware('role:student')
+        ->middleware('role:student', 'module:mutabaah')
         ->name('portal.student.mutabaah');
 
     // Attendance Routes
     Route::prefix('attendance')
         ->name('attendance.')
-        ->middleware(['role:super_admin,admin,admin_sekolah,kepala_sekolah,principal,teacher,guru,guru_tahfidz'])
+        ->middleware(['role:super_admin,admin,admin_sekolah,kepala_sekolah,principal,teacher,guru,guru_tahfidz', 'module:attendance'])
         ->group(function (): void {
             Route::get('/qr-cards', [AttendanceQrCardController::class, 'index'])
                 ->name('qr-cards.index');
@@ -459,18 +460,18 @@ Route::middleware('auth')->group(function (): void {
 
     // Parent Attendance Portal Route
     Route::get('/portal/parent/attendance', [ParentAttendancePortalController::class, 'index'])
-        ->middleware(['role:parent'])
+        ->middleware(['role:parent', 'module:attendance'])
         ->name('portal.parent.attendance');
 
     // Student Attendance Portal Route
     Route::get('/portal/student/attendance', [StudentAttendancePortalController::class, 'index'])
-        ->middleware(['role:student'])
+        ->middleware(['role:student', 'module:attendance'])
         ->name('portal.student.attendance');
 
     // Tahsin Management Routes
     Route::prefix('tahsin')
         ->name('tahsin.')
-        ->middleware(['role:super_admin,admin,admin_sekolah,kepala_sekolah,principal,teacher,guru,guru_tahfidz'])
+        ->middleware(['role:super_admin,admin,admin_sekolah,kepala_sekolah,principal,teacher,guru,guru_tahfidz', 'module:tahsin'])
         ->group(function (): void {
             Route::get('/reports/dashboard', [TahsinReportController::class, 'dashboard'])
                 ->name('reports.dashboard');
@@ -505,18 +506,18 @@ Route::middleware('auth')->group(function (): void {
 
     // Parent Tahsin Portal Route
     Route::get('/portal/parent/tahsin', [ParentTahsinPortalController::class, 'index'])
-        ->middleware(['role:parent'])
+        ->middleware(['role:parent', 'module:tahsin'])
         ->name('portal.parent.tahsin');
 
     // Student Tahsin Portal Route
     Route::get('/portal/student/tahsin', [StudentTahsinPortalController::class, 'index'])
-        ->middleware(['role:student'])
+        ->middleware(['role:student', 'module:tahsin'])
         ->name('portal.student.tahsin');
 
     // Student Finance Ledger Routes
     Route::prefix('finance')
         ->name('finance.')
-        ->middleware(['role:super_admin,admin,principal,finance'])
+        ->middleware(['role:super_admin,admin,principal,finance', 'module:finance'])
         ->group(function (): void {
             Route::get('/reports/dashboard', [FinanceReportController::class, 'dashboard'])
                 ->name('reports.dashboard');
@@ -559,27 +560,28 @@ Route::middleware('auth')->group(function (): void {
         });
 
     Route::get('/portal/parent/finance', [ParentFinancePortalController::class, 'index'])
-        ->middleware(['role:parent'])
+        ->middleware(['role:parent', 'module:finance'])
         ->name('portal.parent.finance');
 
     Route::get('/portal/parent/cashless', [ParentCashlessPortalController::class, 'index'])
-        ->middleware(['role:parent'])
+        ->middleware(['role:parent', 'module:cashless'])
         ->name('portal.parent.cashless');
 
     Route::put('/portal/parent/cashless/{wallet}', [ParentCashlessPortalController::class, 'update'])
-        ->middleware(['role:parent'])
+        ->middleware(['role:parent', 'module:cashless'])
         ->name('portal.parent.cashless.update');
 
     Route::get('/portal/student/finance', [StudentFinancePortalController::class, 'index'])
-        ->middleware(['role:student'])
+        ->middleware(['role:student', 'module:finance'])
         ->name('portal.student.finance');
 
     Route::get('/portal/student/cashless', StudentCashlessPortalController::class)
-        ->middleware(['role:student'])
+        ->middleware(['role:student', 'module:cashless'])
         ->name('portal.student.cashless');
 
     Route::prefix('schoolos')
         ->name('schoolos.')
+        ->middleware('module:schoolos')
         ->group(function (): void {
             Route::get('/', [SchoolOsDashboardController::class, 'index'])
                 ->name('dashboard');
@@ -618,7 +620,7 @@ Route::middleware('auth')->group(function (): void {
         ->name('quran.mushaf');
 
     // Boarding School Management System Routes
-    Route::middleware(['role:super_admin,admin,principal,boarding_supervisor'])->prefix('boarding')->name('boarding.')->group(function (): void {
+    Route::middleware(['role:super_admin,admin,principal,boarding_supervisor', 'module:boarding'])->prefix('boarding')->name('boarding.')->group(function (): void {
         Route::get('/', BoardingDashboardController::class)->name('dashboard');
 
         // Master Data CRUD
@@ -673,16 +675,16 @@ Route::middleware('auth')->group(function (): void {
 
     // Parent Boarding Portal Route
     Route::get('/portal/parent/boarding', ParentBoardingPortalController::class)
-        ->middleware(['role:parent'])
+        ->middleware(['role:parent', 'module:boarding'])
         ->name('portal.parent.boarding');
 
     // Student Boarding Portal Route
     Route::get('/portal/student/boarding', StudentBoardingPortalController::class)
-        ->middleware(['role:student'])
+        ->middleware(['role:student', 'module:boarding'])
         ->name('portal.student.boarding');
 
     // Phase 24 — LMS Lite & Learning Content Routes
-    Route::middleware(['auth', 'role:super_admin,admin,principal,teacher'])->prefix('lms')->name('lms.')->group(function (): void {
+    Route::middleware(['auth', 'role:super_admin,admin,principal,teacher', 'module:lms'])->prefix('lms')->name('lms.')->group(function (): void {
         Route::get('/', [\App\Http\Controllers\Lms\LmsDashboardController::class, 'index'])->name('dashboard');
         Route::resource('courses', \App\Http\Controllers\Lms\LmsCourseController::class);
         Route::resource('modules', \App\Http\Controllers\Lms\LmsCourseModuleController::class);
@@ -701,11 +703,11 @@ Route::middleware('auth')->group(function (): void {
 
     // LMS Secure Private File Access Route (authenticated users only)
     Route::get('/lms/private-file/{type}/{id}', [\App\Http\Controllers\Lms\LmsLessonResourceController::class, 'downloadPrivateFile'])
-        ->middleware(['auth'])
+        ->middleware(['auth', 'module:lms'])
         ->name('lms.private-file.download');
 
     // Portal Student LMS Routes
-    Route::middleware(['auth', 'role:student'])->prefix('portal/student/lms')->name('portal.student.lms.')->group(function (): void {
+    Route::middleware(['auth', 'role:student', 'module:lms'])->prefix('portal/student/lms')->name('portal.student.lms.')->group(function (): void {
         Route::get('/', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'index'])->name('index');
         Route::get('/course/{course}', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'showCourse'])->name('course.show');
         Route::get('/lesson/{lesson}', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'showLesson'])->name('lesson.show');
@@ -717,7 +719,7 @@ Route::middleware('auth')->group(function (): void {
     });
 
     // Portal Parent LMS Routes
-    Route::middleware(['auth', 'role:parent'])->prefix('portal/parent/lms')->name('portal.parent.lms.')->group(function (): void {
+    Route::middleware(['auth', 'role:parent', 'module:lms'])->prefix('portal/parent/lms')->name('portal.parent.lms.')->group(function (): void {
         Route::get('/', [\App\Http\Controllers\Portal\ParentLmsPortalController::class, 'index'])->name('index');
         Route::get('/student/{student}/course/{course}', [\App\Http\Controllers\Portal\ParentLmsPortalController::class, 'showChildProgress'])->name('child.course.show');
     });
@@ -873,7 +875,7 @@ Route::middleware('auth')->group(function (): void {
             Route::get('/tenancy/audit-logs', [TenantAuditLogController::class, 'index'])->name('tenancy.audit-logs.index');
 
             // Phase 19 — Cashless Kantin / Merchant POS
-            Route::prefix('cashless')->name('cashless.')->middleware(['role:super_admin,admin,finance,cashier,merchant,principal'])->group(function (): void {
+            Route::prefix('cashless')->name('cashless.')->middleware(['role:super_admin,admin,finance,cashier,merchant,principal', 'module:cashless'])->group(function (): void {
                 Route::middleware(['role:super_admin,admin,finance,principal'])->group(function (): void {
                     Route::get('/reports/dashboard', [CashlessReportController::class, 'dashboard'])->name('reports.dashboard');
                     Route::get('/reports/wallet-transactions', [CashlessReportController::class, 'walletTransactions'])->name('reports.wallet-transactions');
@@ -917,7 +919,7 @@ Route::middleware('auth')->group(function (): void {
             });
 
             // White-Label School App Builder Routes
-            Route::prefix('white-label')->name('white-label.')->middleware(['role:super_admin,admin,admin_sekolah'])->group(function (): void {
+            Route::prefix('white-label')->name('white-label.')->middleware(['role:super_admin,admin,admin_sekolah', 'module:white_label'])->group(function (): void {
                 Route::get('/', [App\Http\Controllers\WhiteLabel\WhiteLabelDashboardController::class, 'index'])->name('dashboard');
                 
                 // Brand Profile

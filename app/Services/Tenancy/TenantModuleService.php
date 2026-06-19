@@ -3,13 +3,14 @@
 namespace App\Services\Tenancy;
 
 use App\Models\TenantModule;
+use App\Services\SaasOps\PlanModuleAccessService;
 use Illuminate\Support\Facades\DB;
 
 class TenantModuleService
 {
     protected TenantAuditLogger $logger;
 
-    public function __construct(TenantAuditLogger $logger)
+    public function __construct(TenantAuditLogger $logger, private readonly PlanModuleAccessService $planAccess)
     {
         $this->logger = $logger;
     }
@@ -25,6 +26,10 @@ class TenantModuleService
 
     public function updateModule(TenantModule $module, array $data): TenantModule
     {
+        if ((bool) $data['is_enabled'] && ! $this->planAccess->moduleIsAllowedByPlan((int) $module->school_id, $module->module_key)) {
+            abort(403, 'Modul ini tidak termasuk dalam subscription plan sekolah.');
+        }
+
         return DB::transaction(function () use ($module, $data) {
             $oldValues = $module->toArray();
 

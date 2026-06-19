@@ -99,6 +99,14 @@ class SystemModuleSeeder extends Seeder
                 'is_core' => false,
             ],
             [
+                'module_key' => 'lms',
+                'name' => 'LMS Lite',
+                'description' => 'Kursus, materi, tugas, kuis, dan progres belajar santri.',
+                'route_name' => 'lms.dashboard',
+                'sort_order' => 105,
+                'is_core' => false,
+            ],
+            [
                 'module_key' => 'saas_ops',
                 'name' => 'SaaS Operations',
                 'description' => 'Subscription, tenant billing, onboarding, support, incident, release, knowledge base, and usage health operations.',

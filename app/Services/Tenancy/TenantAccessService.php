@@ -5,6 +5,7 @@ namespace App\Services\Tenancy;
 use App\Models\School;
 use App\Models\User;
 use App\Models\UserSchoolMembership;
+use App\Services\SaasOps\PlanModuleAccessService;
 
 class TenantAccessService
 {
@@ -41,6 +42,10 @@ class TenantAccessService
 
         if (! $this->isSaaSInternal($user) && ($school->is_tenant_enabled === false || $school->tenant_status === 'suspended')) {
             abort(403, 'Tenant sekolah sedang tidak aktif.');
+        }
+
+        if (! $this->isSaaSInternal($user) && ! app(PlanModuleAccessService::class)->subscriptionAllowsAccess($schoolId)) {
+            abort(403, 'Subscription sekolah sedang tidak aktif.');
         }
     }
 
