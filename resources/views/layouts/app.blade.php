@@ -51,26 +51,76 @@
     @endif
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-900 antialiased transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
-    <div class="min-h-screen">
-        @auth
+    @auth
+        <div class="min-h-screen flex flex-col lg:flex-row-reverse bg-slate-50 dark:bg-slate-950">
+            <!-- Sidebar Navigation -->
             <x-navbar />
-        @endauth
 
-        <main class="mx-auto max-w-7xl px-4 py-8">
-            @if (session('success'))
-                <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-800 dark:border-green-900/50 dark:bg-green-950/30 dark:text-green-300">
-                    {{ session('success') }}
-                </div>
-            @endif
+            <!-- Main Content Area -->
+            <div class="flex-1 flex flex-col min-w-0 min-h-screen pt-16 lg:pt-0">
+                <!-- Topbar for desktop -->
+                <header class="sticky top-0 z-40 bg-[#1F2937]/95 backdrop-blur-md border-b border-slate-750 h-16 flex items-center justify-between px-6 shadow-sm lg:flex hidden">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-sm font-semibold text-slate-400">Selamat datang kembali,</span>
+                        <span class="text-sm font-bold text-white">{{ Auth::user()->name }}</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <!-- Notifications Link -->
+                        @php $activeNotif = request()->routeIs('notifications.*'); @endphp
+                        <a href="{{ route('notifications.index') }}" class="relative rounded-full p-2 text-slate-400 hover:bg-slate-800 hover:text-[#A3E635] transition-colors focus:outline-none">
+                            @if ($activeNotif)
+                                <svg class="h-5.5 w-5.5 text-[#A3E635]" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" /></svg>
+                            @else
+                                <svg class="h-5.5 w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                            @endif
+                        </a>
 
-            @if (session('error'))
-                <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300">
-                    {{ session('error') }}
-                </div>
-            @endif
+                        <!-- Dark Mode Toggle -->
+                        <button @click="Alpine.store('darkMode', !Alpine.store('darkMode')); localStorage.setItem('darkMode', Alpine.store('darkMode'))" class="rounded-full p-2 text-slate-400 hover:bg-slate-800 hover:text-[#A3E635] transition-colors focus:outline-none">
+                            <svg x-show="!$store.darkMode" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                            <svg x-show="$store.darkMode" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" style="display: none;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
+                        </button>
 
-            @yield('content')
-        </main>
-    </div>
+                        <!-- Avatar Dropdown Component -->
+                        <x-avatar />
+                    </div>
+                </header>
+
+                <main class="flex-1 p-4 sm:p-6 lg:p-8">
+                    @if (session('success'))
+                        <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-800 dark:border-green-900/50 dark:bg-green-950/30 dark:text-green-300">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    @yield('content')
+                </main>
+            </div>
+        </div>
+    @else
+        <div class="min-h-screen bg-slate-50 dark:bg-slate-950">
+            <main class="mx-auto max-w-7xl px-4 py-8">
+                @if (session('success'))
+                    <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-800 dark:border-green-900/50 dark:bg-green-950/30 dark:text-green-300">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                @yield('content')
+            </main>
+        </div>
+    @endauth
 </body>
 </html>
