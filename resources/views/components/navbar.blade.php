@@ -34,8 +34,11 @@
     $canManageTenancy = in_array($roleName, ['super_admin', 'admin', 'admin_sekolah', 'kepala_sekolah', 'principal'], true);
     $activeSchool = app(\App\Services\Tenancy\TenantContextService::class)->activeSchool();
     $activeSchoolId = app(\App\Services\Tenancy\TenantContextService::class)->activeSchoolId();
-    $planModuleAccess = app(\App\Services\SaasOps\PlanModuleAccessService::class);
-    $moduleAvailable = fn (string $moduleKey): bool => ! $activeSchoolId || $planModuleAccess->canAccessModule($user, (int) $activeSchoolId, $moduleKey);
+    $moduleAccess = app(\App\Services\Billing\ModuleAccessService::class);
+    $moduleAvailable = fn (string $moduleKey): bool => 
+        (method_exists($user, 'hasRole') && $user->hasRole(['super_admin'])) 
+        || ! $activeSchool 
+        || $moduleAccess->isEnabledForSchool($activeSchool, $moduleKey);
     $canUseSchoolOs = $moduleAvailable('schoolos');
     $canUseTahfizh = $moduleAvailable('tahfizh');
     $canUseMutabaah = $moduleAvailable('mutabaah');
@@ -221,6 +224,28 @@
                                 @endif
                                 <a href="{{ route('tenancy.audit-logs.index') }}" class="block py-1 px-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 transition">Tenant Audit Logs</a>
                             @endif
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Billing & Subscription Accordion -->
+                @if (in_array($roleName, ['super_admin', 'admin', 'admin_sekolah'], true))
+                    @php $active = request()->routeIs('billing.*'); @endphp
+                    <div class="space-y-1">
+                        <button @click="openDropdown = openDropdown === 'billing' ? null : 'billing'" 
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                            <div class="flex items-center space-x-3">
+                                <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                                </svg>
+                                <span>Billing & Paket</span>
+                            </div>
+                            <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': openDropdown === 'billing' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div x-show="openDropdown === 'billing'" x-collapse class="pl-7 space-y-1.5" style="display: none;">
+                            <a href="{{ route('billing.plans.index') }}" class="block py-1 px-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 transition">Paket Langganan</a>
+                            <a href="{{ route('billing.school-subscriptions.index') }}" class="block py-1 px-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 transition">Langganan Sekolah</a>
+                            <a href="{{ route('billing.module-overrides.index') }}" class="block py-1 px-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 transition">Override Modul</a>
                         </div>
                     </div>
                 @endif
@@ -744,6 +769,21 @@
                                     <a href="{{ route('white-label.dashboard') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">White-Label Builder</a>
                                 @endif
                             @endif
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Billing & Subscription Mobile -->
+                @if (in_array($roleName, ['super_admin', 'admin', 'admin_sekolah'], true))
+                    <div class="space-y-1">
+                        <button @click="openDropdown = openDropdown === 'billing-m' ? null : 'billing-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-355 hover:bg-slate-800 hover:text-white">
+                            <span>Billing & Paket</span>
+                            <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'billing-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div x-show="openDropdown === 'billing-m'" x-collapse class="pl-5 space-y-1" style="display: none;">
+                            <a href="{{ route('billing.plans.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Paket Langganan</a>
+                            <a href="{{ route('billing.school-subscriptions.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Langganan Sekolah</a>
+                            <a href="{{ route('billing.module-overrides.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Override Modul</a>
                         </div>
                     </div>
                 @endif

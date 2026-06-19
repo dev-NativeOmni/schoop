@@ -61,9 +61,21 @@ class StudentController extends Controller
 
     public function store(StoreStudentRequest $request): RedirectResponse
     {
-        DB::transaction(function () use ($request): void {
+        $schoolId = auth()->user()->isSuperAdmin() ? $request->integer('school_id') : auth()->user()->school_id;
+        $school = School::query()->findOrFail($schoolId);
+
+        $planLimitService = app(\App\Services\Billing\PlanLimitService::class);
+        if (!$planLimitService->isWithinLimit($school, 'max_students', 1)) {
+            if (method_exists(auth()->user(), 'hasRole') && auth()->user()->hasRole(['super_admin', 'admin', 'admin_sekolah'])) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Limit jumlah santri pada plan ini sudah tercapai.');
+            }
+            abort(403, 'Limit jumlah santri pada plan ini sudah tercapai.');
+        }
+
+        DB::transaction(function () use ($request, $schoolId): void {
             $userId = null;
-            $schoolId = auth()->user()->isSuperAdmin() ? $request->integer('school_id') : auth()->user()->school_id;
 
             if ($request->boolean('create_login_account')) {
                 $role = Role::query()->where(['name' => 'student'])->firstOrFail();
@@ -102,6 +114,9 @@ class StudentController extends Controller
 
             $student->parents()->sync($request->input('parent_profile_ids', []));
         });
+
+        // Refresh usage after creation
+        $planLimitService->refreshUsage($school);
 
         return redirect()
             ->route('master-data.students.index')

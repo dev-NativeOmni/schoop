@@ -23,8 +23,8 @@
                             Route: {{ $module->route_name ?? '-' }} {{ $module->route_exists ? '(ready)' : '(missing)' }}
                         </p>
                     </div>
-                    <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $module->is_enabled ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600' }}">
-                        {{ $module->is_enabled ? 'Aktif' : 'Nonaktif' }}
+                    <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $module->is_active ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600' }}">
+                        {{ $module->is_active ? 'Aktif' : 'Nonaktif' }}
                     </span>
                 </div>
 
@@ -39,7 +39,7 @@
                         @method('PATCH')
 
                         <label class="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-                            <input type="checkbox" name="is_enabled" value="1" @checked($module->is_enabled)>
+                            <input type="checkbox" name="is_active" value="1" @checked($module->is_active)>
                             Aktif
                         </label>
 

@@ -12,7 +12,7 @@ class ModuleRegistryService
     {
         return SystemModule::query()
             ->where('school_id', $schoolId)
-            ->where('is_enabled', true)
+            ->where('is_active', true)
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get()

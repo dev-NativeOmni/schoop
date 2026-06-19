@@ -17,7 +17,7 @@ class UpdateSystemModuleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'is_enabled' => ['nullable', 'boolean'],
+            'is_active' => ['nullable', 'boolean'],
             'sort_order' => ['nullable', 'integer', 'min:0', 'max:65535'],
         ];
     }

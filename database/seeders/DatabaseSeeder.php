@@ -43,6 +43,8 @@ class DatabaseSeeder extends Seeder
             LmsSampleCourseSeeder::class,
             AiFeatureFlagSeeder::class,
             AiFeedbackTemplateSeeder::class,
+            SubscriptionPlanSeeder::class,
+            PlanModuleSeeder::class,
         ]);
     }
 }

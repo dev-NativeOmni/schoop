@@ -7,31 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class SystemModule extends Model
+class SubscriptionPlan extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'school_id',
-        'module_key',
+        'code',
         'name',
+        'monthly_price',
+        'yearly_price',
         'description',
-        'route_name',
-        'icon',
-        'sort_order',
+        'limits',
         'is_active',
-        'is_core',
+        'sort_order',
     ];
 
     protected $casts = [
-        'sort_order' => 'integer',
+        'monthly_price' => 'integer',
+        'yearly_price' => 'integer',
+        'limits' => 'array',
         'is_active' => 'boolean',
-        'is_core' => 'boolean',
+        'sort_order' => 'integer',
     ];
 
-    public function plans(): BelongsToMany
+    public function modules(): BelongsToMany
     {
-        return $this->belongsToMany(SubscriptionPlan::class, 'plan_modules')
+        return $this->belongsToMany(SystemModule::class, 'plan_modules')
             ->withPivot(['is_included', 'limits', 'features'])
             ->withTimestamps();
     }
@@ -39,5 +40,10 @@ class SystemModule extends Model
     public function planModules(): HasMany
     {
         return $this->hasMany(PlanModule::class);
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(SchoolSubscription::class);
     }
 }

@@ -129,6 +129,11 @@ use App\Http\Controllers\Ai\AiFeatureFlagController;
 use App\Http\Controllers\Ai\AiSafetyEventController;
 use App\Http\Controllers\Portal\ParentAiLearningPortalController;
 use App\Http\Controllers\Portal\StudentAiLearningPortalController;
+use App\Http\Controllers\Billing\SubscriptionPlanController;
+use App\Http\Controllers\Billing\PlanModuleController;
+use App\Http\Controllers\Billing\SchoolSubscriptionController;
+use App\Http\Controllers\Billing\SchoolModuleOverrideController;
+use App\Http\Controllers\Billing\ModuleLockedController;
 
 Route::get('/', [App\Http\Controllers\Public\TenantPublicLandingController::class, 'index'])->name('tenant.public.landing');
 Route::get('/manifest.json', [App\Http\Controllers\Public\TenantPwaManifestController::class, 'show'])->name('tenant.pwa.manifest');
@@ -190,7 +195,19 @@ Route::middleware('auth')->group(function (): void {
         Route::resource('users', UserController::class);
     });
 
-    // Tahfizh Setoran Routes
+    // Quran Interactive Routes
+    Route::get('/quran-pdf', [QuranPdfController::class, 'index'])
+        ->name('quran.pdf');
+
+    Route::post('/quran-pdf/config', [QuranPdfController::class, 'updateConfig'])
+        ->middleware('role:super_admin,admin')
+        ->name('quran.pdf.config');
+
+    Route::get('/mushaf', [QuranMushafController::class, 'index'])
+        ->name('quran.mushaf');
+
+    Route::middleware(['subscription.active'])->group(function (): void {
+        // Tahfizh Setoran Routes
     Route::middleware('role:super_admin,admin,teacher', 'module:tahfizh')
         ->prefix('tahfizh')
         ->name('tahfizh.')
@@ -608,16 +625,6 @@ Route::middleware('auth')->group(function (): void {
                 ->name('modules.update');
         });
 
-    // Quran Interactive Routes
-    Route::get('/quran-pdf', [QuranPdfController::class, 'index'])
-        ->name('quran.pdf');
-
-    Route::post('/quran-pdf/config', [QuranPdfController::class, 'updateConfig'])
-        ->middleware('role:super_admin,admin')
-        ->name('quran.pdf.config');
-
-    Route::get('/mushaf', [QuranMushafController::class, 'index'])
-        ->name('quran.mushaf');
 
     // Boarding School Management System Routes
     Route::middleware(['role:super_admin,admin,principal,boarding_supervisor', 'module:boarding'])->prefix('boarding')->name('boarding.')->group(function (): void {
@@ -722,6 +729,8 @@ Route::middleware('auth')->group(function (): void {
     Route::middleware(['auth', 'role:parent', 'module:lms'])->prefix('portal/parent/lms')->name('portal.parent.lms.')->group(function (): void {
         Route::get('/', [\App\Http\Controllers\Portal\ParentLmsPortalController::class, 'index'])->name('index');
         Route::get('/student/{student}/course/{course}', [\App\Http\Controllers\Portal\ParentLmsPortalController::class, 'showChildProgress'])->name('child.course.show');
+    });
+
     });
 
     // Phase 20 — Company/Product Scale & SaaS Operations
@@ -875,7 +884,7 @@ Route::middleware('auth')->group(function (): void {
             Route::get('/tenancy/audit-logs', [TenantAuditLogController::class, 'index'])->name('tenancy.audit-logs.index');
 
             // Phase 19 — Cashless Kantin / Merchant POS
-            Route::prefix('cashless')->name('cashless.')->middleware(['role:super_admin,admin,finance,cashier,merchant,principal', 'module:cashless'])->group(function (): void {
+            Route::prefix('cashless')->name('cashless.')->middleware(['role:super_admin,admin,finance,cashier,merchant,principal', 'subscription.active', 'module:cashless'])->group(function (): void {
                 Route::middleware(['role:super_admin,admin,finance,principal'])->group(function (): void {
                     Route::get('/reports/dashboard', [CashlessReportController::class, 'dashboard'])->name('reports.dashboard');
                     Route::get('/reports/wallet-transactions', [CashlessReportController::class, 'walletTransactions'])->name('reports.wallet-transactions');
@@ -919,7 +928,7 @@ Route::middleware('auth')->group(function (): void {
             });
 
             // White-Label School App Builder Routes
-            Route::prefix('white-label')->name('white-label.')->middleware(['role:super_admin,admin,admin_sekolah', 'module:white_label'])->group(function (): void {
+            Route::prefix('white-label')->name('white-label.')->middleware(['role:super_admin,admin,admin_sekolah', 'subscription.active', 'module:white_label'])->group(function (): void {
                 Route::get('/', [App\Http\Controllers\WhiteLabel\WhiteLabelDashboardController::class, 'index'])->name('dashboard');
                 
                 // Brand Profile
@@ -980,4 +989,26 @@ Route::middleware('auth')->group(function (): void {
     Route::get('portal/parent/ai-learning', [ParentAiLearningPortalController::class, 'index'])->name('portal.parent.ai-learning');
     Route::get('portal/student/ai-learning', [StudentAiLearningPortalController::class, 'index'])->name('portal.student.ai-learning');
     Route::post('portal/student/ai-learning/items/{itemId}/status', [StudentAiLearningPortalController::class, 'updateStatus'])->name('portal.student.ai-learning.update-status');
+
+    // Subscription & Module Entitlement Routes
+    Route::middleware(['role:super_admin,admin,admin_sekolah'])
+        ->prefix('billing')
+        ->name('billing.')
+        ->group(function (): void {
+            Route::resource('plans', SubscriptionPlanController::class);
+
+            Route::get('plans/{plan}/modules', [PlanModuleController::class, 'edit'])
+                ->name('plans.modules.edit');
+
+            Route::put('plans/{plan}/modules', [PlanModuleController::class, 'update'])
+                ->name('plans.modules.update');
+
+            Route::resource('school-subscriptions', SchoolSubscriptionController::class);
+
+            Route::resource('module-overrides', SchoolModuleOverrideController::class)
+                ->except(['show']);
+
+            Route::get('locked/module/{moduleKey}', [ModuleLockedController::class, 'show'])
+                ->name('locked.module');
+        });
 });

@@ -28,6 +28,7 @@
 | 23 | Advanced Analytics & Executive Intelligence | Done |
 | 24 | LMS Lite & Learning Content | Done |
 | 25 | AI-Assisted Qur’an Learning & Product Differentiation | Done |
+| 26 | Subscription Plan and Module Entitlement Engine | Done |
 
 ## Phase 19 - Cashless Kantin / Merchant POS
 
@@ -209,3 +210,21 @@ Catatan:
 - Tidak ada Voice AI / Audio Tajwid / biometric data yang diunggah.
 - Tidak ada data murid yang dikirim ke API eksternal pihak ketiga (Google, OpenAI, dll.) secara default.
 - Seluruh keputusan penilaian akhir mutlak di tangan guru (human-in-the-loop).
+
+## Phase 26 — Subscription Plan and Module Entitlement Engine
+
+Status: Done
+
+Output:
+- Database schema for subscription plans, plan-module mappings, school subscriptions, module overrides, and usage tracking.
+- Dynamic entitlement service and resolvers detecting active subscriptions and enabled system modules.
+- Form requests and resource CRUD controllers for billing management (Plans, Modules, School Subscriptions, Overrides).
+- Integrated middleware protection (`subscription.active` and `module:{key}`) protecting all modular features.
+- Custom blade views with clean user interfaces for billing administration.
+- Sidebar menu filtering hiding/locking menus dynamically based on entitlement status.
+- Student plan limit checks preventing student registration once limit is reached.
+- Comprehensive technical documentation.
+
+Catatan:
+- Tidak ada payment gateway atau pemrosesan kartu kredit otomatis.
+- Semua siklus penagihan, status, dan data override dikelola secara manual oleh platform admin.

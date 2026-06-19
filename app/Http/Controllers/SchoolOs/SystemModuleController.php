@@ -33,7 +33,7 @@ class SystemModuleController extends Controller
         SystemModule $systemModule
     ): RedirectResponse {
         $systemModule->update([
-            'is_enabled' => $request->boolean('is_enabled'),
+            'is_active' => $request->boolean('is_active'),
             'sort_order' => $request->input('sort_order', $systemModule->sort_order),
         ]);
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class School extends Model
 {
@@ -124,5 +125,22 @@ class School extends Model
     public function cashlessWallets(): HasMany
     {
         return $this->hasMany(CashlessWallet::class);
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(SchoolSubscription::class);
+    }
+
+    public function activeSubscription(): HasOne
+    {
+        return $this->hasOne(SchoolSubscription::class)
+            ->whereIn('status', ['trialing', 'active'])
+            ->latestOfMany();
+    }
+
+    public function moduleOverrides(): HasMany
+    {
+        return $this->hasMany(SchoolModuleOverride::class);
     }
 }
