@@ -1,5 +1,6 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
+import 'preline';
 
 // Dark mode persistence using Alpine store
 document.addEventListener('alpine:init', () => {
