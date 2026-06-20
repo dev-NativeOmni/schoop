@@ -13,15 +13,6 @@ $_ENV['APP_PACKAGES_CACHE'] = '/tmp/storage/bootstrap/cache/packages.php';
 $_ENV['APP_ROUTES_CACHE'] = '/tmp/storage/bootstrap/cache/routes.php';
 $_ENV['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/cache/services.php';
 
-// Map Supabase Integration variables to Laravel database config
-if (isset($_ENV['POSTGRES_HOST'])) {
-    $_ENV['DB_CONNECTION'] = 'pgsql';
-    $_ENV['DB_HOST'] = $_ENV['POSTGRES_HOST'];
-    $_ENV['DB_PORT'] = $_ENV['POSTGRES_PORT'] ?? '5432';
-    $_ENV['DB_DATABASE'] = $_ENV['POSTGRES_DATABASE'];
-    $_ENV['DB_USERNAME'] = $_ENV['POSTGRES_USER'];
-    $_ENV['DB_PASSWORD'] = $_ENV['POSTGRES_PASSWORD'];
-}
 
 // Buat direktori yang diperlukan di /tmp jika belum ada
 if (!is_dir('/tmp/storage/framework/views')) {
