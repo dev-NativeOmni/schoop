@@ -23,8 +23,15 @@ class ResolveTenantFromDomain
 
     public function handle(Request $request, Closure $next): Response
     {
+
+
         $host = $request->getHost();
-        $school = $this->domainResolver->resolve($host);
+        $school = null;
+        try {
+            $school = $this->domainResolver->resolve($host);
+        } catch (\Exception $e) {
+            // Fallback: If DB tables are not migrated/initialized yet, continue without crash
+        }
 
         if ($school) {
             // Bind resolved school ID to container for request-level absolute enforcement

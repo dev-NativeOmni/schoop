@@ -5,7 +5,10 @@
 $_ENV['APP_STORAGE'] = '/tmp/storage';
 $_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
 $_ENV['SESSION_DRIVER'] = 'cookie'; // Gunakan cookie untuk session agar stateless
+$_ENV['CACHE_STORE'] = 'array';     // Gunakan array cache agar tidak depend ke DB saat boot
+$_ENV['CACHE_DRIVER'] = 'array';    // Fallback untuk Laravel 10 ke bawah
 $_ENV['LOG_CHANNEL'] = 'stderr';    // Log diarahkan ke stderr agar tampil di console Vercel
+$_ENV['FORCE_HTTPS'] = 'true';      // Paksa HTTPS di Vercel untuk menghindari mixed content
 
 $_ENV['APP_CONFIG_CACHE'] = '/tmp/storage/bootstrap/cache/config.php';
 $_ENV['APP_EVENTS_CACHE'] = '/tmp/storage/bootstrap/cache/events.php';
