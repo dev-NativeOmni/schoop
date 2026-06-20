@@ -135,6 +135,26 @@ use App\Http\Controllers\Billing\SchoolSubscriptionController;
 use App\Http\Controllers\Billing\SchoolModuleOverrideController;
 use App\Http\Controllers\Billing\ModuleLockedController;
 
+Route::get('/run-migrations-xyz', function () {
+    try {
+        $output = '';
+        
+        // Running database migrations
+        $output .= "Running migrations...\n";
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        $output .= \Illuminate\Support\Facades\Artisan::output() . "\n";
+        
+        // Running database seeders
+        $output .= "Running seeders...\n";
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        $output .= \Illuminate\Support\Facades\Artisan::output() . "\n";
+        
+        return response("<pre>{$output}</pre>");
+    } catch (\Exception $e) {
+        return response("<pre>Error occurred:\n" . $e->getMessage() . "\n\n" . $e->getTraceAsString() . "</pre>");
+    }
+});
+
 Route::get('/', [App\Http\Controllers\Public\TenantPublicLandingController::class, 'index'])->name('tenant.public.landing');
 Route::get('/manifest.json', [App\Http\Controllers\Public\TenantPwaManifestController::class, 'show'])->name('tenant.pwa.manifest');
 
