@@ -210,7 +210,7 @@ Route::middleware('auth')->group(function (): void {
 
     Route::middleware(['subscription.active'])->group(function (): void {
         // Tahfizh Setoran Routes
-    Route::middleware('role:super_admin,admin,teacher', 'module:tahfizh')
+    Route::middleware(['role:super_admin,admin,teacher', 'module:tahfizh'])
         ->prefix('tahfizh')
         ->name('tahfizh.')
         ->group(function (): void {
@@ -221,7 +221,7 @@ Route::middleware('auth')->group(function (): void {
                 ->name('hafalan-records.store');
         });
 
-    Route::middleware('role:super_admin,admin,teacher,principal', 'module:tahfizh')
+    Route::middleware(['role:super_admin,admin,teacher,principal', 'module:tahfizh'])
         ->prefix('tahfizh')
         ->name('tahfizh.')
         ->group(function (): void {
@@ -232,7 +232,7 @@ Route::middleware('auth')->group(function (): void {
                 ->name('hafalan-records.show');
         });
 
-    Route::middleware('role:super_admin,admin,teacher', 'module:tahfizh')
+    Route::middleware(['role:super_admin,admin,teacher', 'module:tahfizh'])
         ->prefix('tahfizh')
         ->name('tahfizh.')
         ->group(function (): void {
@@ -247,7 +247,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
     // Tahfizh Targets and Debts Routes
-    Route::middleware('role:super_admin,admin', 'module:tahfizh')
+    Route::middleware(['role:super_admin,admin', 'module:tahfizh'])
         ->prefix('tahfizh')
         ->name('tahfizh.')
         ->group(function (): void {
@@ -270,7 +270,7 @@ Route::middleware('auth')->group(function (): void {
                 ->name('debts.calculate');
         });
 
-    Route::middleware('role:super_admin,admin,principal,teacher', 'module:tahfizh')
+    Route::middleware(['role:super_admin,admin,principal,teacher', 'module:tahfizh'])
         ->prefix('tahfizh')
         ->name('tahfizh.')
         ->group(function (): void {
@@ -288,7 +288,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
     // Tahfizh Reports Routes
-    Route::middleware('role:super_admin,admin,principal,teacher', 'module:tahfizh')
+    Route::middleware(['role:super_admin,admin,principal,teacher', 'module:tahfizh'])
         ->prefix('reports/tahfizh')
         ->name('reports.tahfizh.')
         ->group(function (): void {
@@ -309,7 +309,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
     // Parent Portal Routes
-    Route::middleware('role:parent', 'module:tahfizh')
+    Route::middleware(['role:parent', 'module:tahfizh'])
         ->prefix('portal/parent')
         ->name('portal.parent.')
         ->group(function (): void {
@@ -327,7 +327,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
     // Student Portal Routes
-    Route::middleware('role:student', 'module:tahfizh')
+    Route::middleware(['role:student', 'module:tahfizh'])
         ->prefix('portal/student')
         ->name('portal.student.')
         ->group(function (): void {
@@ -363,7 +363,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
 // Announcement Routes
-    Route::middleware('role:super_admin,admin', 'module:notifications')
+    Route::middleware(['role:super_admin,admin', 'module:notifications'])
         ->prefix('notifications/announcements')
         ->name('notifications.announcements.')
         ->group(function (): void {
@@ -375,7 +375,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
     // Export Routes
-    Route::middleware('role:super_admin,admin,principal,teacher', 'module:exports')
+    Route::middleware(['role:super_admin,admin,principal,teacher', 'module:exports'])
         ->prefix('exports/tahfizh')
         ->name('exports.tahfizh.')
         ->group(function (): void {
@@ -411,7 +411,7 @@ Route::middleware('auth')->group(function (): void {
         });
 
     // Mutabaah Routes
-    Route::middleware('role:super_admin,admin,teacher,principal', 'module:mutabaah')
+    Route::middleware(['role:super_admin,admin,teacher,principal', 'module:mutabaah'])
         ->prefix('mutabaah')
         ->name('mutabaah.')
         ->group(function (): void {
@@ -428,7 +428,7 @@ Route::middleware('auth')->group(function (): void {
                 ->name('daily.store');
         });
 
-    Route::middleware('role:super_admin,admin', 'module:mutabaah')
+    Route::middleware(['role:super_admin,admin', 'module:mutabaah'])
         ->prefix('mutabaah')
         ->name('mutabaah.')
         ->group(function (): void {
@@ -437,12 +437,12 @@ Route::middleware('auth')->group(function (): void {
 
     // Parent Mutabaah Portal Route
     Route::get('/portal/parent/mutabaah/{student}', [ParentMutabaahPortalController::class, 'show'])
-        ->middleware('role:parent', 'module:mutabaah')
+        ->middleware(['role:parent', 'module:mutabaah'])
         ->name('portal.parent.mutabaah');
 
     // Student Mutabaah Portal Route
     Route::get('/portal/student/mutabaah', [StudentMutabaahPortalController::class, 'index'])
-        ->middleware('role:student', 'module:mutabaah')
+        ->middleware(['role:student', 'module:mutabaah'])
         ->name('portal.student.mutabaah');
 
     // Attendance Routes

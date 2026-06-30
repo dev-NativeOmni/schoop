@@ -125,7 +125,7 @@ class PlanModuleAccessService
     {
         return SystemModule::query()
             ->whereNull('school_id')
-            ->where('is_enabled', true)
+            ->where('is_active', true)
             ->whereNotIn('module_key', ['saas_ops'])
             ->orderBy('sort_order')
             ->orderBy('name')

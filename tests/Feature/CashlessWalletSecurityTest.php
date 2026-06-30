@@ -122,6 +122,21 @@ class CashlessWalletSecurityTest extends TestCase
         UserSchoolMembership::create(['user_id' => $this->unauthorizedParent->id, 'school_id' => $this->school->id, 'role_id' => $parentRole->id, 'membership_status' => 'active']);
         UserSchoolMembership::create(['user_id' => $this->student->id, 'school_id' => $this->school->id, 'role_id' => $studentRole->id, 'membership_status' => 'active']);
 
+        // Seed and create active school subscription to enable 'cashless' module
+        $this->seed(\Database\Seeders\SystemModuleSeeder::class);
+        $this->seed(\Database\Seeders\SubscriptionPlanSeeder::class);
+        $this->seed(\Database\Seeders\PlanModuleSeeder::class);
+
+        $enterprisePlan = \App\Models\SubscriptionPlan::where('code', 'enterprise')->firstOrFail();
+        \App\Models\SchoolSubscription::create([
+            'school_id' => $this->school->id,
+            'subscription_plan_id' => $enterprisePlan->id,
+            'status' => 'active',
+            'starts_at' => now()->subDay(),
+            'current_period_starts_at' => now()->subDay(),
+            'current_period_ends_at' => now()->addMonth(),
+        ]);
+
         // Create Cashless Wallet
         $this->wallet = CashlessWallet::create([
             'school_id' => $this->school->id,

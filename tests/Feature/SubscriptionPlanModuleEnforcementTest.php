@@ -96,13 +96,41 @@ class SubscriptionPlanModuleEnforcementTest extends TestCase
         $this->assertFalse($attendanceModule->refresh()->is_enabled);
     }
 
-    public function test_direct_route_to_locked_module_is_forbidden(): void
+    public function test_direct_route_to_locked_module_redirects_admin(): void
     {
         $subscription = $this->createSubscription(['schoolos', 'tahfizh']);
         app(PlanModuleAccessService::class)->syncTenantModulesForSubscription($subscription);
 
+        // Admins should be redirected to the billing lock page
         $response = $this
             ->actingAs($this->admin)
+            ->withSession(['active_school_id' => $this->school->id])
+            ->get(route('attendance.reports.dashboard'));
+
+        $response->assertRedirect(route('billing.locked.module', ['moduleKey' => 'attendance']));
+
+        // Non-admins (e.g. teachers) should get a 403 Forbidden
+        $teacherRole = Role::query()->where('name', 'teacher')->firstOrFail();
+        $teacher = User::query()->create([
+            'school_id' => $this->school->id,
+            'role_id' => $teacherRole->id,
+            'name' => 'Plan Teacher',
+            'username' => 'plan_teacher',
+            'email' => 'plan_teacher@example.test',
+            'password' => bcrypt('password'),
+            'is_active' => true,
+        ]);
+
+        UserSchoolMembership::query()->create([
+            'user_id' => $teacher->id,
+            'school_id' => $this->school->id,
+            'role_id' => $teacherRole->id,
+            'membership_status' => 'active',
+            'is_default' => true,
+        ]);
+
+        $response = $this
+            ->actingAs($teacher)
             ->withSession(['active_school_id' => $this->school->id])
             ->get(route('attendance.reports.dashboard'));
 
@@ -133,6 +161,25 @@ class SubscriptionPlanModuleEnforcementTest extends TestCase
             'features' => ['Tahfizh'],
             'allowed_modules' => $allowedModules,
             'status' => 'active',
+        ]);
+
+        $tenantPlan = \App\Models\SubscriptionPlan::query()->firstOrCreate(
+            ['code' => 'test-plan'],
+            [
+                'name' => 'Test Plan',
+                'monthly_price' => 0,
+                'yearly_price' => 0,
+                'is_active' => true,
+            ]
+        );
+
+        \App\Models\SchoolSubscription::query()->create([
+            'school_id' => $this->school->id,
+            'subscription_plan_id' => $tenantPlan->id,
+            'status' => $status === 'active' ? 'active' : 'canceled',
+            'starts_at' => now()->subDay()->toDateString(),
+            'current_period_starts_at' => now()->subDay()->toDateString(),
+            'current_period_ends_at' => now()->addMonth()->toDateString(),
         ]);
 
         return SaasSchoolSubscription::query()->create([

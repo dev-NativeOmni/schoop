@@ -136,6 +136,21 @@ class Phase24LmsIntegrationTest extends TestCase
         UserSchoolMembership::create(['user_id' => $this->teacherA->id, 'school_id' => $this->schoolA->id, 'role_id' => $teacherRole->id, 'membership_status' => 'active']);
         UserSchoolMembership::create(['user_id' => $this->studentA->id, 'school_id' => $this->schoolA->id, 'role_id' => $studentRole->id, 'membership_status' => 'active']);
         UserSchoolMembership::create(['user_id' => $this->parentA->id, 'school_id' => $this->schoolA->id, 'role_id' => $parentRole->id, 'membership_status' => 'active']);
+
+        // Seed and create active school subscription for schoolA to enable 'lms' module
+        $this->seed(\Database\Seeders\SystemModuleSeeder::class);
+        $this->seed(\Database\Seeders\SubscriptionPlanSeeder::class);
+        $this->seed(\Database\Seeders\PlanModuleSeeder::class);
+
+        $enterprisePlan = \App\Models\SubscriptionPlan::where('code', 'enterprise')->firstOrFail();
+        \App\Models\SchoolSubscription::create([
+            'school_id' => $this->schoolA->id,
+            'subscription_plan_id' => $enterprisePlan->id,
+            'status' => 'active',
+            'starts_at' => now()->subDay(),
+            'current_period_starts_at' => now()->subDay(),
+            'current_period_ends_at' => now()->addMonth(),
+        ]);
     }
 
     public function test_course_creation_by_admin_is_scoped_to_tenant(): void
