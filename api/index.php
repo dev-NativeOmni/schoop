@@ -32,33 +32,35 @@ putenv('FORCE_HTTPS=true');
 $_ENV['FORCE_HTTPS'] = 'true';
 $_SERVER['FORCE_HTTPS'] = 'true';
 
-// Buat direktori yang diperlukan di /tmp jika belum ada
-$storageDirs = [
-    '/tmp/storage/app/public',
-    '/tmp/storage/app/private',
-    '/tmp/storage/framework/views',
-    '/tmp/storage/framework/sessions',
-    '/tmp/storage/framework/cache',
-    '/tmp/storage/framework/cache/data',
-    '/tmp/storage/logs',
-    '/tmp/storage/bootstrap',
-    '/tmp/storage/bootstrap/cache',
-];
+// Buat direktori yang diperlukan di /tmp jika belum ada (hanya saat cold-start)
+if (!is_dir('/tmp/storage/framework/views')) {
+    $storageDirs = [
+        '/tmp/storage/app/public',
+        '/tmp/storage/app/private',
+        '/tmp/storage/framework/views',
+        '/tmp/storage/framework/sessions',
+        '/tmp/storage/framework/cache',
+        '/tmp/storage/framework/cache/data',
+        '/tmp/storage/logs',
+        '/tmp/storage/bootstrap',
+        '/tmp/storage/bootstrap/cache',
+    ];
 
-foreach ($storageDirs as $dir) {
-    if (!is_dir($dir)) {
-        mkdir($dir, 0755, true);
+    foreach ($storageDirs as $dir) {
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
     }
-}
 
-if (file_exists(__DIR__ . '/../bootstrap/providers.php') && !file_exists('/tmp/storage/bootstrap/providers.php')) {
-    copy(__DIR__ . '/../bootstrap/providers.php', '/tmp/storage/bootstrap/providers.php');
-}
-if (file_exists(__DIR__ . '/../bootstrap/cache/packages.php') && !file_exists('/tmp/storage/bootstrap/cache/packages.php')) {
-    copy(__DIR__ . '/../bootstrap/cache/packages.php', '/tmp/storage/bootstrap/cache/packages.php');
-}
-if (file_exists(__DIR__ . '/../bootstrap/cache/services.php') && !file_exists('/tmp/storage/bootstrap/cache/services.php')) {
-    copy(__DIR__ . '/../bootstrap/cache/services.php', '/tmp/storage/bootstrap/cache/services.php');
+    if (file_exists(__DIR__ . '/../bootstrap/providers.php') && !file_exists('/tmp/storage/bootstrap/providers.php')) {
+        copy(__DIR__ . '/../bootstrap/providers.php', '/tmp/storage/bootstrap/providers.php');
+    }
+    if (file_exists(__DIR__ . '/../bootstrap/cache/packages.php') && !file_exists('/tmp/storage/bootstrap/cache/packages.php')) {
+        copy(__DIR__ . '/../bootstrap/cache/packages.php', '/tmp/storage/bootstrap/cache/packages.php');
+    }
+    if (file_exists(__DIR__ . '/../bootstrap/cache/services.php') && !file_exists('/tmp/storage/bootstrap/cache/services.php')) {
+        copy(__DIR__ . '/../bootstrap/cache/services.php', '/tmp/storage/bootstrap/cache/services.php');
+    }
 }
 
 define('LARAVEL_START', microtime(true));
