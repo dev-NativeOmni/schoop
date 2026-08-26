@@ -34,7 +34,17 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
+            if ($request->has('debug') || env('APP_DEBUG') || $request->is('login*')) {
+                return response()->json([
+                    'exception' => get_class($e),
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => array_slice(explode("\n", $e->getTraceAsString()), 0, 10),
+                ], 500);
+            }
+        });
     })->create();
 
 if ($storagePath = env('LARAVEL_STORAGE_PATH', env('APP_STORAGE'))) {
