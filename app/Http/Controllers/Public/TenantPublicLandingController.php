@@ -27,6 +27,10 @@ class TenantPublicLandingController extends Controller
 
     public function index(Request $request)
     {
+        if (auth()->check()) {
+            return redirect()->route('dashboard');
+        }
+
         $schoolId = $this->tenantContext->activeSchoolId();
 
         if (!$schoolId) {
