@@ -61,11 +61,11 @@
 
 <div x-data="{ openDropdown: '{{ request()->segment(1) }}' }" 
      class="shrink-0 transition-all duration-300 ease-in-out"
-     :class="$store.sidebar.open ? 'lg:w-80' : 'lg:w-0'">
+     :class="($store.sidebar?.open ?? true) ? 'lg:w-80' : 'lg:w-0'">
 
     <!-- DESKTOP SIDEBAR: Left-Hand Side (hidden lg:flex) -->
     <aside class="hidden lg:flex fixed top-0 left-0 z-40 w-80 h-screen bg-[#1F2937] border-r border-slate-750 text-slate-100 flex-col shadow-xl overflow-hidden transition-transform duration-300 ease-in-out"
-           :class="$store.sidebar.open ? 'translate-x-0' : '-translate-x-full'">
+           :class="($store.sidebar?.open ?? true) ? 'translate-x-0' : '-translate-x-full'">
         
         <!-- Sidebar Header: School and Platform Branding -->
         <div class="p-6 border-b border-slate-750 flex flex-col space-y-4 shrink-0 bg-[#1F2937]/50">
