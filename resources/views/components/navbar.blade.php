@@ -335,7 +335,9 @@
                         </button>
                         <div x-show="openDropdown === 'attendance'" x-collapse class="pl-7 space-y-1.5" style="display: none;">
                             <a href="{{ route('attendance.reports.dashboard') }}" class="block py-1 px-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 transition">Dashboard Laporan</a>
-                            <a href="{{ route('attendance.qr-cards.index') }}" class="block py-1 px-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 transition">Kartu QR Siswa</a>
+                            @if($hasAdminOrSuperAdmin)
+                                <a href="{{ route('attendance.qr-cards.index') }}" class="block py-1 px-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 transition">Kartu QR Siswa</a>
+                            @endif
                             <a href="{{ route('attendance.scanner.index') }}" class="block py-1 px-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 transition">Scanner Kehadiran</a>
                             <a href="{{ route('attendance.manual.create') }}" class="block py-1 px-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 transition">Input Manual</a>
                             <a href="{{ route('attendance.sessions.index') }}" class="block py-1 px-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 transition">Sesi Kehadiran</a>
@@ -829,7 +831,9 @@
                         </button>
                         <div x-show="openDropdown === 'attendance-m'" x-collapse class="pl-5 space-y-1" style="display: none;">
                             <a href="{{ route('attendance.reports.dashboard') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Dashboard Laporan</a>
-                            <a href="{{ route('attendance.qr-cards.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Kartu QR Siswa</a>
+                            @if($hasAdminOrSuperAdmin)
+                                <a href="{{ route('attendance.qr-cards.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Kartu QR Siswa</a>
+                            @endif
                             <a href="{{ route('attendance.scanner.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Scanner Kehadiran</a>
                             <a href="{{ route('attendance.manual.create') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Input Manual</a>
                             <a href="{{ route('attendance.sessions.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Sesi Kehadiran</a>
