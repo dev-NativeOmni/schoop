@@ -1,5 +1,9 @@
 <?php
 
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
 // Vercel serverless environment configuration
 putenv('APP_DEBUG=true');
 $_ENV['APP_DEBUG'] = 'true';
