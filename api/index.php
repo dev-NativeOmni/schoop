@@ -2,13 +2,25 @@
 
 // Vercel serverless environment configuration
 // Storage folder overrides (Vercel filesystem is read-only, except /tmp)
-$_ENV['APP_STORAGE'] = '/tmp/storage';
+putenv('LARAVEL_STORAGE_PATH=/tmp/storage');
+$_ENV['LARAVEL_STORAGE_PATH'] = '/tmp/storage';
+$_SERVER['LARAVEL_STORAGE_PATH'] = '/tmp/storage';
+
+putenv('VIEW_COMPILED_PATH=/tmp/storage/framework/views');
 $_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
-$_ENV['SESSION_DRIVER'] = 'cookie'; // Gunakan cookie untuk session agar stateless
-$_ENV['CACHE_STORE'] = 'array';     // Gunakan array cache agar tidak depend ke DB saat boot
-$_ENV['CACHE_DRIVER'] = 'array';    // Fallback untuk Laravel 10 ke bawah
-$_ENV['LOG_CHANNEL'] = 'stderr';    // Log diarahkan ke stderr agar tampil di console Vercel
-$_ENV['FORCE_HTTPS'] = 'true';      // Paksa HTTPS di Vercel untuk menghindari mixed content
+$_SERVER['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
+
+$_ENV['SESSION_DRIVER'] = 'cookie';
+$_SERVER['SESSION_DRIVER'] = 'cookie';
+
+$_ENV['CACHE_STORE'] = 'array';
+$_SERVER['CACHE_STORE'] = 'array';
+
+$_ENV['LOG_CHANNEL'] = 'stderr';
+$_SERVER['LOG_CHANNEL'] = 'stderr';
+
+$_ENV['FORCE_HTTPS'] = 'true';
+$_SERVER['FORCE_HTTPS'] = 'true';
 
 $_ENV['APP_CONFIG_CACHE'] = '/tmp/storage/bootstrap/cache/config.php';
 $_ENV['APP_EVENTS_CACHE'] = '/tmp/storage/bootstrap/cache/events.php';
@@ -16,13 +28,21 @@ $_ENV['APP_PACKAGES_CACHE'] = '/tmp/storage/bootstrap/cache/packages.php';
 $_ENV['APP_ROUTES_CACHE'] = '/tmp/storage/bootstrap/cache/routes.php';
 $_ENV['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/cache/services.php';
 
-
 // Buat direktori yang diperlukan di /tmp jika belum ada
-if (!is_dir('/tmp/storage/framework/views')) {
-    mkdir('/tmp/storage/framework/views', 0755, true);
-}
-if (!is_dir('/tmp/storage/bootstrap/cache')) {
-    mkdir('/tmp/storage/bootstrap/cache', 0755, true);
+$storageDirs = [
+    '/tmp/storage/framework/views',
+    '/tmp/storage/framework/sessions',
+    '/tmp/storage/framework/cache',
+    '/tmp/storage/framework/cache/data',
+    '/tmp/storage/app/public',
+    '/tmp/storage/logs',
+    '/tmp/storage/bootstrap/cache',
+];
+
+foreach ($storageDirs as $dir) {
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
 }
 
 require __DIR__ . '/../public/index.php';
