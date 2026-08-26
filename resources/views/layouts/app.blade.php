@@ -52,19 +52,42 @@
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-900 antialiased transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
     @auth
-        <div class="min-h-screen flex flex-col lg:flex-row-reverse bg-slate-50 dark:bg-slate-950">
-            <!-- Sidebar Navigation -->
+        <div class="min-h-screen flex flex-col lg:flex-row bg-slate-50 dark:bg-slate-950">
+            <!-- Sidebar Navigation (Left) -->
             <x-navbar />
 
             <!-- Main Content Area -->
-            <div class="flex-1 flex flex-col min-w-0 min-h-screen pt-16 lg:pt-0">
-                <!-- Topbar for desktop -->
-                <header class="sticky top-0 z-40 bg-[#1F2937]/95 backdrop-blur-md border-b border-slate-750 h-16 flex items-center justify-between px-6 shadow-sm lg:flex hidden">
+            <div class="flex-1 flex flex-col min-w-0 min-h-screen">
+                <!-- Topbar Header (Responsive) -->
+                <header class="sticky top-0 z-30 bg-[#1F2937]/95 backdrop-blur-md border-b border-slate-750 h-16 flex items-center justify-between px-4 sm:px-6 shadow-sm">
                     <div class="flex items-center space-x-3">
-                        <span class="text-sm font-semibold text-slate-400">Selamat datang kembali,</span>
-                        <span class="text-sm font-bold text-white">{{ Auth::user()->name }}</span>
+                        <!-- Desktop Sidebar Toggle Button -->
+                        <button @click="$store.sidebar.toggle()" 
+                                type="button"
+                                title="Buka / Tutup Sidebar"
+                                class="hidden lg:inline-flex items-center justify-center p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors focus:outline-none">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                            </svg>
+                        </button>
+
+                        <!-- Mobile Sidebar Toggle Button -->
+                        <button @click="$store.sidebar.toggleMobile()" 
+                                type="button"
+                                title="Menu"
+                                class="lg:hidden inline-flex items-center justify-center p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors focus:outline-none">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                            </svg>
+                        </button>
+
+                        <!-- Greeting -->
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-semibold text-slate-400 hidden sm:inline">Selamat datang kembali,</span>
+                            <span class="text-sm font-bold text-white truncate max-w-[160px] sm:max-w-none">{{ Auth::user()->name }}</span>
+                        </div>
                     </div>
-                    <div class="flex items-center space-x-3">
+                    <div class="flex items-center space-x-2 sm:space-x-3">
                         <!-- Notifications Link -->
                         @php $activeNotif = request()->routeIs('notifications.*'); @endphp
                         <a href="{{ route('notifications.index') }}" class="relative rounded-full p-2 text-slate-400 hover:bg-slate-800 hover:text-[#A3E635] transition-colors focus:outline-none">

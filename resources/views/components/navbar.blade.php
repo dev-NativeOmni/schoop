@@ -59,14 +59,17 @@
     }
 @endphp
 
-<div x-data="{ mobileOpen: false, openDropdown: '{{ request()->segment(1) }}' }" class="shrink-0 lg:w-80">
+<div x-data="{ openDropdown: '{{ request()->segment(1) }}' }" 
+     class="shrink-0 transition-all duration-300 ease-in-out"
+     :class="$store.sidebar.open ? 'lg:w-80' : 'lg:w-0'">
 
-    <!-- DESKTOP SIDEBAR: Right-Hand Side (hidden lg:flex) -->
-    <aside class="hidden lg:flex fixed top-0 right-0 z-40 w-80 h-screen bg-[#1F2937] border-l border-slate-750 text-slate-100 flex-col shadow-2xl overflow-hidden">
+    <!-- DESKTOP SIDEBAR: Left-Hand Side (hidden lg:flex) -->
+    <aside class="hidden lg:flex fixed top-0 left-0 z-40 w-80 h-screen bg-[#1F2937] border-r border-slate-750 text-slate-100 flex-col shadow-xl overflow-hidden transition-transform duration-300 ease-in-out"
+           :class="$store.sidebar.open ? 'translate-x-0' : '-translate-x-full'">
         
         <!-- Sidebar Header: School and Platform Branding -->
         <div class="p-6 border-b border-slate-750 flex flex-col space-y-4 shrink-0 bg-[#1F2937]/50">
-            <!-- Platform Branding (HafizPlus) -->
+            <!-- Platform Branding (HafizPlus) & Collapse Button -->
             <div class="flex items-center justify-between">
                 <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 group">
                     @if(\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png'))
@@ -80,6 +83,16 @@
                     @endif
                     <span class="text-base font-extrabold tracking-tight text-white">Hafiz<span class="text-[#A3E635]">Plus</span></span>
                 </a>
+
+                <!-- Desktop Collapse Button -->
+                <button @click="$store.sidebar.toggle()" 
+                        type="button" 
+                        title="Tutup Sidebar" 
+                        class="hidden lg:flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors focus:outline-none">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
+                    </svg>
+                </button>
             </div>
 
             <!-- Active School Branding Section (Dual Branding) -->
@@ -129,7 +142,7 @@
                 
                 <!-- Dashboard -->
                 @php $active = request()->routeIs('dashboard*'); @endphp
-                <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] border-r-4 border-[#A3E635] font-black' : 'text-slate-350 hover:bg-slate-800/50 hover:text-white' }}">
+                <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] border-l-4 border-[#A3E635] font-black' : 'text-slate-350 hover:bg-slate-800/50 hover:text-white' }}">
                     <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
@@ -138,7 +151,7 @@
 
                 <!-- Al-Qur'an -->
                 @php $active = request()->routeIs('quran*'); @endphp
-                <a href="{{ route('quran.mushaf') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] border-r-4 border-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                <a href="{{ route('quran.mushaf') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] border-l-4 border-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
                     <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
@@ -615,39 +628,9 @@
         </div>
     </aside>
 
-    <!-- MOBILE HEADER & DRAWER (lg:hidden) -->
-    <!-- Mobile Header Top Bar -->
-    <header class="lg:hidden flex h-16 w-full items-center justify-between px-4 bg-[#1F2937] border-b border-slate-750 text-white z-40 fixed top-0 left-0">
-        <!-- Brand on Left -->
-        <div class="flex items-center space-x-2">
-            @if(\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png'))
-                <img src="{{ asset('storage/system/logo.png') }}" alt="HafizPlus Logo" class="h-8 w-8 object-contain bg-white/10 p-0.5 rounded-lg">
-            @endif
-            <span class="text-sm font-extrabold text-white">Hafiz<span class="text-[#A3E635]">Plus</span></span>
-            @if($activeSchoolId && $activeSchool)
-                <span class="text-slate-500 font-bold">|</span>
-                <span class="text-xs font-bold text-slate-300 truncate max-w-[120px]">{{ $activeSchool->name }}</span>
-            @endif
-        </div>
-
-        <!-- Menu Toggle on Right -->
-        <div class="flex items-center space-x-2">
-            <!-- Mobile notifications -->
-            <a href="{{ route('notifications.index') }}" class="p-1.5 text-slate-400 hover:text-[#A3E635]">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-            </a>
-            <!-- Hamburger button -->
-            <button @click="mobileOpen = true" class="p-1.5 text-slate-400 hover:text-white focus:outline-none">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-        </div>
-    </header>
-
-    <!-- Mobile Drawer (Slide-Over Menu from Right) -->
+    <!-- MOBILE DRAWER (Slide-Over Menu from Left) -->
     <!-- Backdrop overlay -->
-    <div x-show="mobileOpen" 
+    <div x-show="$store.sidebar.mobileOpen" 
          x-transition:enter="transition-opacity ease-out duration-300"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
@@ -656,24 +639,35 @@
          x-transition:leave-end="opacity-0"
          class="lg:hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50"
          style="display: none;"
-         @click="mobileOpen = false">
+         @click="$store.sidebar.closeMobile()">
     </div>
 
-    <!-- Drawer Content Panel -->
-    <div x-show="mobileOpen" 
+    <!-- Drawer Content Panel (From Left) -->
+    <div x-show="$store.sidebar.mobileOpen" 
          x-transition:enter="transition-transform ease-out duration-300"
-         x-transition:enter-start="translate-x-full"
+         x-transition:enter-start="-translate-x-full"
          x-transition:enter-end="translate-x-0"
          x-transition:leave="transition-transform ease-in duration-200"
          x-transition:leave-start="translate-x-0"
-         x-transition:leave-end="translate-x-full"
-         class="lg:hidden fixed inset-y-0 right-0 w-80 bg-[#111827] text-slate-100 z-50 flex flex-col shadow-2xl"
+         x-transition:leave-end="-translate-x-full"
+         class="lg:hidden fixed inset-y-0 left-0 w-80 bg-[#111827] text-slate-100 z-50 flex flex-col shadow-2xl"
          style="display: none;">
         
         <!-- Drawer Header -->
         <div class="p-5 border-b border-slate-750 flex items-center justify-between bg-[#1F2937]/50">
-            <span class="text-sm font-extrabold text-white">Menu Navigasi</span>
-            <button @click="mobileOpen = false" class="p-1 text-slate-400 hover:text-white focus:outline-none">
+            <div class="flex items-center space-x-2">
+                @if(\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png'))
+                    <img src="{{ asset('storage/system/logo.png') }}" alt="HafizPlus Logo" class="h-8 w-8 object-contain bg-white/10 p-0.5 rounded-lg">
+                @else
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25">
+                        <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                @endif
+                <span class="text-base font-extrabold tracking-tight text-white">Hafiz<span class="text-[#A3E635]">Plus</span></span>
+            </div>
+            <button @click="$store.sidebar.closeMobile()" class="p-1.5 text-slate-400 hover:text-white focus:outline-none">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
