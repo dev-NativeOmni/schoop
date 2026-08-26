@@ -75,7 +75,7 @@
             <div class="flex items-center justify-between">
                 <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 group">
                     @if($globalLogoExists)
-                        <img src="{{ asset('storage/system/logo.png') }}" alt="HafizPlus Logo" class="h-8 w-8 object-contain bg-white/10 p-0.5 rounded-lg">
+                        <img src="{{ \App\Models\SystemAsset::url('system/logo.png') }}" alt="HafizPlus Logo" class="h-8 w-8 object-contain bg-white/10 p-0.5 rounded-lg">
                     @else
                         <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25">
                             <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -661,7 +661,7 @@
         <div class="p-5 border-b border-slate-750 flex items-center justify-between bg-[#1F2937]/50">
             <div class="flex items-center space-x-2">
                 @if($globalLogoExists)
-                    <img src="{{ asset('storage/system/logo.png') }}" alt="HafizPlus Logo" class="h-8 w-8 object-contain bg-white/10 p-0.5 rounded-lg">
+                    <img src="{{ \App\Models\SystemAsset::url('system/logo.png') }}" alt="HafizPlus Logo" class="h-8 w-8 object-contain bg-white/10 p-0.5 rounded-lg">
                 @else
                     <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25">
                         <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">

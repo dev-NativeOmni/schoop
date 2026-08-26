@@ -106,18 +106,18 @@
             <form action="{{ route('super-admin.update-logo') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 <div class="flex flex-col sm:flex-row items-center gap-6">
-                    <div class="shrink-0">
+                    <div class="shrink-0" id="logo-preview-container">
                         @php
                             $globalLogoExists = \Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png')
                                 || \App\Models\SystemAsset::has('system/logo.png');
-                            $globalLogoUrl = $globalLogoExists ? asset('storage/system/logo.png') : null;
+                            $globalLogoUrl = $globalLogoExists ? \App\Models\SystemAsset::url('system/logo.png') : null;
                         @endphp
                         @if ($globalLogoUrl)
                             <div class="p-3 bg-slate-800/80 rounded-2xl border border-slate-700/50 shadow-inner">
                                 <img id="logo-preview" class="h-16 w-16 object-contain" src="{{ $globalLogoUrl }}" alt="Global Logo">
                             </div>
                         @else
-                            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25">
+                            <div id="logo-default-icon" class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25">
                                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                 </svg>
@@ -178,9 +178,13 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function (event) {
-                        const preview = document.getElementById('logo-preview');
-                        if (preview) {
-                            preview.src = event.target.result;
+                        const container = document.getElementById('logo-preview-container');
+                        if (container) {
+                            container.innerHTML = `
+                                <div class="p-3 bg-slate-800/80 rounded-2xl border border-slate-700/50 shadow-inner">
+                                    <img id="logo-preview" class="h-16 w-16 object-contain" src="${event.target.result}" alt="Global Logo">
+                                </div>
+                            `;
                         }
                     };
                     reader.readAsDataURL(file);

@@ -43,4 +43,15 @@ class SystemAsset extends Model
     {
         return static::where('key', $key)->exists();
     }
+
+    /**
+     * Generate cache-busted URL for an asset key.
+     */
+    public static function url(string $key): string
+    {
+        $asset = static::where('key', $key)->first();
+        $v = $asset && $asset->updated_at ? $asset->updated_at->timestamp : time();
+
+        return asset('storage/' . ltrim($key, '/')) . '?v=' . $v;
+    }
 }
