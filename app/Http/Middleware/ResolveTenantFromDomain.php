@@ -37,15 +37,19 @@ class ResolveTenantFromDomain
             // Bind resolved school ID to container for request-level absolute enforcement
             app()->instance('resolved_domain_school_id', $school->id);
 
-            // Also synchronize with session context
-            Session::put(TenantContextService::SESSION_KEY, $school->id);
+            // Also synchronize with session context if session has started
+            if ($request->hasSession()) {
+                Session::put(TenantContextService::SESSION_KEY, $school->id);
+            }
 
             // Enforce access boundary if user is authenticated
             $user = $request->user();
             if ($user && !$user->isSuperAdmin()) {
                 if (!$this->tenantAccess->userCanAccessSchool($user, $school->id)) {
                     // Clear active school from session so they are not stuck on invalid context
-                    Session::forget(TenantContextService::SESSION_KEY);
+                    if ($request->hasSession()) {
+                        Session::forget(TenantContextService::SESSION_KEY);
+                    }
                     abort(403, 'Anda tidak memiliki akses ke sekolah ini melalui domain ' . $host);
                 }
             }
