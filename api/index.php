@@ -16,6 +16,10 @@ putenv('LARAVEL_STORAGE_PATH=/tmp/storage');
 $_ENV['LARAVEL_STORAGE_PATH'] = '/tmp/storage';
 $_SERVER['LARAVEL_STORAGE_PATH'] = '/tmp/storage';
 
+putenv('LARAVEL_BOOTSTRAP_PATH=/tmp/storage/bootstrap');
+$_ENV['LARAVEL_BOOTSTRAP_PATH'] = '/tmp/storage/bootstrap';
+$_SERVER['LARAVEL_BOOTSTRAP_PATH'] = '/tmp/storage/bootstrap';
+
 putenv('VIEW_COMPILED_PATH=/tmp/storage/framework/views');
 $_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
 $_SERVER['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
@@ -45,6 +49,7 @@ $storageDirs = [
     '/tmp/storage/framework/cache',
     '/tmp/storage/framework/cache/data',
     '/tmp/storage/logs',
+    '/tmp/storage/bootstrap',
     '/tmp/storage/bootstrap/cache',
 ];
 
@@ -54,6 +59,9 @@ foreach ($storageDirs as $dir) {
     }
 }
 
+if (file_exists(__DIR__ . '/../bootstrap/providers.php') && !file_exists('/tmp/storage/bootstrap/providers.php')) {
+    copy(__DIR__ . '/../bootstrap/providers.php', '/tmp/storage/bootstrap/providers.php');
+}
 if (file_exists(__DIR__ . '/../bootstrap/cache/packages.php') && !file_exists('/tmp/storage/bootstrap/cache/packages.php')) {
     copy(__DIR__ . '/../bootstrap/cache/packages.php', '/tmp/storage/bootstrap/cache/packages.php');
 }
