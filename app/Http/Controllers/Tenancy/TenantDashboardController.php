@@ -11,15 +11,27 @@ use App\Models\TenantModule;
 use App\Models\TenantSetting;
 use App\Models\UserSchoolMembership;
 use App\Services\Tenancy\TenantContextService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class TenantDashboardController extends Controller
 {
-    public function index(TenantContextService $contextService): View
+    public function index(TenantContextService $contextService): View|RedirectResponse
     {
         $school = $contextService->activeSchool();
         if (!$school) {
-            abort(404, 'Sekolah tidak ditemukan atau belum diset.');
+            $user = auth()->user();
+            if ($user && method_exists($user, 'hasRole') && $user->hasRole(['super_admin', 'operations_manager'])) {
+                $firstSchool = School::query()->first();
+                if ($firstSchool) {
+                    $contextService->setActiveSchool($user, $firstSchool->id);
+                    $school = $firstSchool;
+                }
+            }
+        }
+
+        if (!$school) {
+            return redirect()->route('tenancy.switcher')->with('info', 'Silakan pilih sekolah aktif terlebih dahulu.');
         }
 
         $stats = [

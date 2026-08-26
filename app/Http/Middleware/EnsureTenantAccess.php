@@ -18,10 +18,11 @@ class EnsureTenantAccess
             abort(401);
         }
 
-        $schoolId = app(TenantContextService::class)->activeSchoolId();
+        $schoolId = app(TenantContextService::class)->activeSchoolId()
+            ?? app(TenantContextService::class)->resolveForUser($user);
 
         if (! $schoolId) {
-            abort(403, 'Tenant sekolah belum dipilih.');
+            return redirect()->route('tenancy.switcher')->with('info', 'Silakan pilih tenant sekolah terlebih dahulu.');
         }
 
         app(TenantAccessService::class)->ensureUserCanAccessSchool($user, $schoolId);

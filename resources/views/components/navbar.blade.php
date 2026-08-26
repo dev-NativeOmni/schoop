@@ -50,6 +50,8 @@
     $canUseWhiteLabel = $moduleAvailable('white_label');
     $canUseLms = $moduleAvailable('lms');
     $canUseNotifications = $moduleAvailable('notifications');
+    $globalLogoExists = \Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png')
+        || \App\Models\SystemAsset::has('system/logo.png');
 
     // Parent dynamic student parameter
     $firstChild = null;
@@ -72,7 +74,7 @@
             <!-- Platform Branding (HafizPlus) & Collapse Button -->
             <div class="flex items-center justify-between">
                 <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 group">
-                    @if(\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png'))
+                    @if($globalLogoExists)
                         <img src="{{ asset('storage/system/logo.png') }}" alt="HafizPlus Logo" class="h-8 w-8 object-contain bg-white/10 p-0.5 rounded-lg">
                     @else
                         <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25">
@@ -656,7 +658,7 @@
         <!-- Drawer Header -->
         <div class="p-5 border-b border-slate-750 flex items-center justify-between bg-[#1F2937]/50">
             <div class="flex items-center space-x-2">
-                @if(\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png'))
+                @if($globalLogoExists)
                     <img src="{{ asset('storage/system/logo.png') }}" alt="HafizPlus Logo" class="h-8 w-8 object-contain bg-white/10 p-0.5 rounded-lg">
                 @else
                     <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25">

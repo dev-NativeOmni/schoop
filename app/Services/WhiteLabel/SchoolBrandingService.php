@@ -46,30 +46,48 @@ class SchoolBrandingService
         // Handle logo upload
         if ($logo) {
             if ($profile->logo_path) {
-                Storage::disk('public')->delete($profile->logo_path);
+                try { Storage::disk('public')->delete($profile->logo_path); } catch (\Throwable $e) {}
+                \App\Models\SystemAsset::where('key', $profile->logo_path)->delete();
             }
             $filename = 'logo_' . time() . '.' . $logo->getClientOriginalExtension();
-            $path = $logo->storeAs("white-label/{$schoolId}/brand", $filename, 'public');
+            try {
+                $path = $logo->storeAs("white-label/{$schoolId}/brand", $filename, 'public');
+            } catch (\Throwable $e) {
+                $path = "white-label/{$schoolId}/brand/{$filename}";
+            }
+            \App\Models\SystemAsset::put($path, file_get_contents($logo->getRealPath()), $logo->getClientMimeType() ?: 'image/png');
             $data['logo_path'] = $path;
         }
 
         // Handle favicon upload
         if ($favicon) {
             if ($profile->favicon_path) {
-                Storage::disk('public')->delete($profile->favicon_path);
+                try { Storage::disk('public')->delete($profile->favicon_path); } catch (\Throwable $e) {}
+                \App\Models\SystemAsset::where('key', $profile->favicon_path)->delete();
             }
             $filename = 'favicon_' . time() . '.' . $favicon->getClientOriginalExtension();
-            $path = $favicon->storeAs("white-label/{$schoolId}/brand", $filename, 'public');
+            try {
+                $path = $favicon->storeAs("white-label/{$schoolId}/brand", $filename, 'public');
+            } catch (\Throwable $e) {
+                $path = "white-label/{$schoolId}/brand/{$filename}";
+            }
+            \App\Models\SystemAsset::put($path, file_get_contents($favicon->getRealPath()), $favicon->getClientMimeType() ?: 'image/png');
             $data['favicon_path'] = $path;
         }
 
         // Handle login background upload
         if ($loginBg) {
             if ($profile->login_background_path) {
-                Storage::disk('public')->delete($profile->login_background_path);
+                try { Storage::disk('public')->delete($profile->login_background_path); } catch (\Throwable $e) {}
+                \App\Models\SystemAsset::where('key', $profile->login_background_path)->delete();
             }
             $filename = 'login_bg_' . time() . '.' . $loginBg->getClientOriginalExtension();
-            $path = $loginBg->storeAs("white-label/{$schoolId}/brand", $filename, 'public');
+            try {
+                $path = $loginBg->storeAs("white-label/{$schoolId}/brand", $filename, 'public');
+            } catch (\Throwable $e) {
+                $path = "white-label/{$schoolId}/brand/{$filename}";
+            }
+            \App\Models\SystemAsset::put($path, file_get_contents($loginBg->getRealPath()), $loginBg->getClientMimeType() ?: 'image/jpeg');
             $data['login_background_path'] = $path;
         }
 

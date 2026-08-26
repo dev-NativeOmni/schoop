@@ -19,6 +19,20 @@ class TenantContextService
 
         $schoolId = Session::get(self::SESSION_KEY);
 
+        if (! $schoolId && auth()->check()) {
+            $user = auth()->user();
+            if ($user->school_id) {
+                return (int) $user->school_id;
+            }
+            if (method_exists($user, 'hasRole') && $user->hasRole(['super_admin', 'operations_manager'])) {
+                $firstSchoolId = School::query()->value('id');
+                if ($firstSchoolId) {
+                    Session::put(self::SESSION_KEY, $firstSchoolId);
+                    return (int) $firstSchoolId;
+                }
+            }
+        }
+
         return $schoolId ? (int) $schoolId : null;
     }
 
@@ -72,6 +86,14 @@ class TenantContextService
             Session::put(self::SESSION_KEY, $user->school_id);
 
             return (int) $user->school_id;
+        }
+
+        if (method_exists($user, 'hasRole') && $user->hasRole(['super_admin', 'operations_manager'])) {
+            $firstSchoolId = School::query()->value('id');
+            if ($firstSchoolId) {
+                Session::put(self::SESSION_KEY, $firstSchoolId);
+                return (int) $firstSchoolId;
+            }
         }
 
         return null;

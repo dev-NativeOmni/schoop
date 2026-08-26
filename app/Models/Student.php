@@ -149,4 +149,16 @@ class Student extends Model
     {
         return $this->hasMany(BoardingDisciplineLog::class);
     }
+
+    public function lmsCourseEnrollments(): HasMany
+    {
+        return $this->hasMany(LmsCourseEnrollment::class, 'student_id');
+    }
+
+    public function courses(): BelongsToMany
+    {
+        return $this->belongsToMany(LmsCourse::class, 'lms_course_enrollments', 'student_id', 'course_id')
+            ->withPivot(['progress_percentage', 'status', 'enrolled_at', 'completed_at'])
+            ->withTimestamps();
+    }
 }

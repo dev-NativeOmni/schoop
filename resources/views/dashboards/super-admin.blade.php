@@ -108,7 +108,8 @@
                 <div class="flex flex-col sm:flex-row items-center gap-6">
                     <div class="shrink-0">
                         @php
-                            $globalLogoExists = \Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png');
+                            $globalLogoExists = \Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png')
+                                || \App\Models\SystemAsset::has('system/logo.png');
                             $globalLogoUrl = $globalLogoExists ? asset('storage/system/logo.png') : null;
                         @endphp
                         @if ($globalLogoUrl)

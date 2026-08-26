@@ -103,18 +103,33 @@ class DashboardController extends Controller
         ]);
 
         if ($request->input('delete_logo') == '1') {
-            if (\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png')) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete('system/logo.png');
+            try {
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png')) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete('system/logo.png');
+                }
+            } catch (\Throwable $e) {
+                // Ignore storage errors
             }
+            \App\Models\SystemAsset::where('key', 'system/logo.png')->delete();
+
             return redirect()->back()->with('success', 'Logo kustom global berhasil dihapus.');
         }
 
         if ($request->hasFile('logo')) {
-            if (\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png')) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete('system/logo.png');
+            $file = $request->file('logo');
+            $content = file_get_contents($file->getRealPath());
+            $mime = $file->getClientMimeType() ?: 'image/png';
+
+            try {
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png')) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete('system/logo.png');
+                }
+                $file->storeAs('system', 'logo.png', 'public');
+            } catch (\Throwable $e) {
+                // Ignore storage errors
             }
 
-            $request->file('logo')->storeAs('system', 'logo.png', 'public');
+            \App\Models\SystemAsset::put('system/logo.png', $content, $mime);
 
             return redirect()->back()->with('success', 'Logo kustom global berhasil diperbarui.');
         }

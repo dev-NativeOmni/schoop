@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
             AiFeedbackTemplateSeeder::class,
             SubscriptionPlanSeeder::class,
             PlanModuleSeeder::class,
+            SchoolSubscriptionSeeder::class,
         ]);
     }
 }
