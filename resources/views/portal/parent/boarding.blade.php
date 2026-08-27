@@ -1,24 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="space-y-6 animate-fade-in">
+<div class="space-y-6">
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-4 dark:border-slate-800">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/80 pb-5 dark:border-slate-800">
         <div>
-            <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Portal Asrama (Boarding)</h1>
-            <p class="text-sm text-slate-500">Pantau penempatan kamar, perizinan, kesehatan, dan absensi malam anak Anda.</p>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-[11px] font-bold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/40 mb-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Portal Wali Santri
+            </div>
+            <h1 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Informasi Asrama & Pengasuhan</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Pantau penempatan kamar, perizinan keluar, kesehatan UKS, dan kehadiran absensi malam anak Anda.</p>
         </div>
     </div>
 
     <!-- Child Selector if parent has multiple children -->
     @if($students->count() > 1)
-        <div class="flex items-center gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/60 dark:bg-slate-950/20 dark:border-slate-800">
-            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Pilih Anak:</span>
+        <div class="card-natural p-4 flex items-center gap-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Pilih Anak:</span>
             <div class="flex flex-wrap gap-2">
                 @foreach($students as $st)
-                    <a href="?student_id={{ $st->id }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all 
-                        @if($st->id == $student?->id) bg-emerald-500 text-white shadow-md shadow-emerald-200 dark:shadow-none
-                        @else bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-950 @endif">
+                    <a href="?student_id={{ $st->id }}" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all 
+                        @if($st->id == $student?->id) bg-emerald-600 text-white shadow-sm shadow-emerald-600/20
+                        @else bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 @endif">
                         {{ $st->full_name }}
                     </a>
                 @endforeach
@@ -27,47 +31,47 @@
     @endif
 
     @if(!$student)
-        <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500 dark:border-slate-800 dark:bg-slate-900">
-            Belum ada profil santri yang dikaitkan dengan akun orang tua Anda.
+        <div class="card-natural p-12 text-center text-slate-400">
+            <p class="text-sm font-medium">Belum ada profil santri yang dikaitkan dengan akun orang tua Anda.</p>
         </div>
     @else
         <!-- Child Info & Placement details -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Left Panel: Profile & Placement Info -->
             <div class="md:col-span-1 space-y-6">
-                <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 space-y-4">
-                    <div class="text-center pb-4 border-b border-slate-100 dark:border-slate-800">
-                        <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/50 rounded-full flex items-center justify-center mx-auto text-emerald-600 font-extrabold text-2xl">
-                            {{ substr($student->full_name, 0, 1) }}
+                <div class="card-natural p-6 space-y-5">
+                    <div class="text-center pb-5 border-b border-slate-100 dark:border-slate-800">
+                        <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/50 rounded-2xl flex items-center justify-center mx-auto text-emerald-700 dark:text-emerald-300 font-black text-2xl shadow-2xs">
+                            {{ strtoupper(substr($student->full_name, 0, 2)) }}
                         </div>
-                        <h2 class="text-lg font-bold text-slate-800 dark:text-white mt-3">{{ $student->full_name }}</h2>
-                        <span class="text-xs text-slate-400">NIS: {{ $student->student_number ?? '-' }}</span>
+                        <h2 class="text-base font-extrabold text-slate-900 dark:text-white mt-3">{{ $student->full_name }}</h2>
+                        <span class="text-xs text-slate-400">NIS: {{ $student->student_number ?? ($student->nis ?? '-') }}</span>
                     </div>
 
-                    <h3 class="text-xs font-bold uppercase text-slate-400 tracking-wider">Status Penempatan</h3>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Status Penempatan Kamar</h3>
                     @if(!$assignment)
-                        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-950/20 text-center text-xs text-slate-500">
+                        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-950/30 text-center text-xs text-slate-500 border border-slate-150 dark:border-slate-800">
                             Anak Anda belum memiliki penempatan kamar asrama yang aktif saat ini.
                         </div>
                     @else
-                        <div class="space-y-3 text-sm font-medium text-slate-650 dark:text-slate-455">
-                            <div class="flex justify-between">
-                                <span>Asrama:</span>
-                                <span class="font-bold text-slate-800 dark:text-white">{{ $assignment->dormitory->name }}</span>
+                        <div class="space-y-2.5 text-xs">
+                            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-150 dark:border-slate-800 flex justify-between items-center">
+                                <span class="text-slate-500">Gedung Asrama:</span>
+                                <span class="font-extrabold text-slate-900 dark:text-white">{{ $assignment->dormitory->name }}</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span>Kamar:</span>
-                                <span class="font-bold text-slate-800 dark:text-white">{{ $assignment->room->name }}</span>
+                            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-150 dark:border-slate-800 flex justify-between items-center">
+                                <span class="text-slate-500">Nomor Kamar:</span>
+                                <span class="font-extrabold text-emerald-600 dark:text-emerald-400">{{ $assignment->room->name }}</span>
                             </div>
                             @if($assignment->bed)
-                                <div class="flex justify-between">
-                                    <span>Ranjang:</span>
-                                    <span class="font-bold text-slate-800 dark:text-white">{{ $assignment->bed->code }}</span>
+                                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-150 dark:border-slate-800 flex justify-between items-center">
+                                    <span class="text-slate-500">Nomor Ranjang:</span>
+                                    <span class="font-extrabold text-slate-900 dark:text-white">{{ $assignment->bed->code }}</span>
                                 </div>
                             @endif
-                            <div class="flex justify-between">
-                                <span>Tanggal Masuk:</span>
-                                <span class="font-bold text-slate-800 dark:text-white">{{ \Carbon\Carbon::parse($assignment->start_date)->format('d M Y') }}</span>
+                            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-150 dark:border-slate-800 flex justify-between items-center">
+                                <span class="text-slate-500">Tanggal Masuk:</span>
+                                <span class="font-bold text-slate-700 dark:text-slate-300">{{ \Carbon\Carbon::parse($assignment->start_date)->translatedFormat('d M Y') }}</span>
                             </div>
                         </div>
                     @endif
@@ -75,57 +79,61 @@
             </div>
 
             <!-- Right Panel: Tabs for Activities -->
-            <div class="md:col-span-2 space-y-6">
+            <div class="md:col-span-2 space-y-4">
                 <!-- Navigation Tabs -->
-                <div class="flex border-b border-slate-200 dark:border-slate-800">
-                    <button onclick="switchTab('leaves')" id="tab-btn-leaves" class="px-4 py-2 text-sm font-bold border-b-2 border-emerald-500 text-emerald-600 transition">Perizinan</button>
-                    <button onclick="switchTab('health')" id="tab-btn-health" class="px-4 py-2 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition">Kesehatan</button>
-                    <button onclick="switchTab('attendance')" id="tab-btn-attendance" class="px-4 py-2 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition">Absensi</button>
-                    <button onclick="switchTab('discipline')" id="tab-btn-discipline" class="px-4 py-2 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition">Sikap & Poin</button>
+                <div class="flex flex-wrap gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-950/60 border border-slate-200/70 dark:border-slate-800">
+                    <button onclick="switchTab('leaves')" id="tab-btn-leaves" class="px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs">🎫 Perizinan Keluar</button>
+                    <button onclick="switchTab('health')" id="tab-btn-health" class="px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900">🏥 Log Kesehatan UKS</button>
+                    <button onclick="switchTab('attendance')" id="tab-btn-attendance" class="px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900">🌙 Absen Kamar Malam</button>
+                    <button onclick="switchTab('discipline')" id="tab-btn-discipline" class="px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900">⭐ Sikap & Poin</button>
                 </div>
 
                 <!-- Tab: Leave Requests -->
                 <div id="tab-leaves" class="space-y-4 tab-content">
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
-                            <h3 class="font-bold text-slate-800 dark:text-white">Riwayat Perizinan Keluar Asrama</h3>
+                    <div class="card-natural p-6">
+                        <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+                            <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">Riwayat Perizinan Keluar Asrama</h3>
                         </div>
                         
                         <div class="divide-y divide-slate-100 dark:divide-slate-800">
                             @forelse($leaveRequests as $req)
-                                <div class="py-3 flex justify-between items-start text-xs">
+                                <div class="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                                     <div>
-                                        <span class="inline-flex items-center rounded px-1.5 py-0.5 text-3xs font-semibold uppercase bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400">
-                                            @if($req->type === 'short_leave') Keluar Sebentar
-                                            @elseif($req->type === 'overnight_leave') Bermalam
-                                            @elseif($req->type === 'home_visit') Pulang Rumah
-                                            @elseif($req->type === 'medical_leave') Sakit / Medis
-                                            @else Darurat
+                                        <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase 
+                                            @if($req->type === 'short_leave') bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300
+                                            @elseif($req->type === 'overnight_leave') bg-indigo-50 text-indigo-700 dark:bg-indigo-950/30 dark:text-indigo-300
+                                            @elseif($req->type === 'home_visit') bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300
+                                            @else bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300 @endif">
+                                            @if($req->type === 'short_leave') ⏱️ Keluar Sebentar
+                                            @elseif($req->type === 'overnight_leave') 🌙 Bermalam
+                                            @elseif($req->type === 'home_visit') 🏠 Pulang Rumah
+                                            @elseif($req->type === 'medical_leave') 🏥 Sakit / Medis
+                                            @else 🚨 Darurat
                                             @endif
                                         </span>
-                                        <p class="font-bold text-slate-800 dark:text-slate-200 mt-1">Ke: {{ $req->destination }}</p>
+                                        <p class="font-bold text-slate-900 dark:text-white mt-1">Tujuan: {{ $req->destination }}</p>
                                         <p class="text-slate-500 mt-0.5">{{ $req->reason }}</p>
-                                        <p class="text-slate-400 mt-1">Mulai: {{ \Carbon\Carbon::parse($req->leave_start_at)->format('d M Y H:i') }} | Rencana Kembali: {{ $req->leave_end_at ? \Carbon\Carbon::parse($req->leave_end_at)->format('d M Y H:i') : '-' }}</p>
+                                        <p class="text-[11px] text-slate-400 mt-1">Mulai: {{ \Carbon\Carbon::parse($req->leave_start_at)->translatedFormat('d M Y H:i') }} &bull; Kembali: {{ $req->leave_end_at ? \Carbon\Carbon::parse($req->leave_end_at)->translatedFormat('d M Y H:i') : '-' }}</p>
                                         @if($req->returned_at)
-                                            <p class="text-emerald-500 font-medium mt-1">Kembali Aktual: {{ \Carbon\Carbon::parse($req->returned_at)->format('d M Y H:i') }}</p>
+                                            <p class="text-emerald-600 font-semibold mt-1">✓ Tiba di Asrama: {{ \Carbon\Carbon::parse($req->returned_at)->translatedFormat('d M Y H:i') }}</p>
                                         @endif
                                     </div>
-                                    <span class="inline-flex items-center rounded-full px-2 py-0.5 text-2xs font-semibold
-                                        @if($req->status === 'submitted') bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-455
-                                        @elseif($req->status === 'approved') bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-455
-                                        @elseif($req->status === 'returned') bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-455
-                                        @elseif($req->status === 'rejected') bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-455
-                                        @else bg-slate-50 text-slate-700 dark:bg-slate-950/30 dark:text-slate-455 @endif">
-                                        @if($req->status === 'submitted') Diajukan
-                                        @elseif($req->status === 'approved') Disetujui
-                                        @elseif($req->status === 'returned') Kembali
-                                        @elseif($req->status === 'rejected') Ditolak
-                                        @else Dibatalkan
+                                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-extrabold shrink-0
+                                        @if($req->status === 'submitted') bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300 border border-amber-200/60
+                                        @elseif($req->status === 'approved') bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300 border border-emerald-200/60
+                                        @elseif($req->status === 'returned') bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300
+                                        @elseif($req->status === 'rejected') bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300 border border-rose-200/60
+                                        @else bg-slate-100 text-slate-500 @endif">
+                                        @if($req->status === 'submitted') ⏳ Menunggu Persetujuan
+                                        @elseif($req->status === 'approved') 🟢 Izin Aktif (Di Luar)
+                                        @elseif($req->status === 'returned') 🏁 Sudah Kembali
+                                        @elseif($req->status === 'rejected') ❌ Ditolak
+                                        @else ⚪ Dibatalkan
                                         @endif
                                     </span>
                                 </div>
                             @empty
-                                <p class="text-center py-6 text-slate-400">Tidak ada pengajuan izin.</p>
+                                <p class="text-center py-8 text-slate-400">Tidak ada riwayat pengajuan izin.</p>
                             @endforelse
                         </div>
                     </div>
@@ -133,32 +141,32 @@
 
                 <!-- Tab: Health Logs -->
                 <div id="tab-health" class="space-y-4 tab-content hidden">
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <h3 class="font-bold text-slate-800 dark:text-white mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">Catatan Kondisi Kesehatan</h3>
+                    <div class="card-natural p-6">
+                        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">Catatan Kondisi Kesehatan & UKS</h3>
 
                         <div class="divide-y divide-slate-100 dark:divide-slate-800">
                             @forelse($healthLogs as $log)
-                                <div class="py-3 flex justify-between items-start text-xs">
+                                <div class="py-3 flex justify-between items-start text-xs gap-3">
                                     <div>
-                                        <p class="font-bold text-slate-850 dark:text-slate-200">{{ $log->condition_title }}</p>
+                                        <p class="font-bold text-slate-900 dark:text-white">{{ $log->condition_title }}</p>
                                         @if($log->description)
                                             <p class="text-slate-500 mt-0.5">{{ $log->description }}</p>
                                         @endif
                                         @if($log->action_taken)
-                                            <p class="text-emerald-650 dark:text-emerald-400 font-semibold mt-1">Penanganan: {{ $log->action_taken }}</p>
+                                            <p class="text-emerald-600 font-semibold mt-1">Penanganan UKS: {{ $log->action_taken }}</p>
                                         @endif
-                                        <p class="text-slate-400 mt-1">Dicatat pada: {{ \Carbon\Carbon::parse($log->logged_at)->format('d M Y H:i') }}</p>
+                                        <p class="text-[11px] text-slate-400 mt-1">Dicatat pada: {{ \Carbon\Carbon::parse($log->logged_at)->translatedFormat('d M Y, H:i') }}</p>
                                     </div>
-                                    <span class="inline-flex items-center rounded-full px-2 py-0.5 text-2xs font-semibold uppercase
-                                        @if($log->severity === 'critical') bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-455
-                                        @elseif($log->severity === 'high') bg-orange-50 text-orange-700 dark:bg-orange-950/30 dark:text-orange-455
-                                        @elseif($log->severity === 'medium') bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-455
-                                        @else bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-455 @endif">
+                                    <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase shrink-0
+                                        @if($log->severity === 'critical') bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300
+                                        @elseif($log->severity === 'high') bg-orange-50 text-orange-700 dark:bg-orange-950/30 dark:text-orange-300
+                                        @elseif($log->severity === 'medium') bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300
+                                        @else bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300 @endif">
                                         {{ $log->severity }}
                                     </span>
                                 </div>
                             @empty
-                                <p class="text-center py-6 text-slate-400">Tidak ada catatan medis / kesehatan.</p>
+                                <p class="text-center py-8 text-slate-400">Tidak ada catatan medis / kesehatan anak.</p>
                             @endforelse
                         </div>
                     </div>
@@ -166,50 +174,48 @@
 
                 <!-- Tab: Attendance (Roll Call Records) -->
                 <div id="tab-attendance" class="space-y-4 tab-content hidden">
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <h3 class="font-bold text-slate-800 dark:text-white mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">Pengecekan Malam (Roll Call)</h3>
+                    <div class="card-natural p-6">
+                        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">Riwayat Pengecekan Kamar Malam (Roll Call)</h3>
 
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse text-xs">
                                 <thead>
-                                    <tr class="border-b border-slate-150 text-slate-400 font-bold uppercase dark:border-slate-800">
-                                        <th class="py-2">Tanggal</th>
-                                        <th class="py-2">Sesi</th>
-                                        <th class="py-2">Status</th>
-                                        <th class="py-2">Catatan</th>
+                                    <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:border-slate-800">
+                                        <th class="py-2.5 px-3">Tanggal</th>
+                                        <th class="py-2.5 px-3">Waktu Sesi</th>
+                                        <th class="py-2.5 px-3">Status Keberadaan</th>
+                                        <th class="py-2.5 px-3">Keterangan</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-50 dark:divide-slate-800 text-slate-700 dark:text-slate-350">
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                                     @forelse($rollCallRecords as $rec)
-                                        <tr>
-                                            <td class="py-2.5 font-semibold">{{ \Carbon\Carbon::parse($rec->session->session_date)->format('d M Y') }}</td>
-                                            <td class="py-2.5 capitalize">
-                                                @if($rec->session->session_type === 'night') Malam
-                                                @elseif($rec->session->session_type === 'morning') Pagi
-                                                @elseif($rec->session->session_type === 'afternoon') Sore
-                                                @else Kustom
-                                                @endif
+                                        <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-950/20">
+                                            <td class="py-2.5 px-3 font-semibold text-slate-800 dark:text-white">
+                                                {{ \Carbon\Carbon::parse($rec->session->session_date)->translatedFormat('d M Y') }}
                                             </td>
-                                            <td class="py-2.5">
-                                                <span class="inline-flex items-center rounded-full px-2 py-0.5 text-2xs font-semibold uppercase
-                                                    @if($rec->status === 'present') bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-455
-                                                    @elseif($rec->status === 'late') bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-455
-                                                    @elseif($rec->status === 'permission') bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-455
-                                                    @elseif($rec->status === 'sick') bg-pink-50 text-pink-700 dark:bg-pink-950/30 dark:text-pink-455
-                                                    @else bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-455 @endif">
-                                                    @if($rec->status === 'present') Hadir
+                                            <td class="py-2.5 px-3 capitalize text-slate-500">
+                                                {{ $rec->session->session_type ?? 'Malam' }}
+                                            </td>
+                                            <td class="py-2.5 px-3">
+                                                <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-extrabold
+                                                    @if($rec->status === 'present') bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300
+                                                    @elseif($rec->status === 'late') bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300
+                                                    @elseif($rec->status === 'permission') bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300
+                                                    @elseif($rec->status === 'sick') bg-purple-50 text-purple-700 dark:bg-purple-950/30 dark:text-purple-300
+                                                    @else bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300 @endif">
+                                                    @if($rec->status === 'present') Hadir di Kamar
                                                     @elseif($rec->status === 'late') Terlambat
-                                                    @elseif($rec->status === 'permission') Izin
-                                                    @elseif($rec->status === 'sick') Sakit
-                                                    @else Alpha
+                                                    @elseif($rec->status === 'permission') Izin Resmi
+                                                    @elseif($rec->status === 'sick') Sakit (UKS)
+                                                    @else Alpha / Tidak Ada
                                                     @endif
                                                 </span>
                                             </td>
-                                            <td class="py-2.5 font-medium text-slate-500">{{ $rec->note ?? '-' }}</td>
+                                            <td class="py-2.5 px-3 text-slate-500">{{ $rec->note ?? '-' }}</td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="py-6 text-center text-slate-400">Tidak ada rekam absensi asrama.</td>
+                                            <td colspan="4" class="py-8 text-center text-slate-400">Belum ada rekam absensi asrama anak.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -220,41 +226,41 @@
 
                 <!-- Tab: Discipline Logs -->
                 <div id="tab-discipline" class="space-y-4 tab-content hidden">
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <h3 class="font-bold text-slate-800 dark:text-white mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">Log Sikap & Poin</h3>
+                    <div class="card-natural p-6">
+                        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">Catatan Kedisiplinan & Poin Karakter</h3>
 
                         <div class="divide-y divide-slate-100 dark:divide-slate-800">
                             @forelse($disciplineLogs as $log)
-                                <div class="py-3 flex justify-between items-center text-xs">
+                                <div class="py-3.5 flex justify-between items-center text-xs gap-3">
                                     <div>
-                                        <span class="inline-flex items-center rounded px-1.5 py-0.5 text-3xs font-semibold uppercase bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                                        <span class="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold uppercase bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400">
                                             {{ $log->category }}
                                         </span>
-                                        <p class="font-bold text-slate-850 dark:text-slate-200 mt-1">{{ $log->description }}</p>
+                                        <p class="font-bold text-slate-900 dark:text-white mt-1">{{ $log->description }}</p>
                                         @if($log->action_taken)
                                             <p class="text-slate-500 mt-0.5">Tindak Lanjut: {{ $log->action_taken }}</p>
                                         @endif
-                                        <p class="text-slate-400 mt-1">{{ \Carbon\Carbon::parse($log->logged_at)->format('d M Y H:i') }}</p>
+                                        <p class="text-[10px] text-slate-400 mt-1">{{ \Carbon\Carbon::parse($log->logged_at)->translatedFormat('d M Y, H:i') }}</p>
                                     </div>
-                                    <div class="text-right">
-                                        <span class="inline-flex items-center rounded-full px-2 py-0.5 text-2xs font-semibold uppercase
-                                            @if($log->type === 'violation') bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-455
-                                            @elseif($log->type === 'warning') bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-455
-                                            @elseif($log->type === 'achievement') bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-455
-                                            @else bg-slate-50 text-slate-700 dark:bg-slate-950/30 dark:text-slate-455 @endif">
+                                    <div class="text-right shrink-0">
+                                        <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase
+                                            @if($log->type === 'violation') bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300
+                                            @elseif($log->type === 'warning') bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300
+                                            @elseif($log->type === 'achievement') bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300
+                                            @else bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 @endif">
                                             @if($log->type === 'violation') Pelanggaran
                                             @elseif($log->type === 'warning') Peringatan
                                             @elseif($log->type === 'achievement') Prestasi
                                             @else Catatan
                                             @endif
                                         </span>
-                                        <span class="block mt-1 font-bold @if($log->points > 0) text-emerald-500 @elseif($log->points < 0) text-rose-500 @else text-slate-500 @endif">
-                                            {{ $log->points > 0 ? '+' : '' }}{{ $log->points }}
+                                        <span class="block mt-1 font-black text-sm @if($log->points > 0) text-emerald-600 @elseif($log->points < 0) text-rose-600 @else text-slate-500 @endif">
+                                            {{ $log->points > 0 ? '+' : '' }}{{ $log->points }} Poin
                                         </span>
                                     </div>
                                 </div>
                             @empty
-                                <p class="text-center py-6 text-slate-400">Tidak ada catatan kedisiplinan / prestasi.</p>
+                                <p class="text-center py-8 text-slate-400">Tidak ada catatan kedisiplinan / pelanggaran.</p>
                             @endforelse
                         </div>
                     </div>
@@ -266,22 +272,18 @@
 
 <script>
     function switchTab(tabName) {
-        // Hide all contents
         document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
         
-        // Remove border from all buttons
         document.querySelectorAll('[id^="tab-btn-"]').forEach(btn => {
-            btn.classList.remove('border-emerald-500', 'text-emerald-600');
-            btn.classList.add('border-transparent', 'text-slate-500');
+            btn.classList.remove('bg-white', 'dark:bg-slate-900', 'text-emerald-600', 'dark:text-emerald-400', 'shadow-xs');
+            btn.classList.add('text-slate-600', 'dark:text-slate-400');
         });
 
-        // Show active tab content
         document.getElementById(`tab-${tabName}`).classList.remove('hidden');
 
-        // Highlight active button
         const activeBtn = document.getElementById(`tab-btn-${tabName}`);
-        activeBtn.classList.add('border-emerald-500', 'text-emerald-600');
-        activeBtn.classList.remove('border-transparent', 'text-slate-500');
+        activeBtn.classList.add('bg-white', 'dark:bg-slate-900', 'text-emerald-600', 'dark:text-emerald-400', 'shadow-xs');
+        activeBtn.classList.remove('text-slate-600', 'dark:text-slate-400');
     }
 </script>
 @endsection

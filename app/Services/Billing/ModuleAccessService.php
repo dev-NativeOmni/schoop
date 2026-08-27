@@ -14,6 +14,12 @@ class ModuleAccessService
     protected array $cache = [];
     protected array $preloadedSchools = [];
 
+    public function flushCache(): void
+    {
+        $this->cache = [];
+        $this->preloadedSchools = [];
+    }
+
     public function preloadForSchool(School $school): void
     {
         if (isset($this->preloadedSchools[$school->id])) {

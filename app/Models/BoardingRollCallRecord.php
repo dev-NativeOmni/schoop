@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BoardingRollCallRecord extends Model
 {
-    use BelongsToTenant;
-
     protected $fillable = [
         'boarding_roll_call_session_id',
         'student_id',
