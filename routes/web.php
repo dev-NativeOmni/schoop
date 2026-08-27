@@ -140,13 +140,15 @@ Route::get('/storage/{path}', [StorageAssetController::class, 'show'])->where('p
 Route::get('/', [App\Http\Controllers\Public\TenantPublicLandingController::class, 'index'])->name('tenant.public.landing');
 Route::get('/manifest.json', [App\Http\Controllers\Public\TenantPwaManifestController::class, 'show'])->name('tenant.pwa.manifest');
 Route::get('/panduan-fitur', function () {
-    return file_get_contents(public_path('panduan_fitur_dan_menu_hafizplus.html'));
+    return view('docs.panduan-fitur');
 })->name('docs.features');
 Route::get('/panduan_fitur_dan_menu_hafizplus.html', function () {
-    return file_get_contents(public_path('panduan_fitur_dan_menu_hafizplus.html'));
+    return view('docs.panduan-fitur');
 });
 Route::get('/panduan_fitur_dan_menu_hafizplus.md', function () {
-    return response(file_get_contents(public_path('panduan_fitur_dan_menu_hafizplus.md')), 200, [
+    $path = base_path('public/panduan_fitur_dan_menu_hafizplus.md');
+    $content = file_exists($path) ? file_get_contents($path) : '';
+    return response($content, 200, [
         'Content-Type' => 'text/markdown; charset=UTF-8',
         'Content-Disposition' => 'attachment; filename="panduan_fitur_dan_menu_hafizplus.md"',
     ]);
