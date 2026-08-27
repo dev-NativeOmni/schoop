@@ -91,14 +91,64 @@ class HafalanRecordController extends Controller
     public function create(Request $request): View
     {
         $user = $request->user();
+        $activeSchoolId = app(\App\Services\Tenancy\TenantContextService::class)->activeSchoolId();
+
+        $students = Student::query()
+            ->with('classRoom')
+            ->when($activeSchoolId, fn ($q) => $q->where('school_id', $activeSchoolId))
+            ->where('is_active', true)
+            ->orderBy('full_name')
+            ->get();
+
+        $latestRecords = HafalanRecord::query()
+            ->whereIn('student_id', $students->pluck('id'))
+            ->orderByDesc('record_date')
+            ->orderByDesc('id')
+            ->get()
+            ->unique('student_id')
+            ->keyBy('student_id');
+
+        $studentsData = $students->mapWithKeys(function ($student) use ($latestRecords) {
+            $latest = $latestRecords->get($student->id);
+            $expectedPage = 1;
+            $expectedLine = 1;
+            $hasPrevious = false;
+
+            if ($latest) {
+                $hasPrevious = true;
+                if ($latest->end_line < 15) {
+                    $expectedPage = (int) $latest->end_page;
+                    $expectedLine = (int) $latest->end_line + 1;
+                } else {
+                    $expectedPage = min(604, (int) $latest->end_page + 1);
+                    $expectedLine = 1;
+                }
+            }
+
+            return [
+                $student->id => [
+                    'id' => $student->id,
+                    'name' => $student->full_name,
+                    'nis' => $student->nis ?? '-',
+                    'class_room_id' => $student->class_room_id,
+                    'class_room_name' => $student->classRoom?->name ?? 'Tanpa Kelas',
+                    'school_id' => $student->school_id,
+                    'has_previous' => $hasPrevious,
+                    'last_record_date' => $latest?->record_date?->format('d/m/Y'),
+                    'last_end_page' => $latest?->end_page,
+                    'last_end_line' => $latest?->end_line,
+                    'expected_page' => $expectedPage,
+                    'expected_line' => $expectedLine,
+                    'target_daily_lines' => 15,
+                ]
+            ];
+        })->toArray();
 
         return view('tahfizh.hafalan-records.create', [
             'schools' => School::query()->where('is_active', true)->orderBy('name')->get(),
-            'students' => Student::query()
-                ->with('classRoom')
-                ->where('is_active', true)
-                ->orderBy('full_name')
-                ->get(),
+            'classRooms' => ClassRoom::query()->where('is_active', true)->orderBy('name')->get(),
+            'students' => $students,
+            'studentsData' => $studentsData,
             'teachers' => User::query()
                 ->whereHas('role', fn ($query) => $query->where('name', 'teacher'))
                 ->orderBy('name')
@@ -217,14 +267,66 @@ class HafalanRecordController extends Controller
             abort(403, 'Guru hanya boleh mengedit setoran miliknya.');
         }
 
+        $activeSchoolId = app(\App\Services\Tenancy\TenantContextService::class)->activeSchoolId();
+
+        $students = Student::query()
+            ->with('classRoom')
+            ->when($activeSchoolId, fn ($q) => $q->where('school_id', $activeSchoolId))
+            ->where('is_active', true)
+            ->orderBy('full_name')
+            ->get();
+
+        $latestRecords = HafalanRecord::query()
+            ->whereIn('student_id', $students->pluck('id'))
+            ->where('id', '!=', $hafalanRecord->id)
+            ->orderByDesc('record_date')
+            ->orderByDesc('id')
+            ->get()
+            ->unique('student_id')
+            ->keyBy('student_id');
+
+        $studentsData = $students->mapWithKeys(function ($student) use ($latestRecords) {
+            $latest = $latestRecords->get($student->id);
+            $expectedPage = 1;
+            $expectedLine = 1;
+            $hasPrevious = false;
+
+            if ($latest) {
+                $hasPrevious = true;
+                if ($latest->end_line < 15) {
+                    $expectedPage = (int) $latest->end_page;
+                    $expectedLine = (int) $latest->end_line + 1;
+                } else {
+                    $expectedPage = min(604, (int) $latest->end_page + 1);
+                    $expectedLine = 1;
+                }
+            }
+
+            return [
+                $student->id => [
+                    'id' => $student->id,
+                    'name' => $student->full_name,
+                    'nis' => $student->nis ?? '-',
+                    'class_room_id' => $student->class_room_id,
+                    'class_room_name' => $student->classRoom?->name ?? 'Tanpa Kelas',
+                    'school_id' => $student->school_id,
+                    'has_previous' => $hasPrevious,
+                    'last_record_date' => $latest?->record_date?->format('d/m/Y'),
+                    'last_end_page' => $latest?->end_page,
+                    'last_end_line' => $latest?->end_line,
+                    'expected_page' => $expectedPage,
+                    'expected_line' => $expectedLine,
+                    'target_daily_lines' => 15,
+                ]
+            ];
+        })->toArray();
+
         return view('tahfizh.hafalan-records.edit', [
             'record' => $hafalanRecord,
             'schools' => School::query()->where('is_active', true)->orderBy('name')->get(),
-            'students' => Student::query()
-                ->with('classRoom')
-                ->where('is_active', true)
-                ->orderBy('full_name')
-                ->get(),
+            'classRooms' => ClassRoom::query()->where('is_active', true)->orderBy('name')->get(),
+            'students' => $students,
+            'studentsData' => $studentsData,
             'teachers' => User::query()
                 ->whereHas('role', fn ($query) => $query->where('name', 'teacher'))
                 ->orderBy('name')
@@ -241,6 +343,7 @@ class HafalanRecordController extends Controller
                 HafalanRecord::STATUS_KURANG,
                 HafalanRecord::STATUS_LEBIH,
             ],
+            'defaultTeacherId' => $hafalanRecord->teacher_id,
         ]);
     }
 
