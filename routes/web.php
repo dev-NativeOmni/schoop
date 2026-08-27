@@ -139,6 +139,18 @@ use App\Http\Controllers\StorageAssetController;
 Route::get('/storage/{path}', [StorageAssetController::class, 'show'])->where('path', '.*')->name('storage.asset');
 Route::get('/', [App\Http\Controllers\Public\TenantPublicLandingController::class, 'index'])->name('tenant.public.landing');
 Route::get('/manifest.json', [App\Http\Controllers\Public\TenantPwaManifestController::class, 'show'])->name('tenant.pwa.manifest');
+Route::get('/panduan-fitur', function () {
+    return file_get_contents(public_path('panduan_fitur_dan_menu_hafizplus.html'));
+})->name('docs.features');
+Route::get('/panduan_fitur_dan_menu_hafizplus.html', function () {
+    return file_get_contents(public_path('panduan_fitur_dan_menu_hafizplus.html'));
+});
+Route::get('/panduan_fitur_dan_menu_hafizplus.md', function () {
+    return response(file_get_contents(public_path('panduan_fitur_dan_menu_hafizplus.md')), 200, [
+        'Content-Type' => 'text/markdown; charset=UTF-8',
+        'Content-Disposition' => 'attachment; filename="panduan_fitur_dan_menu_hafizplus.md"',
+    ]);
+});
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [LoginController::class, 'create'])->name('login');

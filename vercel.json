@@ -30,6 +30,10 @@
             "dest": "/public/robots.txt"
         },
         {
+            "src": "/panduan_fitur_dan_menu_hafizplus.(.*)",
+            "dest": "/public/panduan_fitur_dan_menu_hafizplus.$1"
+        },
+        {
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
