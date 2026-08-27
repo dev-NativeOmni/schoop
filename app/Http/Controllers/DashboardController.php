@@ -22,8 +22,8 @@ class DashboardController extends Controller
             'admin' => redirect()->route('dashboard.admin'),
             'principal' => redirect()->route('dashboard.kepala-sekolah'),
             'teacher' => redirect()->route('dashboard.teacher'),
-            'parent' => redirect()->route('dashboard.parent'),
-            'student' => redirect()->route('dashboard.student'),
+            'parent' => redirect()->route('portal.parent.dashboard'),
+            'student' => redirect()->route('portal.student.dashboard'),
             'boarding_supervisor' => redirect()->route('boarding.dashboard'),
             'finance' => redirect()->route('finance.reports.dashboard'),
             'cashier' => redirect()->route('cashless.pos.cashier'),
@@ -47,12 +47,12 @@ class DashboardController extends Controller
 
     public function admin(Request $request): View
     {
-        $schoolId = $request->user()->school_id;
+        $schoolId = $request->user()->school_id ?: app(\App\Services\Tenancy\TenantContextService::class)->activeSchoolId();
 
         $stats = [
-            'total_classrooms' => ClassRoom::query()->where(['school_id' => $schoolId])->count(),
-            'total_students' => Student::query()->where(['school_id' => $schoolId])->count(),
-            'total_teachers' => TeacherProfile::query()->where(['school_id' => $schoolId])->count(),
+            'total_classrooms' => ClassRoom::query()->where('school_id', $schoolId)->count(),
+            'total_students' => Student::query()->where('school_id', $schoolId)->count(),
+            'total_teachers' => TeacherProfile::query()->where('school_id', $schoolId)->count(),
         ];
 
         return view('dashboards.admin', compact('stats'));
@@ -60,12 +60,12 @@ class DashboardController extends Controller
 
     public function kepalaSekolah(Request $request): View
     {
-        $schoolId = $request->user()->school_id;
+        $schoolId = $request->user()->school_id ?: app(\App\Services\Tenancy\TenantContextService::class)->activeSchoolId();
 
         $stats = [
-            'total_classrooms' => ClassRoom::query()->where(['school_id' => $schoolId])->count(),
-            'total_students' => Student::query()->where(['school_id' => $schoolId])->count(),
-            'total_teachers' => TeacherProfile::query()->where(['school_id' => $schoolId])->count(),
+            'total_classrooms' => ClassRoom::query()->where('school_id', $schoolId)->count(),
+            'total_students' => Student::query()->where('school_id', $schoolId)->count(),
+            'total_teachers' => TeacherProfile::query()->where('school_id', $schoolId)->count(),
         ];
 
         return view('dashboards.kepala-sekolah', compact('stats'));
@@ -73,11 +73,11 @@ class DashboardController extends Controller
 
     public function teacher(Request $request): View
     {
-        $schoolId = $request->user()->school_id;
+        $schoolId = $request->user()->school_id ?: app(\App\Services\Tenancy\TenantContextService::class)->activeSchoolId();
 
         $stats = [
-            'total_classrooms' => ClassRoom::query()->where(['school_id' => $schoolId])->count(),
-            'total_students' => Student::query()->where(['school_id' => $schoolId])->count(),
+            'total_classrooms' => ClassRoom::query()->where('school_id', $schoolId)->count(),
+            'total_students' => Student::query()->where('school_id', $schoolId)->count(),
         ];
 
         return view('dashboards.teacher', compact('stats'));

@@ -23,11 +23,10 @@ class ParentStudentAccessService
             return collect();
         }
 
-        return $parentProfile->students()
-            ->with(['classRoom', 'school'])
-            ->where('students.is_active', true)
-            ->orderBy('students.full_name')
-            ->get();
+        return $parentProfile->students
+            ->where('is_active', true)
+            ->sortBy('full_name')
+            ->values();
     }
 
     public function canAccessStudent(User $user, Student $student): bool

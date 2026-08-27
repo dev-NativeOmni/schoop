@@ -20,10 +20,19 @@
     @if($brand)
         <title>{{ $brand->display_name }} - HafizPlus</title>
         @if($brand->favicon_path)
-            <link rel="icon" type="image/png" href="{{ Storage::disk('public')->url($brand->favicon_path) }}">
+            <link rel="icon" type="image/png" href="{{ \App\Models\SystemAsset::url($brand->favicon_path) }}">
+        @elseif(\App\Models\SystemAsset::has('system/logo.png'))
+            <link rel="icon" type="image/png" href="{{ \App\Models\SystemAsset::url('system/logo.png') }}">
+        @else
+            <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo_pwa.svg') }}">
         @endif
     @else
         <title>{{ config('app.name', 'HafizPlus School Platform') }}</title>
+        @if(\App\Models\SystemAsset::has('system/logo.png'))
+            <link rel="icon" type="image/png" href="{{ \App\Models\SystemAsset::url('system/logo.png') }}">
+        @else
+            <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo_pwa.svg') }}">
+        @endif
     @endif
 
     <link rel="manifest" href="{{ route('tenant.pwa.manifest') }}">

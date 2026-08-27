@@ -11,10 +11,17 @@ class TenantContextService
 {
     public const SESSION_KEY = 'active_school_id';
 
+    protected ?int $resolvedSchoolId = null;
+    protected ?School $resolvedSchool = null;
+
     public function activeSchoolId(): ?int
     {
+        if ($this->resolvedSchoolId !== null) {
+            return $this->resolvedSchoolId;
+        }
+
         if (app()->bound('resolved_domain_school_id')) {
-            return (int) app('resolved_domain_school_id');
+            return $this->resolvedSchoolId = (int) app('resolved_domain_school_id');
         }
 
         $schoolId = Session::get(self::SESSION_KEY);
@@ -22,29 +29,32 @@ class TenantContextService
         if (! $schoolId && auth()->check()) {
             $user = auth()->user();
             if ($user->school_id) {
-                return (int) $user->school_id;
-            }
-            if (method_exists($user, 'hasRole') && $user->hasRole(['super_admin', 'operations_manager'])) {
+                $schoolId = (int) $user->school_id;
+            } elseif (method_exists($user, 'hasRole') && $user->hasRole(['super_admin', 'operations_manager'])) {
                 $firstSchoolId = School::query()->value('id');
                 if ($firstSchoolId) {
                     Session::put(self::SESSION_KEY, $firstSchoolId);
-                    return (int) $firstSchoolId;
+                    $schoolId = (int) $firstSchoolId;
                 }
             }
         }
 
-        return $schoolId ? (int) $schoolId : null;
+        return $this->resolvedSchoolId = ($schoolId ? (int) $schoolId : null);
     }
 
     public function activeSchool(): ?School
     {
+        if ($this->resolvedSchool !== null) {
+            return $this->resolvedSchool;
+        }
+
         $schoolId = $this->activeSchoolId();
 
         if (! $schoolId) {
             return null;
         }
 
-        return School::query()->find($schoolId);
+        return $this->resolvedSchool = School::query()->with('brandProfile')->find($schoolId);
     }
 
     public function setActiveSchool(User $user, int $schoolId): void
@@ -54,6 +64,8 @@ class TenantContextService
         }
 
         Session::put(self::SESSION_KEY, $schoolId);
+        $this->resolvedSchoolId = $schoolId;
+        $this->resolvedSchool = null;
 
         UserSchoolMembership::query()
             ->where('user_id', $user->id)
@@ -102,5 +114,7 @@ class TenantContextService
     public function clear(): void
     {
         Session::forget(self::SESSION_KEY);
+        $this->resolvedSchoolId = null;
+        $this->resolvedSchool = null;
     }
 }

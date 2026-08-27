@@ -40,15 +40,16 @@ class StudentProgressSnapshotService
                 $dateUntil->toDateString(),
             ]);
 
-        $totalRecords = (clone $recordsQuery)->count();
-
-        $totalLines = (int) (clone $recordsQuery)
-            ->whereIn('status', [
+        $recordsSummary = (clone $recordsQuery)
+            ->selectRaw('COUNT(*) as total_count, COALESCE(SUM(CASE WHEN status IN (?, ?, ?) THEN total_lines ELSE 0 END), 0) as sum_lines', [
                 HafalanRecord::STATUS_LUNAS,
                 HafalanRecord::STATUS_KURANG,
                 HafalanRecord::STATUS_LEBIH,
             ])
-            ->sum('total_lines');
+            ->first();
+
+        $totalRecords = (int) ($recordsSummary->total_count ?? 0);
+        $totalLines = (int) ($recordsSummary->sum_lines ?? 0);
 
         $latestRecord = HafalanRecord::query()
             ->with(['teacher', 'startSurah', 'endSurah'])

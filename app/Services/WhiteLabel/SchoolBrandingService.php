@@ -97,13 +97,14 @@ class SchoolBrandingService
     }
 
     /**
-     * Get visual asset URL.
+     * Get visual asset URL with cache-busting.
      */
     public function getAssetUrl(?string $path): ?string
     {
         if (!$path) {
             return null;
         }
-        return Storage::disk('public')->url($path);
+
+        return \App\Models\SystemAsset::url($path);
     }
 }

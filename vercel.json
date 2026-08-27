@@ -16,16 +16,18 @@
             "dest": "/public/build/$1"
         },
         {
+            "src": "/images/(.*)",
+            "headers": { "cache-control": "public, max-age=86400, stale-while-revalidate=604800" },
+            "dest": "/public/images/$1"
+        },
+        {
             "src": "/favicon.ico",
+            "headers": { "cache-control": "public, max-age=86400" },
             "dest": "/public/favicon.ico"
         },
         {
             "src": "/robots.txt",
             "dest": "/public/robots.txt"
-        },
-        {
-            "src": "/images/(.*)",
-            "dest": "/public/images/$1"
         },
         {
             "src": "/(.*)",
