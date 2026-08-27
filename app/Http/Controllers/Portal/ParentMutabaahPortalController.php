@@ -16,12 +16,41 @@ class ParentMutabaahPortalController extends Controller
         private readonly MutabaahReportService $reportService,
     ) {}
 
-    public function show(Request $request, Student $student): View
+    public function show(Request $request, ?Student $student = null): View
     {
         $user = $request->user();
 
         if (! $this->accessService->isParent($user)) {
             abort(403, 'Halaman ini hanya untuk orang tua santri.');
+        }
+
+        // Get parent's children list
+        $parentProfile = $user->parentProfile;
+        $children      = $parentProfile?->students()->with(['user', 'classRoom'])->get() ?? collect();
+
+        if (! $student || ! $student->exists) {
+            $selectedId = $request->input('student_id', $request->input('student', $children->first()?->id));
+            $student = $children->firstWhere('id', (int) $selectedId) ?? $children->first();
+        }
+
+        if (! $student) {
+            return view('portal.parent.mutabaah', [
+                'student'         => null,
+                'children'        => collect(),
+                'records'         => collect(),
+                'records_by_date' => collect(),
+                'activities'      => collect(),
+                'summary'         => [
+                    'total_records'   => 0,
+                    'done_records'    => 0,
+                    'completion_rate' => 0,
+                ],
+                'period'          => [
+                    'start_date' => now()->startOfWeek()->toDateString(),
+                    'end_date'   => now()->endOfWeek()->toDateString(),
+                ],
+                'filters'         => [],
+            ]);
         }
 
         if (! $this->accessService->canViewStudent($user, $student)) {
@@ -33,13 +62,10 @@ class ParentMutabaahPortalController extends Controller
 
         $student->load('user', 'classRoom');
 
-        // Get parent's children list
-        $parentProfile = $user->parentProfile;
-        $children      = $parentProfile?->students()->with('user')->get() ?? collect();
-
         return view('portal.parent.mutabaah', array_merge($snapshot, [
             'children' => $children,
             'filters'  => $filters,
         ]));
     }
 }
+

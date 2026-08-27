@@ -450,14 +450,18 @@ Route::middleware('auth')->group(function (): void {
         });
 
     // Parent Mutabaah Portal Route
-    Route::get('/portal/parent/mutabaah/{student}', [ParentMutabaahPortalController::class, 'show'])
+    Route::get('/portal/parent/mutabaah/{student?}', [ParentMutabaahPortalController::class, 'show'])
         ->middleware(['role:parent', 'module:mutabaah'])
         ->name('portal.parent.mutabaah');
 
-    // Student Mutabaah Portal Route
+    // Student Mutabaah Portal Routes
     Route::get('/portal/student/mutabaah', [StudentMutabaahPortalController::class, 'index'])
         ->middleware(['role:student', 'module:mutabaah'])
         ->name('portal.student.mutabaah');
+
+    Route::post('/portal/student/mutabaah', [StudentMutabaahPortalController::class, 'store'])
+        ->middleware(['role:student', 'module:mutabaah'])
+        ->name('portal.student.mutabaah.store');
 
     // Attendance Routes
     Route::prefix('attendance')
