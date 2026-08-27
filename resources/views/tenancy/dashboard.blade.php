@@ -11,7 +11,7 @@
             </div>
             <div class="mt-6 flex flex-wrap gap-3 md:mt-0">
                 <a href="{{ route('tenancy.switcher') }}" class="inline-flex items-center gap-2 rounded-2xl bg-white/10 px-5 py-3 font-bold text-white backdrop-blur-md transition-all hover:bg-white/20 hover:scale-[1.02] active:scale-[0.98]">
-                    <svg class="h-5 w-5 text-[#A3E635]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <svg class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                     </svg>
                     Ganti Sekolah
@@ -19,7 +19,7 @@
             </div>
         </div>
         <!-- Decorative subtle pattern overlay -->
-        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#A3E635_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]"></div>
     </div>
 
     <!-- Stats Grid -->

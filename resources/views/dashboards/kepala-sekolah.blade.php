@@ -3,11 +3,15 @@
 @section('content')
     <div class="space-y-8">
         <!-- Header Welcome -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-8 text-white shadow-lg shadow-indigo-950/20">
-            <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-indigo-500/10 blur-xl"></div>
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-950/70 to-slate-900 p-8 text-white shadow-xl shadow-emerald-950/15 border border-emerald-900/30">
+            <div class="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-emerald-500/10 blur-3xl"></div>
             <div class="relative z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-300 mb-3">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    Executive Academic Overview
+                </div>
                 <h1 class="text-3xl font-extrabold tracking-tight">Selamat Datang, Kepala Sekolah!</h1>
-                <p class="mt-2 text-slate-350 max-w-xl">
+                <p class="mt-2 text-slate-300 max-w-xl text-sm leading-relaxed">
                     Pantau kinerja para pengajar, tingkat capaian hafalan santri, serta laporan bulanan & triwulan secara keseluruhan.
                 </p>
             </div>

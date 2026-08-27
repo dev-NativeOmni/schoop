@@ -5,7 +5,7 @@
     <div class="relative overflow-hidden bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 rounded-3xl p-8 shadow-xl">
         <!-- Ambient Glow -->
         <div class="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-indigo-500/10 dark:bg-indigo-500/5 blur-3xl"></div>
-        <div class="absolute -left-20 -bottom-20 h-40 w-40 rounded-full bg-[#A3E635]/10 dark:bg-[#A3E635]/5 blur-3xl"></div>
+        <div class="absolute -left-20 -bottom-20 h-40 w-40 rounded-full bg-emerald-500/10 dark:bg-emerald-500/5 blur-3xl"></div>
 
         <div class="relative z-10 space-y-6">
             <!-- User Header Info -->

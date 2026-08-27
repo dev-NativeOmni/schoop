@@ -3,11 +3,15 @@
 @section('content')
     <div class="space-y-8">
         <!-- Header Welcome -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-8 text-white shadow-lg shadow-indigo-950/20">
-            <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-indigo-500/10 blur-xl"></div>
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-950/70 to-slate-900 p-8 text-white shadow-xl shadow-emerald-950/15 border border-emerald-900/30">
+            <div class="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-emerald-500/10 blur-3xl"></div>
             <div class="relative z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-300 mb-3">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    Platform Control Hub
+                </div>
                 <h1 class="text-3xl font-extrabold tracking-tight">Selamat Datang, Super Admin!</h1>
-                <p class="mt-2 text-slate-350 max-w-xl">
+                <p class="mt-2 text-slate-300 max-w-xl text-sm leading-relaxed">
                     Kelola seluruh konfigurasi sekolah, master data, dan pantau performa aktivitas secara global di HafizPlus.
                 </p>
             </div>
@@ -117,7 +121,7 @@
                                 <img id="logo-preview" class="h-16 w-16 object-contain" src="{{ $globalLogoUrl }}" alt="Global Logo">
                             </div>
                         @else
-                            <div id="logo-default-icon" class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25">
+                            <div id="logo-default-icon" class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white shadow-md shadow-emerald-900/30">
                                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                 </svg>

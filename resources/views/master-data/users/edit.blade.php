@@ -14,42 +14,42 @@
             <div>
                 <label class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Nama Lengkap</label>
                 <input type="text" name="name" value="{{ old('name', $user->name) }}" 
-                       class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#A3E635] focus:ring-2 focus:ring-[#A3E635]/10" required>
+                       class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15" required>
                 @error('name') <p class="mt-1 text-sm text-red-655">{{ $message }}</p> @enderror
             </div>
 
             <div>
                 <label class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Username (Unique)</label>
                 <input type="text" name="username" value="{{ old('username', $user->username) }}" 
-                       class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#A3E635] focus:ring-2 focus:ring-[#A3E635]/10" required>
+                       class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15" required>
                 @error('username') <p class="mt-1 text-sm text-red-655">{{ $message }}</p> @enderror
             </div>
 
             <div>
                 <label class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Email (Unique)</label>
                 <input type="email" name="email" value="{{ old('email', $user->email) }}" 
-                       class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#A3E635] focus:ring-2 focus:ring-[#A3E635]/10" required>
+                       class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15" required>
                 @error('email') <p class="mt-1 text-sm text-red-655">{{ $message }}</p> @enderror
             </div>
 
             <div>
                 <label class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Telepon / HP</label>
                 <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" 
-                       class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#A3E635] focus:ring-2 focus:ring-[#A3E635]/10">
+                       class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15">
                 @error('phone') <p class="mt-1 text-sm text-red-655">{{ $message }}</p> @enderror
             </div>
 
             <div>
                 <label class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Password</label>
                 <input type="password" name="password" 
-                       class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#A3E635] focus:ring-2 focus:ring-[#A3E635]/10" placeholder="Kosongkan jika tidak ingin diubah">
+                       class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15" placeholder="Kosongkan jika tidak ingin diubah">
                 @error('password') <p class="mt-1 text-sm text-red-655">{{ $message }}</p> @enderror
             </div>
 
             <div>
                 <label class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Peran (Role)</label>
                 <select name="role_id" id="role_select" onchange="handleRoleChange()"
-                        class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#A3E635] focus:ring-2 focus:ring-[#A3E635]/10" required>
+                        class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15" required>
                     <option value="">Pilih Peran</option>
                     @foreach ($roles as $role)
                         <option value="{{ $role->id }}" data-name="{{ $role->name }}" @selected(old('role_id', $user->role_id) == $role->id)>
@@ -63,7 +63,7 @@
             <div id="school_container">
                 <label class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Sekolah</label>
                 <select name="school_id" id="school_select"
-                        class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#A3E635] focus:ring-2 focus:ring-[#A3E635]/10" required>
+                        class="w-full rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15" required>
                     <option value="">Pilih Sekolah</option>
                     @foreach ($schools as $school)
                         <option value="{{ $school->id }}" @selected(old('school_id', $user->school_id) == $school->id)>
@@ -76,13 +76,13 @@
 
             <div class="flex items-center gap-2 py-2">
                 <input type="checkbox" name="is_active" value="1" id="is_active" @checked(old('is_active', $user->is_active))
-                       class="rounded border-slate-350 text-[#A3E635] focus:ring-[#A3E635]/20 bg-slate-50/50 dark:bg-slate-850">
+                       class="rounded border-slate-350 text-emerald-500 focus:ring-emerald-500/20 bg-slate-50/50 dark:bg-slate-850">
                 <label for="is_active" class="text-sm font-semibold text-slate-700 dark:text-slate-300">Status Aktif</label>
             </div>
 
             <div class="flex gap-2 pt-2">
                 <button type="submit" 
-                        class="rounded-xl bg-gradient-to-r from-[#A3E635] to-[#84cc16] px-5 py-2.5 text-sm font-bold text-[#1F2937] hover:scale-[1.02] shadow-md shadow-[#A3E635]/10 hover:shadow-lg hover:shadow-[#A3E635]/20 transition-all focus:outline-none active:scale-[0.98]">
+                        class="rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 px-5 py-2.5 text-sm font-bold text-[#1F2937] hover:scale-[1.02] shadow-md shadow-emerald-600/10 hover:shadow-lg hover:shadow-emerald-600/15 transition-all focus:outline-none active:scale-[0.98]">
                     Simpan Perubahan
                 </button>
                 <a href="{{ route('master-data.users.index') }}" 

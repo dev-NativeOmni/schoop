@@ -10,11 +10,11 @@
             
             <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                 <div>
-                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-indigo-200 backdrop-blur-md mb-3 border border-white/5">
-                        <span class="flex h-2 w-2 rounded-full bg-emerald-450 animate-pulse"></span>
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-emerald-200 backdrop-blur-md mb-3 border border-white/5">
+                        <span class="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         <span>Portal Pengajar Aktif</span>
                     </div>
-                    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">Selamat Datang, Ustadz/Ustadzah!</h1>
+                    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-emerald-200 bg-clip-text text-transparent">Selamat Datang, Ustadz/Ustadzah!</h1>
                     <p class="mt-2 text-slate-300 max-w-xl leading-relaxed text-sm">
                         Kelola halaqah Al-Qur'an Anda, input setoran harian santri, pantau target hafalan, dan input aktivitas mutabaah yaumiyah secara terpusat.
                     </p>

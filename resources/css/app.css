@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Sora:wght@300;400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 @variant dark (.dark &);
 
@@ -9,154 +9,162 @@
 @source "../**/*.vue";
 
 @theme {
-    --font-sans: 'Sora', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Plus Jakarta Sans', 'Sora', 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 
-    /* Lime color overrides (remapping indigo & blue) */
-    --color-indigo-50: #f7fee7;
-    --color-indigo-100: #ecfccb;
-    --color-indigo-200: #d9f99d;
-    --color-indigo-300: #bef264;
-    --color-indigo-400: #a3e635; /* Lime */
-    --color-indigo-500: #84cc16;
-    --color-indigo-600: #65a30d;
-    --color-indigo-700: #4f7c0f;
-    --color-indigo-800: #3f6212;
-    --color-indigo-900: #365314;
-    --color-indigo-950: #1a2e05;
+    /* Natural Emerald & Sage Palette (remapping indigo & primary) */
+    --color-indigo-50: #f0fdf4;
+    --color-indigo-100: #dcfce7;
+    --color-indigo-200: #bbf7d0;
+    --color-indigo-300: #86efac;
+    --color-indigo-400: #34d399;
+    --color-indigo-500: #10b981;
+    --color-indigo-600: #059669; /* Primary Calm Emerald */
+    --color-indigo-700: #047857;
+    --color-indigo-800: #065f46;
+    --color-indigo-900: #064e3b;
+    --color-indigo-950: #022c22;
 
-    --color-blue-50: #f7fee7;
-    --color-blue-100: #ecfccb;
-    --color-blue-200: #d9f99d;
-    --color-blue-300: #bef264;
-    --color-blue-400: #a3e635;
-    --color-blue-500: #84cc16;
-    --color-blue-600: #65a30d;
-    --color-blue-700: #4f7c0f;
-    --color-blue-800: #3f6212;
-    --color-blue-900: #365314;
-    --color-blue-950: #1a2e05;
+    /* Serene Teal & Sky Accents (remapping blue) */
+    --color-blue-50: #f0fdfa;
+    --color-blue-100: #ccfbf1;
+    --color-blue-200: #99f6e4;
+    --color-blue-300: #5eead4;
+    --color-blue-400: #2dd4bf;
+    --color-blue-500: #14b8a6;
+    --color-blue-600: #0d9488;
+    --color-blue-700: #0f766e;
+    --color-blue-800: #115e59;
+    --color-blue-900: #134e4a;
+    --color-blue-950: #042f2e;
 
-    /* Slate & Gray remapped to Charcoal (#1F2937) and Soft Gray (#F3F4F6) */
-    --color-slate-50: #fafafa;
-    --color-slate-100: #f3f4f6; /* Soft Gray */
-    --color-slate-200: #e5e7eb;
-    --color-slate-250: #dadde2;
-    --color-slate-300: #d1d5db;
-    --color-slate-400: #9ca3af;
-    --color-slate-450: #88909d;
-    --color-slate-500: #6b7280;
-    --color-slate-550: #5f6671;
-    --color-slate-600: #4b5563;
-    --color-slate-700: #374151;
-    --color-slate-750: #2c3543;
-    --color-slate-800: #1f2937; /* Charcoal */
-    --color-slate-850: #19212c;
-    --color-slate-900: #111827;
-    --color-slate-950: #0b0f17;
+    /* Warm Sand & Amber */
+    --color-amber-50: #fffbeb;
+    --color-amber-100: #fef3c7;
+    --color-amber-200: #fde68a;
+    --color-amber-300: #fcd34d;
+    --color-amber-400: #fbbf24;
+    --color-amber-500: #f59e0b;
+    --color-amber-600: #d97706;
+    --color-amber-700: #b45309;
+    --color-amber-800: #92400e;
+    --color-amber-900: #78350f;
+    --color-amber-950: #451a03;
 
-    --color-gray-50: #fafafa;
-    --color-gray-100: #f3f4f6;
-    --color-gray-200: #e5e7eb;
-    --color-gray-300: #d1d5db;
-    --color-gray-400: #9ca3af;
-    --color-gray-500: #6b7280;
-    --color-gray-600: #4b5563;
-    --color-gray-700: #374151;
-    --color-gray-850: #19212c;
-    --color-gray-800: #1f2937;
-    --color-gray-900: #111827;
-    --color-gray-950: #0b0f17;
+    /* Calm, Eye-Comfort Slate & Stone Surfaces */
+    --color-slate-50: #f8fafc;
+    --color-slate-100: #f1f5f9;
+    --color-slate-200: #e2e8f0;
+    --color-slate-250: #cbd5e1;
+    --color-slate-300: #94a3b8;
+    --color-slate-350: #94a3b8;
+    --color-slate-355: #94a3b8;
+    --color-slate-400: #64748b;
+    --color-slate-450: #475569;
+    --color-slate-500: #475569;
+    --color-slate-550: #334155;
+    --color-slate-600: #334155;
+    --color-slate-700: #1e293b;
+    --color-slate-750: #141f32;
+    --color-slate-800: #0f172a;
+    --color-slate-850: #0a1120;
+    --color-slate-900: #060b14;
+    --color-slate-950: #03070d;
+
+    --color-gray-50: #f8fafc;
+    --color-gray-100: #f1f5f9;
+    --color-gray-200: #e2e8f0;
+    --color-gray-300: #cbd5e1;
+    --color-gray-400: #94a3b8;
+    --color-gray-500: #64748b;
+    --color-gray-600: #475569;
+    --color-gray-700: #334155;
+    --color-gray-800: #1e293b;
+    --color-gray-850: #141f32;
+    --color-gray-900: #0f172a;
+    --color-gray-950: #080e1a;
 }
 
 /* ==========================================================================
-   Global Capsule Buttons & Glow Highlights
+   UI Anatomy & Proportional Components
    ========================================================================== */
 
-/* Target buttons, submit inputs, and link buttons */
+/* Proportional Natural Buttons */
 button,
 .btn,
-a[class*="bg-indigo-"],
-a[class*="bg-slate-900"],
-a[class*="bg-emerald-"],
-a[class*="bg-blue-"],
-a[class*="bg-amber-"],
-a[class*="border-slate-"],
-a[class*="border-amber-"],
-a[class*="btn-outline-"],
 input[type="submit"],
 input[type="button"] {
-    border-radius: 9999px !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, background-color 0.2s ease !important;
 }
 
-/* Hover highlights (slight translation + ring glow with Lime color) */
-button:hover,
-.btn:hover,
-a[class*="bg-indigo-"]:hover,
-a[class*="bg-slate-900"]:hover,
-a[class*="bg-emerald-"]:hover,
-a[class*="bg-blue-"]:hover,
-a[class*="bg-amber-"]:hover,
-a[class*="border-slate-"]:hover,
-a[class*="border-amber-"]:hover,
-a[class*="btn-outline-"]:hover,
-input[type="submit"]:hover,
-input[type="button"]:hover {
-    transform: translateY(-1.5px) !important;
-    box-shadow: 0 4px 14px -2px rgba(163, 230, 53, 0.35), 0 0 0 4px rgba(163, 230, 53, 0.18) !important;
-}
-
-/* Emerald green button specific hover */
-a[class*="bg-emerald-"]:hover,
-button[class*="bg-emerald-"]:hover {
-    box-shadow: 0 4px 14px -2px rgba(16, 185, 129, 0.3), 0 0 0 4px rgba(16, 185, 129, 0.15) !important;
-}
-
-/* Rose red button specific hover */
-a[class*="bg-rose-"]:hover,
-button[class*="bg-rose-"]:hover,
-a[class*="bg-red-"]:hover,
-button[class*="bg-red-"]:hover {
-    box-shadow: 0 4px 14px -2px rgba(244, 63, 94, 0.3), 0 0 0 4px rgba(244, 63, 94, 0.15) !important;
-}
-
-/* Active click micro-animation */
+/* Tactile Active Press (Gentle physics bounce) */
 button:active,
 .btn:active,
-a[class*="bg-indigo-"]:active,
-a[class*="bg-slate-900"]:active,
-a[class*="bg-emerald-"]:active,
-a[class*="bg-blue-"]:active,
-a[class*="bg-amber-"]:active,
 input[type="submit"]:active,
 input[type="button"]:active {
-    transform: translateY(0) scale(0.97) !important;
-    box-shadow: none !important;
+    transform: scale(0.98) translateY(1px) !important;
 }
 
-/* Page radial gradient backgrounds */
+/* Smooth Interactive Hover Lift */
+button:hover:not(:disabled),
+.btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+/* Natural Card & Glassmorphism Surfaces */
+.card-natural {
+    border-radius: 1rem;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+    backdrop-filter: blur(8px);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-natural:hover {
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.07), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
+    border-color: rgba(203, 213, 225, 0.9);
+}
+
+.dark .card-natural {
+    border-color: rgba(30, 41, 59, 0.8);
+    background-color: rgba(15, 23, 42, 0.85);
+    box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.25);
+}
+
+.dark .card-natural:hover {
+    border-color: rgba(51, 65, 85, 0.9);
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
+}
+
+/* Serene Page Background with Ambient Soft Mesh */
 body {
-    background: radial-gradient(ellipse at top left, #ffffff 0%, #f3f4f6 70%) !important;
+    background: 
+        radial-gradient(at 0% 0%, rgba(5, 150, 105, 0.035) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(217, 119, 6, 0.025) 0px, transparent 50%),
+        #f8fafc !important;
 }
 
 .dark body {
-    background: radial-gradient(ellipse at top right, #1f2937 0%, #0b0f17 80%) !important;
+    background: 
+        radial-gradient(at 0% 0%, rgba(5, 150, 105, 0.07) 0px, transparent 60%),
+        radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.05) 0px, transparent 50%),
+        #0b1320 !important;
 }
 
 /* ========================================================================== 
-   Dark Mode Hardening for Legacy Views
+   Dark Mode Eye-Comfort Harmony
    ========================================================================== */
 
 .dark .bg-white {
-    background-color: #111827 !important;
+    background-color: #0f172a !important;
 }
 
 .dark .bg-gray-50,
 .dark .bg-gray-100,
 .dark .bg-slate-50,
 .dark .bg-slate-100 {
-    background-color: #19212c !important;
+    background-color: #141f32 !important;
 }
 
 .dark .border-gray-100,
@@ -167,14 +175,14 @@ body {
 .dark .border-slate-200,
 .dark .border-slate-250,
 .dark .border-slate-300 {
-    border-color: #1f2937 !important;
+    border-color: #1e293b !important;
 }
 
 .dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]),
 .dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]),
 .dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
 .dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
-    border-color: #1f2937 !important;
+    border-color: #1e293b !important;
 }
 
 .dark .text-gray-900,
@@ -204,9 +212,9 @@ body {
 .dark input:not([type="checkbox"]):not([type="radio"]),
 .dark select,
 .dark textarea {
-    background-color: #0b0f17 !important;
-    border-color: #1f2937 !important;
-    color: #e5e7eb !important;
+    background-color: #0b1320 !important;
+    border-color: #1e293b !important;
+    color: #e2e8f0 !important;
 }
 
 .dark input::placeholder,
@@ -221,5 +229,5 @@ body {
 .dark .hover\:bg-gray-50:hover,
 .dark .hover\:bg-slate-50:hover,
 .dark .hover\:bg-white:hover {
-    background-color: #19212c !important;
+    background-color: #141f32 !important;
 }

@@ -10,11 +10,11 @@
             
             <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                 <div>
-                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-indigo-200 backdrop-blur-md mb-3 border border-white/5">
-                        <span class="flex h-2 w-2 rounded-full bg-emerald-450 animate-pulse"></span>
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-emerald-200 backdrop-blur-md mb-3 border border-white/5">
+                        <span class="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         <span>Sistem Aktif</span>
                     </div>
-                    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">Selamat Datang di Portal Admin!</h1>
+                    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-emerald-200 bg-clip-text text-transparent">Selamat Datang di Portal Admin!</h1>
                     <p class="mt-2 text-slate-300 max-w-xl leading-relaxed text-sm">
                         Kelola data kelas, siswa, guru pengajar, dan pantau perkembangan Halaqah Al-Qur'an secara real-time melalui panel kendali utama.
                     </p>
@@ -22,7 +22,7 @@
                 
                 <!-- System Quick Clock/Date -->
                 <div class="flex items-center space-x-4 bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-md self-start md:self-auto">
-                    <div class="p-3 bg-indigo-500/10 text-indigo-300 rounded-xl">
+                    <div class="p-3 bg-emerald-500/10 text-emerald-300 rounded-xl">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>

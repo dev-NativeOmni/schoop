@@ -6,7 +6,7 @@
     {{-- Header --}}
     <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200/80 pb-5 dark:border-slate-800 gap-4">
         <div class="flex items-center space-x-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-md shadow-emerald-600/20">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
@@ -18,7 +18,7 @@
         </div>
         <div>
             <a href="{{ route('master-data.users.create') }}"
-               class="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-[#A3E635] to-[#84cc16] px-5 py-2.5 text-sm font-bold text-[#1F2937] hover:scale-105 shadow-md shadow-[#A3E635]/20 hover:shadow-lg hover:shadow-[#A3E635]/30 transition-all focus:outline-none focus:ring-4 focus:ring-[#A3E635]/20 active:scale-[0.98]">
+               class="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-emerald-600 to-teal-700 px-5 py-2.5 text-sm font-bold text-[#1F2937] hover:scale-105 shadow-md shadow-emerald-600/15 hover:shadow-lg hover:shadow-emerald-600/20 transition-all focus:outline-none focus:ring-4 focus:ring-emerald-500/20 active:scale-[0.98]">
                 <svg class="h-4 w-4 text-[#1F2937]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
@@ -34,13 +34,13 @@
                 <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pencarian</label>
                 <input type="text" name="search" value="{{ request('search') }}" 
                        placeholder="Cari nama, username, email..." 
-                       class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-[#A3E635] focus:ring-2 focus:ring-[#A3E635]/10 transition">
+                       class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 transition">
             </div>
 
             <div>
                 <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Peran (Role)</label>
                 <select name="role_id" 
-                        class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#A3E635] focus:ring-2 focus:ring-[#A3E635]/10 transition">
+                        class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 transition">
                     <option value="">Semua Peran</option>
                     @foreach ($roles as $role)
                         <option value="{{ $role->id }}" @selected(request('role_id') == $role->id)>
@@ -53,7 +53,7 @@
             <div>
                 <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Sekolah</label>
                 <select name="school_id" 
-                        class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#A3E635] focus:ring-2 focus:ring-[#A3E635]/10 transition">
+                        class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 transition">
                     <option value="">Semua Sekolah</option>
                     <option value="null" @selected(request('school_id') === 'null')>Global / Super Admin</option>
                     @foreach ($schools as $school)
@@ -66,7 +66,7 @@
 
             <div class="flex gap-2">
                 <button type="submit" 
-                        class="flex-1 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-850 dark:hover:bg-slate-750 px-4 py-2.5 text-sm font-bold text-white transition focus:outline-none focus:ring-2 focus:ring-[#A3E635]/25">
+                        class="flex-1 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-850 dark:hover:bg-slate-750 px-4 py-2.5 text-sm font-bold text-white transition focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
                     Filter
                 </button>
                 @if(request()->anyFilled(['search', 'role_id', 'school_id']))
@@ -141,7 +141,7 @@
                                 <div class="inline-flex items-center space-x-1.5">
                                     {{-- Edit --}}
                                     <a href="{{ route('master-data.users.edit', $user) }}" 
-                                       class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-[#A3E635] hover:bg-slate-50/10 dark:border-slate-800 dark:hover:bg-slate-800 transition-all" 
+                                       class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-emerald-500 hover:bg-slate-50/10 dark:border-slate-800 dark:hover:bg-slate-800 transition-all" 
                                        title="Edit">
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />

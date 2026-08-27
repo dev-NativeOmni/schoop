@@ -5,7 +5,7 @@
     <div class="relative overflow-hidden bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 rounded-3xl p-8 shadow-xl">
         <!-- Background Ambient Glow -->
         <div class="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-indigo-500/10 dark:bg-indigo-500/5 blur-3xl"></div>
-        <div class="absolute -left-20 -bottom-20 h-40 w-40 rounded-full bg-[#A3E635]/10 dark:bg-[#A3E635]/5 blur-3xl"></div>
+        <div class="absolute -left-20 -bottom-20 h-40 w-40 rounded-full bg-emerald-500/10 dark:bg-emerald-500/5 blur-3xl"></div>
 
         <div class="relative z-10 space-y-6">
             <!-- Title -->
@@ -25,7 +25,7 @@
                 <div class="flex flex-col items-center justify-center space-y-4 md:flex-row md:space-x-8 md:space-y-0 md:justify-start">
                     <div class="relative group">
                         <!-- Preview Circle -->
-                        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-slate-200 dark:border-slate-700 shadow-md transition group-hover:border-[#A3E635] duration-300">
+                        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-slate-200 dark:border-slate-700 shadow-md transition group-hover:border-emerald-500 duration-300">
                             <img id="avatar-preview" 
                                  src="{{ $user->profile_picture_url }}" 
                                  alt="Preview Avatar" 
