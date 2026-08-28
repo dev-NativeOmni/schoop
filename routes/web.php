@@ -138,6 +138,9 @@ use App\Http\Controllers\StorageAssetController;
 
 Route::get('/storage/{path}', [StorageAssetController::class, 'show'])->where('path', '.*')->name('storage.asset');
 Route::get('/', [App\Http\Controllers\Public\TenantPublicLandingController::class, 'index'])->name('tenant.public.landing');
+Route::get('/landing', function () {
+    return view('welcome');
+})->name('landing');
 Route::get('/manifest.json', [App\Http\Controllers\Public\TenantPwaManifestController::class, 'show'])->name('tenant.pwa.manifest');
 Route::get('/panduan-fitur', function () {
     return view('docs.panduan-fitur');

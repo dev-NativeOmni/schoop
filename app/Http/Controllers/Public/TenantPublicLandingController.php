@@ -34,7 +34,7 @@ class TenantPublicLandingController extends Controller
         $schoolId = $this->tenantContext->activeSchoolId();
 
         if (!$schoolId) {
-            return redirect()->route('login');
+            return view('welcome');
         }
 
         $school = School::findOrFail($schoolId);
