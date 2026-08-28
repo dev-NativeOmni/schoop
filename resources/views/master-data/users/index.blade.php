@@ -18,8 +18,8 @@
         </div>
         <div>
             <a href="{{ route('master-data.users.create') }}"
-               class="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-emerald-600 to-teal-700 px-5 py-2.5 text-sm font-bold text-[#1F2937] hover:scale-105 shadow-md shadow-emerald-600/15 hover:shadow-lg hover:shadow-emerald-600/20 transition-all focus:outline-none focus:ring-4 focus:ring-emerald-500/20 active:scale-[0.98]">
-                <svg class="h-4 w-4 text-[#1F2937]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+               class="btn-natural-primary text-xs">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
                 <span>Tambah User Baru</span>
@@ -28,7 +28,7 @@
     </div>
 
     {{-- Filter Form --}}
-    <div class="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div class="card-natural p-5">
         <form method="GET" action="{{ route('master-data.users.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <div>
                 <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pencarian</label>
@@ -66,12 +66,12 @@
 
             <div class="flex gap-2">
                 <button type="submit" 
-                        class="flex-1 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-850 dark:hover:bg-slate-750 px-4 py-2.5 text-sm font-bold text-white transition focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                        class="flex-1 btn-natural-primary text-xs py-2.5 justify-center">
                     Filter
                 </button>
                 @if(request()->anyFilled(['search', 'role_id', 'school_id']))
                     <a href="{{ route('master-data.users.index') }}" 
-                       class="rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 px-4 py-2.5 text-sm font-bold text-slate-500 dark:text-slate-400 transition flex items-center justify-center">
+                       class="btn-natural-secondary text-xs py-2.5">
                         Reset
                     </a>
                 @endif
