@@ -19,10 +19,10 @@ class SchoolThemeService
             $theme = SchoolThemeSetting::query()->create([
                 'school_id' => $schoolId,
                 'theme_name' => 'Default Theme',
-                'primary_color' => '#2563eb', // Indigo / Blue default
-                'secondary_color' => '#0f172a', // Slate-900
-                'accent_color' => '#22c55e', // Emerald/Lime
-                'text_color' => '#111827', // Gray-900
+                'primary_color' => '#059669', // Calm Emerald
+                'secondary_color' => '#060b14', // Deep Slate
+                'accent_color' => '#10b981', // Emerald accent
+                'text_color' => '#0f172a', // Slate-900
                 'background_color' => '#f8fafc', // Slate-50
                 'sidebar_style' => 'default',
                 'header_style' => 'default',

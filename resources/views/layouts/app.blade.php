@@ -43,12 +43,12 @@
         <style>
             {!! $cssVariables !!}
             
-            /* Enforce theme variables on core elements */
+            /* Enforce theme variables on core branding elements */
             body {
-                background: var(--school-background) !important;
-                color: var(--school-text) !important;
+                background: var(--school-background);
+                color: var(--school-text);
             }
-            .btn-primary, button[type="submit"], .bg-slate-900 {
+            .btn-primary, button.btn-primary {
                 background-color: var(--school-primary) !important;
                 color: #ffffff !important;
                 border-radius: var(--school-radius-button) !important;
