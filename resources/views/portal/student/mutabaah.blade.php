@@ -24,9 +24,9 @@
                 </div>
                 
                 {{-- Streak & Today Progress Pills --}}
-                <div class="flex flex-wrap items-center gap-3 shrink-0">
+                <div class="flex flex-wrap items-center gap-3 shrink-0 w-full md:w-auto">
                     {{-- Istiqamah Streak --}}
-                    <div class="rounded-2xl bg-white/10 backdrop-blur-md px-4 py-3 border border-white/20 min-w-[130px] text-center">
+                    <div class="rounded-2xl bg-white/10 backdrop-blur-md px-4 py-3 border border-white/20 min-w-[120px] flex-1 md:flex-none text-center">
                         <span class="block text-[11px] font-medium text-emerald-200">Istiqamah Streak</span>
                         <div class="flex items-center justify-center gap-1.5 mt-0.5">
                             <span class="text-2xl">🔥</span>
@@ -36,7 +36,7 @@
                     </div>
 
                     {{-- Today Rate --}}
-                    <div class="rounded-2xl bg-white/10 backdrop-blur-md px-4 py-3 border border-white/20 min-w-[130px] text-center">
+                    <div class="rounded-2xl bg-white/10 backdrop-blur-md px-4 py-3 border border-white/20 min-w-[120px] flex-1 md:flex-none text-center">
                         <span class="block text-[11px] font-medium text-emerald-200">Capaian Hari Ini</span>
                         <div class="flex items-center justify-center gap-1 mt-0.5">
                             <span class="text-2xl font-black tracking-tight text-white">{{ $dayCompletionRate ?? 0 }}%</span>
