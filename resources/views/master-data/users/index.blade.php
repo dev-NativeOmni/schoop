@@ -139,6 +139,21 @@
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <div class="inline-flex items-center space-x-1.5">
+                                    @if(auth()->user()->isSuperAdmin() && auth()->id() !== $user->id)
+                                        {{-- Impersonate / Login Sebagai --}}
+                                        <form method="POST" action="{{ route('impersonation.start', $user) }}"
+                                              onsubmit="return confirm('Masuk ke mode simulasi sebagai user {{ addslashes($user->name) }} ({{ $user->role?->label }})?')">
+                                            @csrf
+                                            <button type="submit" 
+                                                    class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-amber-300/80 bg-amber-50/50 text-amber-600 hover:bg-amber-100 hover:text-amber-700 dark:border-amber-700/50 dark:bg-amber-950/30 dark:text-amber-400 dark:hover:bg-amber-900/40 transition-all cursor-pointer shadow-2xs" 
+                                                    title="⚡ Login Sebagai {{ $user->name }}">
+                                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endif
+
                                     {{-- Edit --}}
                                     <a href="{{ route('master-data.users.edit', $user) }}" 
                                        class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-emerald-500 hover:bg-slate-50/10 dark:border-slate-800 dark:hover:bg-slate-800 transition-all" 

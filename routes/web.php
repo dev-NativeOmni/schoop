@@ -164,6 +164,8 @@ Route::middleware('guest')->group(function (): void {
 
 Route::middleware('auth')->group(function (): void {
     Route::post('/logout', LogoutController::class)->name('logout');
+    Route::post('/impersonate/{user}', [\App\Http\Controllers\Auth\ImpersonationController::class, 'impersonate'])->name('impersonation.start');
+    Route::post('/impersonate-leave', [\App\Http\Controllers\Auth\ImpersonationController::class, 'leave'])->name('impersonation.leave');
 
     Route::get('/dashboard', [DashboardController::class, 'redirect'])
         ->name('dashboard');
