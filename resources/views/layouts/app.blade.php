@@ -61,7 +61,6 @@
 </head>
 <body x-data class="min-h-screen bg-slate-100 text-slate-900 antialiased transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
     @auth
-        <div class="min-h-screen flex flex-col lg:flex-row bg-slate-50/50 dark:bg-slate-950/50 relative">
         <!-- Impersonation Active Floating Banner -->
         @if(session()->has('impersonator_id'))
             <div class="bg-gradient-to-r from-amber-600 via-amber-700 to-orange-700 text-white px-4 py-2.5 shadow-md flex items-center justify-between text-xs font-bold sticky top-0 z-50 transition-all">

@@ -8,6 +8,7 @@ use App\Services\Tenancy\TenantContextService;
 use App\Services\WhiteLabel\SchoolThemeService;
 use App\Services\WhiteLabel\WhiteLabelPublicationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TenantPublicLandingController extends Controller
 {
@@ -31,28 +32,35 @@ class TenantPublicLandingController extends Controller
             return redirect()->route('dashboard');
         }
 
-        $schoolId = $this->tenantContext->activeSchoolId();
+        try {
+            $schoolId = $this->tenantContext->activeSchoolId();
 
-        if (!$schoolId) {
+            if (!$schoolId) {
+                return view('welcome');
+            }
+
+            $school = School::find($schoolId);
+            if (!$school) {
+                return view('welcome');
+            }
+
+            $settings = $this->publicationService->getActivePublishedSettings($schoolId);
+
+            $brand = $settings['brand'] ?? null;
+            $theme = $settings['theme'] ?? null;
+            $cssVariables = $theme ? $this->themeService->generateCssVariables($theme) : '';
+            $isAuthenticated = false;
+
+            return view('public.tenant.landing', compact(
+                'school',
+                'brand',
+                'theme',
+                'cssVariables',
+                'isAuthenticated'
+            ));
+        } catch (\Throwable $e) {
+            Log::warning('Fallback to root welcome landing: ' . $e->getMessage());
             return view('welcome');
         }
-
-        $school = School::findOrFail($schoolId);
-        $settings = $this->publicationService->getActivePublishedSettings($schoolId);
-
-        $brand = $settings['brand'];
-        $theme = $settings['theme'];
-        $cssVariables = $this->themeService->generateCssVariables($theme);
-
-        // If user is already authenticated, provide quick access to dashboard
-        $isAuthenticated = auth()->check();
-
-        return view('public.tenant.landing', compact(
-            'school',
-            'brand',
-            'theme',
-            'cssVariables',
-            'isAuthenticated'
-        ));
     }
 }

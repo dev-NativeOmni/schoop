@@ -19,7 +19,7 @@ class ImpersonationController extends Controller
         $currentUser = Auth::user();
 
         // Only super_admin can start impersonation (or someone already impersonating)
-        if (!$currentUser->isSuperAdmin() && !session()->has('impersonator_id')) {
+        if (!$currentUser || (!$currentUser->isSuperAdmin() && !session()->has('impersonator_id'))) {
             abort(403, 'Aksi ini hanya dapat dilakukan oleh Super Admin.');
         }
 
@@ -36,7 +36,7 @@ class ImpersonationController extends Controller
 
         // Switch active school context to target user's school if applicable
         if ($user->school_id) {
-            $tenantContext->setActiveSchool($user, $user->school_id);
+            $tenantContext->setActiveSchool($user, (int) $user->school_id);
         }
 
         // Log in as target user
