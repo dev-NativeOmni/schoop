@@ -132,7 +132,9 @@
             
             <!-- User Profile Box -->
             <div class="p-2.5 bg-slate-850/90 border border-slate-750/80 rounded-xl flex items-center space-x-3 shadow-xs">
-                <img src="{{ Auth::user()->profile_picture_url ?? 'https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=' . urlencode(Auth::user()->name) }}" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-slate-700 bg-slate-800">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 text-white font-black text-xs flex items-center justify-center border border-slate-700 shadow-xs shrink-0 select-none">
+                    {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-black text-white truncate">{{ Auth::user()->name }}</p>
                     <p class="text-[10px] text-emerald-400 font-bold capitalize truncate">{{ $roleName ?? 'User' }}</p>
@@ -682,7 +684,9 @@
             
             <!-- Mobile User Profile -->
             <div class="p-2.5 bg-slate-850/90 border border-slate-750/80 rounded-xl flex items-center space-x-3 shadow-xs">
-                <img src="{{ Auth::user()->profile_picture_url ?? 'https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=' . urlencode(Auth::user()->name) }}" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-slate-700 bg-slate-800">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 text-white font-black text-xs flex items-center justify-center border border-slate-700 shadow-xs shrink-0 select-none">
+                    {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-black text-white truncate">{{ Auth::user()->name }}</p>
                     <p class="text-[10px] text-emerald-400 font-bold capitalize truncate">{{ $roleName ?? 'User' }}</p>

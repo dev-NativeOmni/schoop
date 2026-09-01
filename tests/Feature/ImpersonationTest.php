@@ -134,3 +134,4 @@ class ImpersonationTest extends TestCase
         $this->assertNull(session('impersonator_id'));
     }
 }
+
