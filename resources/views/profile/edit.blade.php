@@ -12,7 +12,7 @@
             <div class="text-center md:text-left">
                 <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Ubah Foto Profil</h1>
                 <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                    Perbarui foto identitas Anda yang akan ditampilkan di seluruh platform HafizPlus.
+                    Perbarui foto identitas Anda yang akan ditampilkan di seluruh platform Schoop.
                 </p>
             </div>
 

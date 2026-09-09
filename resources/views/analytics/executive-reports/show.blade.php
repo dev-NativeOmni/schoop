@@ -31,7 +31,7 @@
                 <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <h4 class="text-xs font-black uppercase text-slate-500">Metadata Laporan</h4>
                     <div class="mt-3 text-sm space-y-2 text-slate-700 dark:text-slate-300">
-                        <p><strong>Tenant:</strong> {{ $report->school->name ?? 'Internal HafizPlus' }}</p>
+                        <p><strong>Tenant:</strong> {{ $report->school->name ?? 'Internal Schoop' }}</p>
                         <p><strong>Status:</strong> {{ strtoupper($report->status) }}</p>
                         <p><strong>Pembuat:</strong> {{ $report->user->name ?? 'System' }}</p>
                         <p><strong>Dibuat Pada:</strong> {{ $report->generated_at?->toDateTimeString() ?: $report->created_at->toDateTimeString() }}</p>

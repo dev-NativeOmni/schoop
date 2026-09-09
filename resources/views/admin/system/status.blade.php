@@ -4,7 +4,7 @@
     <div class="mb-6">
         <h2 class="text-2xl font-bold">System Status</h2>
         <p class="text-sm text-slate-500">
-            Ringkasan kesiapan production HafizPlus School Platform.
+            Ringkasan kesiapan production Schoop Platform.
         </p>
     </div>
 

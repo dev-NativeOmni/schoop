@@ -1,5 +1,5 @@
 <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-    <button @click="open = !open" class="flex items-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-all duration-200">
+    <button @click="open = !open" class="flex items-center rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-all duration-200">
         <!-- Avatar image using Dicebear for dynamic user identity -->
         <img src="{{ Auth::user()->profile_picture_url ?? 'https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=' . urlencode(Auth::user()->name) }}" alt="Avatar" class="w-9 h-9 rounded-full object-cover border border-slate-200 dark:border-slate-700">
     </button>

@@ -55,7 +55,7 @@
     <h1>{{ $report->title }}</h1>
     <div class="meta">
         Periode: {{ $report->period_start->toDateString() }} s/d {{ $report->period_end->toDateString() }} | 
-        Tenant: {{ $report->school->name ?? 'Internal HafizPlus' }} | 
+        Tenant: {{ $report->school->name ?? 'Internal Schoop' }} | 
         Dibuat oleh: {{ $report->user->name ?? 'System' }} pada {{ $report->created_at->toDateString() }}
     </div>
 

@@ -21,14 +21,14 @@
             @if($brand && $brand->logo_path)
                 <img src="{{ Storage::disk('public')->url($brand->logo_path) }}" alt="Logo {{ $brand->display_name }}" class="h-20 w-20 object-contain mx-auto rounded-2xl bg-white p-1 shadow-sm">
             @else
-                <div class="h-16 w-16 bg-gradient-to-tr from-indigo-500 to-indigo-700 rounded-2xl flex items-center justify-center font-bold text-white text-xl mx-auto shadow-md">HP</div>
+                <div class="h-16 w-16 bg-gradient-to-tr from-emerald-500 to-teal-700 rounded-2xl flex items-center justify-center font-bold text-white text-xl mx-auto shadow-md">SC</div>
             @endif
 
             <h1 class="text-2xl font-black text-slate-800 dark:text-slate-100">
                 {{ $brand ? $brand->display_name : 'Log Masuk Portal' }}
             </h1>
             <p class="text-xs text-slate-400 font-semibold leading-relaxed">
-                {{ $brand && $brand->tagline ? $brand->tagline : 'HafizPlus School Platform' }}
+                {{ $brand && $brand->tagline ? $brand->tagline : 'Schoop - Integrated Islamic School Platform' }}
             </p>
         </div>
 

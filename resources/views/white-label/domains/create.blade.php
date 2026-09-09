@@ -14,7 +14,7 @@
 
             <div class="space-y-2">
                 <label for="domain" class="text-sm font-bold text-slate-700 dark:text-slate-350">Nama Domain / Subdomain <span class="text-red-500">*</span></label>
-                <input type="text" id="domain" name="domain" placeholder="alazhar7.hafizplus.id atau portal.sekolah.sch.id" required class="block w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 px-4 py-3 text-slate-800 dark:text-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <input type="text" id="domain" name="domain" placeholder="alazhar7.schoop.id atau portal.sekolah.sch.id" required class="block w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 px-4 py-3 text-slate-800 dark:text-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500">
                 <p class="text-[10px] text-slate-400">Masukkan nama domain tanpa `http://` atau `https://` atau garis miring `/` di akhir.</p>
                 @error('domain') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
             </div>
@@ -22,7 +22,7 @@
             <div class="space-y-2">
                 <label for="type" class="text-sm font-bold text-slate-700 dark:text-slate-350">Tipe Domain</label>
                 <select id="type" name="type" required class="block w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 px-4 py-3 text-slate-800 dark:text-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    <option value="subdomain">Subdomain Internal (*.hafizplus.id)</option>
+                    <option value="subdomain">Subdomain Internal (*.schoop.id)</option>
                     <option value="custom_domain">Domain Kustom Eksternal (FQDN)</option>
                 </select>
                 @error('type') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror

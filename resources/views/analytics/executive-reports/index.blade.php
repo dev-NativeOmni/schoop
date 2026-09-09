@@ -24,7 +24,7 @@
                     @forelse($reports as $report)
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-850">
                             <td class="px-6 py-4 font-bold text-slate-900 dark:text-white">{{ $report->title }}</td>
-                            <td class="px-6 py-4">{{ $report->school->name ?? 'Internal HafizPlus' }}</td>
+                            <td class="px-6 py-4">{{ $report->school->name ?? 'Internal Schoop' }}</td>
                             <td class="px-6 py-4 text-xs">{{ $report->period_start->toDateString() }} s/d {{ $report->period_end->toDateString() }}</td>
                             <td class="px-6 py-4">
                                 <span class="rounded px-2 py-0.5 text-xs font-bold uppercase

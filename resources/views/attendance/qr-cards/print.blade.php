@@ -116,7 +116,7 @@
                     {{ $card['student']->full_name ?? $card['student']->nama_lengkap ?? $card['student']->name ?? 'Santri #' . $card['student']->id }}
                 </div>
                 <div class="meta">
-                    HafizPlus · QR Attendance
+                    Schoop · QR Attendance
                 </div>
             </div>
         @endforeach

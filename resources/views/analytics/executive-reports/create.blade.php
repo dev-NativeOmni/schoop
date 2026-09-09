@@ -11,7 +11,7 @@
                     <div>
                         <label class="block text-sm font-bold text-slate-700 dark:text-slate-300">Sekolah / Tenant</label>
                         <select name="school_id" class="mt-1 w-full rounded-lg border border-slate-200 bg-white p-2 text-sm dark:border-slate-800 dark:bg-slate-950">
-                            <option value="">Laporan Gabungan Internal HafizPlus</option>
+                            <option value="">Laporan Gabungan Internal Schoop</option>
                             @foreach($schools as $s)
                                 <option value="{{ $s->id }}">{{ $s->name }}</option>
                             @endforeach

@@ -59,26 +59,24 @@
     }
 @endphp
 
-<div x-data="{ mobileOpen: false, openDropdown: '{{ request()->segment(1) }}' }" class="shrink-0 lg:w-80">
+<div x-data="{ mobileOpen: false, openDropdown: '{{ request()->segment(1) }}' }" class="shrink-0 lg:w-72">
 
-    <!-- DESKTOP SIDEBAR: Right-Hand Side (hidden lg:flex) -->
-    <aside class="hidden lg:flex fixed top-0 right-0 z-40 w-80 h-screen bg-[#1F2937] border-l border-slate-750 text-slate-100 flex-col shadow-2xl overflow-hidden">
+    <!-- DESKTOP SIDEBAR: Left-Hand Side (hidden lg:flex) -->
+    <aside class="hidden lg:flex fixed top-0 left-0 z-40 w-72 h-screen bg-slate-900 border-r border-slate-800 text-slate-100 flex-col shadow-xl overflow-hidden">
         
         <!-- Sidebar Header: School and Platform Branding -->
-        <div class="p-6 border-b border-slate-750 flex flex-col space-y-4 shrink-0 bg-[#1F2937]/50">
-            <!-- Platform Branding (HafizPlus) -->
+        <div class="p-6 border-b border-slate-800 flex flex-col space-y-4 shrink-0 bg-slate-900/50">
+            <!-- Platform Branding (Schoop) -->
             <div class="flex items-center justify-between">
-                <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 group">
+                <a href="{{ route('dashboard') }}" class="flex items-center space-x-2.5 group">
                     @if(\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png'))
-                        <img src="{{ asset('storage/system/logo.png') }}" alt="HafizPlus Logo" class="h-8 w-8 object-contain bg-white/10 p-0.5 rounded-lg">
+                        <img src="{{ asset('storage/system/logo.png') }}" alt="Schoop Logo" class="h-8 w-8 object-contain bg-white/10 p-0.5 rounded-lg">
                     @else
-                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#A3E635] to-[#84cc16] text-[#1F2937] shadow-md shadow-[#A3E635]/25">
-                            <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                            </svg>
+                        <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 text-white shadow-md shadow-emerald-500/25 font-black text-sm">
+                            SC
                         </div>
                     @endif
-                    <span class="text-base font-extrabold tracking-tight text-white">Hafiz<span class="text-[#A3E635]">Plus</span></span>
+                    <span class="text-base font-extrabold tracking-tight text-white">Scho<span class="text-emerald-400">op</span></span>
                 </a>
             </div>
 
@@ -129,7 +127,7 @@
                 
                 <!-- Dashboard -->
                 @php $active = request()->routeIs('dashboard*'); @endphp
-                <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] border-r-4 border-[#A3E635] font-black' : 'text-slate-350 hover:bg-slate-800/50 hover:text-white' }}">
+                <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
@@ -138,7 +136,7 @@
 
                 <!-- Al-Qur'an -->
                 @php $active = request()->routeIs('quran*'); @endphp
-                <a href="{{ route('quran.mushaf') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] border-r-4 border-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                <a href="{{ route('quran.mushaf') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                     <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
@@ -150,7 +148,7 @@
                     @php $active = request()->routeIs('schoolos.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'schoolos' ? null : 'schoolos'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.263 8.535l7.24-3.62a.75.75 0 01.674 0l7.24 3.62a.75.75 0 010 1.342l-7.24 3.62a.75.75 0 01-.674 0L4.263 9.876a.75.75 0 010-1.342z" />
@@ -176,7 +174,7 @@
                     @php $active = request()->routeIs('master-data.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'master' ? null : 'master'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75M3.75 10.125v3.75m16.5 0v3.75M3.75 13.875v3.75" />
@@ -202,7 +200,7 @@
                     @php $active = request()->routeIs('tenancy.*') || request()->routeIs('white-label.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'tenancy' ? null : 'tenancy'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572 1.065z" />
@@ -233,7 +231,7 @@
                     @php $active = request()->routeIs('billing.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'billing' ? null : 'billing'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
@@ -255,7 +253,7 @@
                     @php $active = request()->routeIs('reports.tahfizh.*') || request()->routeIs('tahfizh.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'tahfizh' ? null : 'tahfizh'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -283,7 +281,7 @@
                     @php $active = request()->routeIs('mutabaah.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'mutabaah' ? null : 'mutabaah'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -309,7 +307,7 @@
                     @php $active = request()->routeIs('attendance.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'attendance' ? null : 'attendance'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
@@ -333,7 +331,7 @@
                     @php $active = request()->routeIs('tahsin.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'tahsin' ? null : 'tahsin'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 21l5.438-3.125 5.437 3.125-1.687-6.096L21 11.25l-6.219-.469L12 5.25 9.219 10.781 3 11.25l4.875 3.656z" />
@@ -359,7 +357,7 @@
                     @php $active = request()->routeIs('lms.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'lms' ? null : 'lms'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -381,7 +379,7 @@
                     @php $active = request()->routeIs('finance.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'finance' ? null : 'finance'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
@@ -407,14 +405,14 @@
                     @php $active = request()->routeIs('cashless.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'cashless' ? null : 'cashless'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125h17.25c.621 0 1.125.504 1.125 1.125V6m-19.5 0h19.5m-19.5 0v11.25c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125V6" />
                                 </svg>
                                 <span>Cashless System</span>
                             </div>
-                            <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': openDropdown === 'slate-750' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                            <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': openDropdown === 'cashless' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                         </button>
                         <div x-show="openDropdown === 'cashless'" x-collapse class="pl-7 space-y-1.5" style="display: none;">
                             <a href="{{ route('cashless.reports.dashboard') }}" class="block py-1 px-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 transition">Dashboard Laporan</a>
@@ -439,7 +437,7 @@
                     @php $active = request()->routeIs('saas-ops.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'saasops' ? null : 'saasops'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h15.75c.621 0 1.125.504 1.125 1.125v6.75C21 20.496 20.496 21 19.875 21H4.125A1.125 1.125 0 013 19.875v-6.75zM4.5 10.5L12 3l7.5 7.5M9 21v-6h6v6" />
@@ -469,7 +467,7 @@
                     @php $active = request()->routeIs('developer-portal.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'developerportal' ? null : 'developerportal'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-1.5-1.5v-10.5a1.5 1.5 0 011.5-1.5h7.5a1.5 1.5 0 011.5 1.5v10.5a1.5 1.5 0 01-1.5 1.5h-7.5zM9.75 9.75h4.5m-4.5 3h4.5m-4.5 3h2.25" />
@@ -493,7 +491,7 @@
                     @php $active = request()->routeIs('boarding.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'boarding' ? null : 'boarding'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -518,7 +516,7 @@
                     @php $active = request()->routeIs('portal.parent.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'parent' ? null : 'parent'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -561,7 +559,7 @@
                     @php $active = request()->routeIs('portal.student.*'); @endphp
                     <div class="space-y-1">
                         <button @click="openDropdown = openDropdown === 'student' ? null : 'student'" 
-                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800 text-[#A3E635] font-black' : 'text-slate-355 hover:bg-slate-800/50 hover:text-white' }}">
+                                class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 {{ $active ? 'bg-slate-800/80 text-emerald-400 font-bold' : 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -602,7 +600,7 @@
         </div>
 
         <!-- Sidebar Footer: Logout Button -->
-        <div class="p-4 border-t border-slate-750 shrink-0 bg-[#1F2937]/50">
+        <div class="p-4 border-t border-slate-800 shrink-0 bg-slate-900/50">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="w-full flex items-center justify-center space-x-2 px-4 py-2.5 text-sm font-bold text-red-400 hover:bg-red-950/30 hover:text-red-350 border border-red-900/50 hover:border-red-800 rounded-xl transition duration-200">
@@ -617,13 +615,17 @@
 
     <!-- MOBILE HEADER & DRAWER (lg:hidden) -->
     <!-- Mobile Header Top Bar -->
-    <header class="lg:hidden flex h-16 w-full items-center justify-between px-4 bg-[#1F2937] border-b border-slate-750 text-white z-40 fixed top-0 left-0">
+    <header class="lg:hidden flex h-16 w-full items-center justify-between px-4 bg-slate-900 border-b border-slate-800 text-white z-40 fixed top-0 left-0">
         <!-- Brand on Left -->
         <div class="flex items-center space-x-2">
             @if(\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png'))
-                <img src="{{ asset('storage/system/logo.png') }}" alt="HafizPlus Logo" class="h-8 w-8 object-contain bg-white/10 p-0.5 rounded-lg">
+                <img src="{{ asset('storage/system/logo.png') }}" alt="Schoop Logo" class="h-8 w-8 object-contain bg-white/10 p-0.5 rounded-lg">
+            @else
+                <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-600 text-white font-black text-xs">
+                    SC
+                </div>
             @endif
-            <span class="text-sm font-extrabold text-white">Hafiz<span class="text-[#A3E635]">Plus</span></span>
+            <span class="text-sm font-extrabold text-white">Scho<span class="text-emerald-400">op</span></span>
             @if($activeSchoolId && $activeSchool)
                 <span class="text-slate-500 font-bold">|</span>
                 <span class="text-xs font-bold text-slate-300 truncate max-w-[120px]">{{ $activeSchool->name }}</span>
@@ -633,7 +635,7 @@
         <!-- Menu Toggle on Right -->
         <div class="flex items-center space-x-2">
             <!-- Mobile notifications -->
-            <a href="{{ route('notifications.index') }}" class="p-1.5 text-slate-400 hover:text-[#A3E635]">
+            <a href="{{ route('notifications.index') }}" class="p-1.5 text-slate-400 hover:text-emerald-400">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
             </a>
             <!-- Hamburger button -->
@@ -645,7 +647,7 @@
         </div>
     </header>
 
-    <!-- Mobile Drawer (Slide-Over Menu from Right) -->
+    <!-- Mobile Drawer (Slide-Over Menu from Left) -->
     <!-- Backdrop overlay -->
     <div x-show="mobileOpen" 
          x-transition:enter="transition-opacity ease-out duration-300"
@@ -662,16 +664,16 @@
     <!-- Drawer Content Panel -->
     <div x-show="mobileOpen" 
          x-transition:enter="transition-transform ease-out duration-300"
-         x-transition:enter-start="translate-x-full"
+         x-transition:enter-start="-translate-x-full"
          x-transition:enter-end="translate-x-0"
          x-transition:leave="transition-transform ease-in duration-200"
          x-transition:leave-start="translate-x-0"
-         x-transition:leave-end="translate-x-full"
-         class="lg:hidden fixed inset-y-0 right-0 w-80 bg-[#111827] text-slate-100 z-50 flex flex-col shadow-2xl"
+         x-transition:leave-end="-translate-x-full"
+         class="lg:hidden fixed inset-y-0 left-0 w-80 bg-slate-900 border-r border-slate-800 text-slate-100 z-50 flex flex-col shadow-2xl"
          style="display: none;">
         
         <!-- Drawer Header -->
-        <div class="p-5 border-b border-slate-750 flex items-center justify-between bg-[#1F2937]/50">
+        <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
             <span class="text-sm font-extrabold text-white">Menu Navigasi</span>
             <button @click="mobileOpen = false" class="p-1 text-slate-400 hover:text-white focus:outline-none">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -705,19 +707,19 @@
             <nav class="space-y-1 text-xs font-semibold">
                 
                 <!-- Dashboard -->
-                <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition text-slate-350 hover:bg-slate-800 hover:text-white">
+                <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition text-slate-300 hover:bg-slate-800/80 hover:text-white">
                     <span>Dashboard</span>
                 </a>
 
                 <!-- Al-Qur'an -->
-                <a href="{{ route('quran.mushaf') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition text-slate-355 hover:bg-slate-800 hover:text-white">
+                <a href="{{ route('quran.mushaf') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition text-slate-300 hover:bg-slate-800/80 hover:text-white">
                     <span>Al-Qur'an Mushaf</span>
                 </a>
 
                 <!-- SchoolOS Mobile -->
                 @if ($canViewSchoolOs && $canUseSchoolOs)
                     <div class="space-y-1">
-                        <button @click="openDropdown = openDropdown === 'schoolos-m' ? null : 'schoolos-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-355 hover:bg-slate-800 hover:text-white">
+                        <button @click="openDropdown = openDropdown === 'schoolos-m' ? null : 'schoolos-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
                             <span>SchoolOS</span>
                             <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'schoolos-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                         </button>
@@ -735,7 +737,7 @@
                 <!-- Data Master Mobile -->
                 @if ($hasAdminOrSuperAdmin)
                     <div class="space-y-1">
-                        <button @click="openDropdown = openDropdown === 'master-m' ? null : 'master-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-355 hover:bg-slate-800 hover:text-white">
+                        <button @click="openDropdown = openDropdown === 'master-m' ? null : 'master-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
                             <span>Data Master</span>
                             <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'master-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                         </button>
@@ -754,7 +756,7 @@
                 <!-- Tenancy Mobile -->
                 @if ($canManageTenancy)
                     <div class="space-y-1">
-                        <button @click="openDropdown = openDropdown === 'tenancy-m' ? null : 'tenancy-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-355 hover:bg-slate-800 hover:text-white">
+                        <button @click="openDropdown = openDropdown === 'tenancy-m' ? null : 'tenancy-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
                             <span>Tenancy</span>
                             <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'tenancy-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                         </button>
@@ -776,7 +778,7 @@
                 <!-- Billing & Subscription Mobile -->
                 @if (in_array($roleName, ['super_admin', 'admin', 'admin_sekolah'], true))
                     <div class="space-y-1">
-                        <button @click="openDropdown = openDropdown === 'billing-m' ? null : 'billing-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-355 hover:bg-slate-800 hover:text-white">
+                        <button @click="openDropdown = openDropdown === 'billing-m' ? null : 'billing-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
                             <span>Billing & Paket</span>
                             <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'billing-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                         </button>
@@ -791,7 +793,7 @@
                 <!-- Tahfizh Mobile -->
                 @if ($hasInternalAccess && $canUseTahfizh)
                     <div class="space-y-1">
-                        <button @click="openDropdown = openDropdown === 'tahfizh-m' ? null : 'tahfizh-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-355 hover:bg-slate-800 hover:text-white">
+                        <button @click="openDropdown = openDropdown === 'tahfizh-m' ? null : 'tahfizh-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
                             <span>Tahfizh</span>
                             <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'tahfizh-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                         </button>
@@ -811,7 +813,7 @@
                 <!-- Mutabaah Mobile -->
                 @if ($hasInternalAccess && $canUseMutabaah)
                     <div class="space-y-1">
-                        <button @click="openDropdown = openDropdown === 'mutabaah-m' ? null : 'mutabaah-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-355 hover:bg-slate-800 hover:text-white">
+                        <button @click="openDropdown = openDropdown === 'mutabaah-m' ? null : 'mutabaah-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
                             <span>Mutabaah</span>
                             <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'mutabaah-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                         </button>
@@ -827,7 +829,7 @@
                 <!-- Kehadiran Mobile -->
                 @if ($hasInternalAccess && $canUseAttendance)
                     <div class="space-y-1">
-                        <button @click="openDropdown = openDropdown === 'attendance-m' ? null : 'attendance-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-355 hover:bg-slate-800 hover:text-white">
+                        <button @click="openDropdown = openDropdown === 'attendance-m' ? null : 'attendance-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
                             <span>Kehadiran</span>
                             <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'attendance-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                         </button>
@@ -844,7 +846,7 @@
         </div>
 
         <!-- Mobile Drawer Footer -->
-        <div class="p-4 border-t border-slate-750 bg-[#1F2937]/50">
+        <div class="p-4 border-t border-slate-800 bg-slate-900/50">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="w-full flex items-center justify-center space-x-2 px-4 py-2.5 text-xs font-bold text-red-400 hover:bg-red-950/30 hover:text-red-350 border border-red-900/50 rounded-xl transition duration-200">

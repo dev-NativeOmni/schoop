@@ -1,4 +1,5 @@
 {
+    "name": "schoop",
     "private": true,
     "type": "module",
     "scripts": {

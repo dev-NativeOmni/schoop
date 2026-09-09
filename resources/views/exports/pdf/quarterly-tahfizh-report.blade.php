@@ -50,7 +50,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>{{ $pdfBrand['name'] ?? 'HafizPlus School Platform' }}</h1>
+        <h1>{{ $pdfBrand['name'] ?? 'Schoop School Platform' }}</h1>
         <strong>Laporan Tahfizh Triwulan</strong><br>
         <span>{{ $pdfBrand['tagline'] ?? 'Tahfizh Monitoring App' }}</span>
         <div class="meta">
@@ -99,7 +99,7 @@
     </table>
 
     <div class="footer">
-        Dokumen ini dihasilkan otomatis oleh {{ $pdfBrand['name'] ?? 'HafizPlus School Platform' }}.
+        Dokumen ini dihasilkan otomatis oleh {{ $pdfBrand['name'] ?? 'Schoop School Platform' }}.
     </div>
 </body>
 </html>

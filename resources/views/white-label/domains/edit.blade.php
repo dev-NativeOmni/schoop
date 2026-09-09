@@ -25,7 +25,7 @@
             <div class="space-y-2">
                 <label for="type" class="text-sm font-bold text-slate-700 dark:text-slate-350">Tipe Domain</label>
                 <select id="type" name="type" required class="block w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 px-4 py-3 text-slate-800 dark:text-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    <option value="subdomain" @selected(old('type', $domain->type) === 'subdomain')>Subdomain Internal (*.hafizplus.id)</option>
+                    <option value="subdomain" @selected(old('type', $domain->type) === 'subdomain')>Subdomain Internal (*.schoop.id)</option>
                     <option value="custom_domain" @selected(old('type', $domain->type) === 'custom_domain')>Domain Kustom Eksternal (FQDN)</option>
                 </select>
                 @error('type') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror

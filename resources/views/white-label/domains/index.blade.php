@@ -5,7 +5,7 @@
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100">Custom Domain Mappings</h1>
-            <p class="text-sm text-slate-500 mt-1">Kelola subdomain hafizplus.id atau domain khusus (FQDN) milik sekolah Anda.</p>
+            <p class="text-sm text-slate-500 mt-1">Kelola subdomain schoop.id atau domain khusus (FQDN) milik sekolah Anda.</p>
         </div>
         <a href="{{ route('white-label.domains.create', ['school_id' => $school->id]) }}" class="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-slate-900 to-indigo-950 px-5 py-3 font-bold text-white shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] text-sm">
             Tambah Domain Baru

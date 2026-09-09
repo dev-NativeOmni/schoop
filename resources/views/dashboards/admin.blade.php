@@ -11,7 +11,7 @@
             <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                 <div>
                     <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-indigo-200 backdrop-blur-md mb-3 border border-white/5">
-                        <span class="flex h-2 w-2 rounded-full bg-emerald-450 animate-pulse"></span>
+                        <span class="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         <span>Sistem Aktif</span>
                     </div>
                     <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">Selamat Datang di Portal Admin!</h1>
