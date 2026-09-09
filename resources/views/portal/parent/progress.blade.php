@@ -109,6 +109,7 @@
             </a>
         </div>
 
+        <div class="overflow-x-auto">
         <table class="w-full border-collapse text-left text-sm">
             <thead class="bg-slate-50">
                 <tr>
@@ -149,5 +150,6 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 @endsection

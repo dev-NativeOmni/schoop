@@ -60,6 +60,7 @@
         <h3 class="mb-4 text-lg font-bold">Database Backups</h3>
 
         <div class="overflow-hidden rounded-xl border border-slate-200">
+            <div class="overflow-x-auto">
             <table class="w-full border-collapse text-left text-sm">
                 <thead class="bg-slate-50">
                     <tr>
@@ -84,6 +85,7 @@
                     @endforelse
                 </tbody>
             </table>
+            </div>
         </div>
 
         <p class="mt-4 text-sm text-slate-500">

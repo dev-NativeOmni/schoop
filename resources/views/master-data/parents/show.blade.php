@@ -69,6 +69,7 @@
             <h3 class="text-lg font-bold mb-4">Daftar Anak Terhubung</h3>
 
             <div class="overflow-hidden border border-slate-100 rounded-lg">
+                <div class="overflow-x-auto">
                 <table class="w-full border-collapse text-left text-sm">
                     <thead class="bg-slate-50">
                         <tr>
@@ -95,6 +96,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>

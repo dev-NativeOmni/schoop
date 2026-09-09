@@ -80,6 +80,7 @@
         <div class="px-6 py-4 border-b">
             <h2 class="font-bold text-gray-900">Alokasi ke Tagihan</h2>
         </div>
+        <div class="overflow-x-auto">
         <table class="min-w-full text-sm">
             <thead class="bg-gray-50">
                 <tr>
@@ -108,6 +109,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 
     @if($payment->status !== 'void')

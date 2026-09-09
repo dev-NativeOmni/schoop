@@ -60,6 +60,7 @@
 
         <!-- Progress Table -->
         <div class="bg-white border rounded-2xl overflow-hidden shadow-sm dark:bg-slate-900 dark:border-slate-800">
+            <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-slate-50 border-b dark:bg-slate-800 dark:border-slate-800 text-xs font-semibold uppercase text-slate-500">
@@ -101,6 +102,7 @@
                     @endforelse
                 </tbody>
             </table>
+            </div>
         </div>
     @endif
 </div>

@@ -19,6 +19,7 @@
                 <div class="px-6 py-4 border-b">
                     <h2 class="text-lg font-bold">Daftar Santri Terdaftar</h2>
                 </div>
+                <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-slate-50 border-b dark:bg-slate-800 dark:border-slate-800 text-xs font-semibold uppercase text-slate-500">
@@ -53,6 +54,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
 

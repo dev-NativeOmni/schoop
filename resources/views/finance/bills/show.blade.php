@@ -79,6 +79,7 @@
         <div class="px-6 py-4 border-b">
             <h2 class="font-bold text-gray-900">Rincian Item Tagihan</h2>
         </div>
+        <div class="overflow-x-auto">
         <table class="min-w-full text-sm">
             <thead class="bg-gray-50">
                 <tr>
@@ -101,6 +102,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
     </div>
 
     @if($bill->allocations->isNotEmpty())
@@ -108,6 +110,7 @@
             <div class="px-6 py-4 border-b">
                 <h2 class="font-bold text-gray-900">Riwayat Alokasi Pembayaran</h2>
             </div>
+            <div class="overflow-x-auto">
             <table class="min-w-full text-sm">
                 <thead class="bg-gray-50">
                     <tr>
@@ -130,6 +133,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         </div>
     @endif
 

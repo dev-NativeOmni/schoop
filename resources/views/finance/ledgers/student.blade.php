@@ -37,6 +37,7 @@
         <div class="px-6 py-4 border-b bg-gray-50">
             <h2 class="font-bold text-gray-900">Histori Mutasi Ledger</h2>
         </div>
+        <div class="overflow-x-auto">
         <table class="min-w-full text-sm">
             <thead class="bg-gray-100 text-gray-700">
                 <tr>
@@ -90,6 +91,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 @endsection

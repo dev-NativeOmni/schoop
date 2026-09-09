@@ -59,6 +59,7 @@
         <div class="mt-6 rounded-2xl bg-white p-6 shadow-sm border border-slate-100">
             <h3 class="mb-4 text-lg font-bold text-slate-950">Riwayat Terbaru</h3>
 
+            <div class="overflow-x-auto">
             <table class="w-full border-collapse text-left text-sm">
                 <thead class="bg-slate-50">
                     <tr>
@@ -99,6 +100,7 @@
                     @endforelse
                 </tbody>
             </table>
+            </div>
         </div>
     @endif
 @endsection

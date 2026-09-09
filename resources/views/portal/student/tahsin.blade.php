@@ -52,6 +52,7 @@
             </div>
 
             <div class="bg-white rounded-xl shadow overflow-hidden">
+                <div class="overflow-x-auto">
                 <table class="min-w-full text-sm">
                     <thead class="bg-gray-50">
                         <tr>
@@ -82,6 +83,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                </div>
             </div>
         @endif
     @endif

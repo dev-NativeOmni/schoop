@@ -26,6 +26,7 @@
 
     <div class="mt-6 bg-white rounded-xl shadow overflow-hidden">
         <div class="px-4 py-3 bg-gray-50 font-semibold">Skill pada level ini</div>
+        <div class="overflow-x-auto">
         <table class="min-w-full text-sm">
             <tbody class="divide-y">
                 @forelse($level->skills as $skill)
@@ -40,6 +41,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 @endsection

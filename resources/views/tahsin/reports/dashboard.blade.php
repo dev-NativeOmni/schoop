@@ -87,6 +87,7 @@
     </div>
 
     <div class="bg-white rounded-xl shadow overflow-hidden border border-slate-100 dark:border-slate-800 dark:bg-slate-900">
+        <div class="overflow-x-auto">
         <table class="min-w-full text-sm">
             <thead class="bg-gray-50 dark:bg-slate-850">
                 <tr>
@@ -115,6 +116,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 @endsection

@@ -13,6 +13,7 @@
     </div>
 
     <div class="bg-white rounded-2xl border overflow-hidden shadow-sm dark:bg-slate-900 dark:border-slate-800">
+        <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-slate-50 dark:bg-slate-800 border-b dark:border-slate-800 text-xs font-semibold text-slate-500 uppercase">
@@ -55,6 +56,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 @endsection
