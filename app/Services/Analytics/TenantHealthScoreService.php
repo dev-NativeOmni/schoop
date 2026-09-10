@@ -16,6 +16,127 @@ use Illuminate\Support\Facades\Schema;
 
 class TenantHealthScoreService
 {
+    public function calculateForSchools(\Illuminate\Database\Eloquent\Collection $schools, CarbonInterface $date): void
+    {
+        $dateStr = $date->toDateString();
+        $schoolIds = $schools->pluck('id')->toArray();
+
+        if (empty($schoolIds)) {
+            return;
+        }
+
+        // Pre-fetch all necessary snapshots and subscriptions
+        $academicSnapshots = SchoolAcademicSnapshot::query()
+            ->whereIn('id', function ($query) use ($schoolIds, $dateStr) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('school_academic_snapshots')
+                    ->whereIn('school_id', $schoolIds)
+                    ->where('snapshot_date', '<=', $dateStr)
+                    ->groupBy('school_id');
+            })
+            ->get()
+            ->keyBy('school_id');
+
+        $operationalSnapshots = SchoolOperationalSnapshot::query()
+            ->whereIn('id', function ($query) use ($schoolIds, $dateStr) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('school_operational_snapshots')
+                    ->whereIn('school_id', $schoolIds)
+                    ->where('snapshot_date', '<=', $dateStr)
+                    ->groupBy('school_id');
+            })
+            ->get()
+            ->keyBy('school_id');
+
+        $financeSnapshots = SchoolFinanceSnapshot::query()
+            ->whereIn('id', function ($query) use ($schoolIds, $dateStr) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('school_finance_snapshots')
+                    ->whereIn('school_id', $schoolIds)
+                    ->where('snapshot_date', '<=', $dateStr)
+                    ->groupBy('school_id');
+            })
+            ->get()
+            ->keyBy('school_id');
+
+        $supportSnapshots = SchoolSupportSnapshot::query()
+            ->whereIn('id', function ($query) use ($schoolIds, $dateStr) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('school_support_snapshots')
+                    ->whereIn('school_id', $schoolIds)
+                    ->where('snapshot_date', '<=', $dateStr)
+                    ->groupBy('school_id');
+            })
+            ->get()
+            ->keyBy('school_id');
+
+        $mobileSnapshots = MobileApiUsageSnapshot::query()
+            ->whereIn('id', function ($query) use ($schoolIds, $dateStr) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('mobile_api_usage_snapshots')
+                    ->whereIn('school_id', $schoolIds)
+                    ->where('snapshot_date', '<=', $dateStr)
+                    ->groupBy('school_id');
+            })
+            ->get()
+            ->keyBy('school_id');
+
+        $activeSubscriptions = collect();
+        $graceSubscriptions = collect();
+
+        if (Schema::hasTable('saas_school_subscriptions')) {
+            $subs = DB::table('saas_school_subscriptions')
+                ->whereIn('school_id', $schoolIds)
+                ->whereIn('status', ['active', 'grace'])
+                ->get();
+
+            $activeSubscriptions = $subs->where('status', 'active')->keyBy('school_id');
+            $graceSubscriptions = $subs->where('status', 'grace')->keyBy('school_id');
+        }
+
+        foreach ($schools as $school) {
+            $schoolId = $school->id;
+
+            $academic = $academicSnapshots->get($schoolId);
+
+            if (! $academic) {
+                // No snapshots found, return unknown
+                TenantHealthScore::query()->updateOrCreate(
+                    [
+                        'school_id' => $schoolId,
+                        'score_date' => $dateStr,
+                    ],
+                    [
+                        'score' => 0,
+                        'status' => 'unknown',
+                        'summary' => 'Tidak cukup data snapshot untuk menghitung skor kesehatan.',
+                        'risk_flags' => ['no_snapshots'],
+                        'recommendations' => ['Jalankan capture snapshot harian terlebih dahulu.'],
+                    ]
+                );
+                continue;
+            }
+
+            $operational = $operationalSnapshots->get($schoolId);
+            $finance = $financeSnapshots->get($schoolId);
+            $support = $supportSnapshots->get($schoolId);
+            $mobile = $mobileSnapshots->get($schoolId);
+
+            $subScore = 10;
+            if (Schema::hasTable('saas_school_subscriptions')) {
+                if (! $activeSubscriptions->has($schoolId)) {
+                    if ($graceSubscriptions->has($schoolId)) {
+                        $subScore = 3;
+                    } else {
+                        $subScore = 0;
+                    }
+                }
+            }
+
+            $this->computeAndSaveScore($schoolId, $dateStr, $academic, $operational, $finance, $support, $mobile, $subScore);
+        }
+    }
+
     public function calculateForSchool(int $schoolId, CarbonInterface $date): TenantHealthScore
     {
         $dateStr = $date->toDateString();
@@ -68,18 +189,56 @@ class TenantHealthScoreService
             ->latest('snapshot_date')
             ->first();
 
+        // 7. subscription_status (max 10)
+        $subScore = 10;
+        $schoolModel = School::query()->find($schoolId);
+        if ($schoolModel && Schema::hasTable('saas_school_subscriptions')) {
+            $sub = DB::table('saas_school_subscriptions')
+                ->where('school_id', $schoolId)
+                ->where('status', 'active')
+                ->first();
+            if (! $sub) {
+                // grace period check
+                $graceSub = DB::table('saas_school_subscriptions')
+                    ->where('school_id', $schoolId)
+                    ->where('status', 'grace')
+                    ->first();
+                if ($graceSub) {
+                    $subScore = 3;
+                } else {
+                    $subScore = 0;
+                }
+            }
+        }
+
+        return $this->computeAndSaveScore($schoolId, $dateStr, $academic, $operational, $finance, $support, $mobile, $subScore);
+    }
+
+    private function computeAndSaveScore(
+        int $schoolId,
+        string $dateStr,
+        ?SchoolAcademicSnapshot $academic,
+        ?SchoolOperationalSnapshot $operational,
+        ?SchoolFinanceSnapshot $finance,
+        ?SchoolSupportSnapshot $support,
+        ?MobileApiUsageSnapshot $mobile,
+        int $subScore
+    ): TenantHealthScore {
         // 1. usage_activity (max 20)
         $usageScore = 10; // baseline
-        if ($academic->active_students_count > 0) {
+        if ($academic && $academic->active_students_count > 0) {
             $usageScore = min(20, round(10 + ($academic->mutabaah_completion_rate / 10)));
         }
 
         // 2. academic_activity (max 20)
-        $academicScore = min(20, round(($academic->tahfizh_target_achievement_rate / 100) * 20));
+        $academicScore = 0;
+        if ($academic) {
+            $academicScore = min(20, round(($academic->tahfizh_target_achievement_rate / 100) * 20));
+        }
 
         // 3. parent_engagement (max 15)
         $parentScore = 5;
-        if ($academic->active_students_count > 0 && $mobile) {
+        if ($academic && $academic->active_students_count > 0 && $mobile) {
             $adoptionRate = ($mobile->mobile_devices_count / $academic->active_students_count) * 100;
             $parentScore = min(15, round(($adoptionRate / 100) * 15));
         }
@@ -102,28 +261,6 @@ class TenantHealthScoreService
         $incidentScore = 10;
         if ($support) {
             $incidentScore = max(0, 10 - ($support->incidents_count * 2));
-        }
-
-        // 7. subscription_status (max 10)
-        $subScore = 10;
-        $schoolModel = School::query()->find($schoolId);
-        if ($schoolModel && Schema::hasTable('saas_school_subscriptions')) {
-            $sub = DB::table('saas_school_subscriptions')
-                ->where('school_id', $schoolId)
-                ->where('status', 'active')
-                ->first();
-            if (! $sub) {
-                // grace period check
-                $graceSub = DB::table('saas_school_subscriptions')
-                    ->where('school_id', $schoolId)
-                    ->where('status', 'grace')
-                    ->first();
-                if ($graceSub) {
-                    $subScore = 3;
-                } else {
-                    $subScore = 0;
-                }
-            }
         }
 
         // 8. mobile_api_adoption (max 5)

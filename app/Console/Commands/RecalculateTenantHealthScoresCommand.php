@@ -38,9 +38,7 @@ class RecalculateTenantHealthScoresCommand extends Command
         } else {
             $this->info("Recalculating health scores for all active schools on date: {$date->toDateString()}");
             $schools = School::query()->where('is_active', true)->get();
-            foreach ($schools as $school) {
-                $service->calculateForSchool($school->id, $date);
-            }
+            $service->calculateForSchools($schools, $date);
         }
 
         $this->info('Tenant health scores successfully recalculated!');
