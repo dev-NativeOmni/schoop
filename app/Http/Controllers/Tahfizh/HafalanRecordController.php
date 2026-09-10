@@ -16,7 +16,10 @@ use App\Services\Tahfizh\HafalanRecordService;
 use App\Services\Notifications\NotificationDispatchService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use InvalidArgumentException;
 
 class HafalanRecordController extends Controller
 {
@@ -116,12 +119,9 @@ class HafalanRecordController extends Controller
 
     public function store(StoreHafalanRecordRequest $request): RedirectResponse
     {
-        $user = $request->user();
-
         $record = $this->hafalanRecordService->createRecord(
-            data: $request->validated(),
-            userId: $user->id,
-            isTeacher: $user->hasRole('teacher')
+            $request->validated(),
+            $request->user()
         );
 
         app(NotificationDispatchService::class)->notifyHafalanRecordCreated($record);
@@ -186,13 +186,10 @@ class HafalanRecordController extends Controller
 
     public function update(UpdateHafalanRecordRequest $request, HafalanRecord $hafalanRecord): RedirectResponse
     {
-        $user = $request->user();
-
         $this->hafalanRecordService->updateRecord(
-            record: $hafalanRecord,
-            data: $request->validated(),
-            userId: $user->id,
-            isTeacher: $user->hasRole('teacher')
+            $hafalanRecord,
+            $request->validated(),
+            $request->user()
         );
 
         return redirect()
