@@ -47,6 +47,7 @@ class SubscriptionPlanController extends Controller
     public function show(SubscriptionPlan $plan): View
     {
         $plan->load('modules');
+
         return view('billing.plans.show', compact('plan'));
     }
 

@@ -50,6 +50,7 @@ class TenantDataBackfillService
         foreach ($tables as $table) {
             if (! Schema::hasTable($table) || ! Schema::hasColumn($table, 'school_id')) {
                 $result[$table] = 0;
+
                 continue;
             }
 
@@ -72,9 +73,9 @@ class TenantDataBackfillService
                 ->where('school_id', $user->school_id)
                 ->exists();
 
-            if (!$exists) {
+            if (! $exists) {
                 $membershipCount++;
-                if (!$dryRun) {
+                if (! $dryRun) {
                     DB::table('user_school_memberships')->insert([
                         'user_id' => $user->id,
                         'school_id' => $user->school_id,

@@ -1,21 +1,22 @@
 <?php
+
 require 'vendor/autoload.php';
 $app = require_once 'bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel = $app->make(Kernel::class);
 $kernel->bootstrap();
 
-use App\Models\User;
 use App\Models\Role;
 use App\Models\School;
+use App\Models\User;
+use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Crypt;
 
 $school = School::query()->where(['code' => 'ALAZHAR7'])->first();
-if (!$school) {
+if (! $school) {
     $school = School::first();
 }
 
-$roles = Role::all()->keyBy(fn($role) => $role->name);
+$roles = Role::all()->keyBy(fn ($role) => $role->name);
 $plainPassword = 'password';
 $defaultPassword = Hash::make($plainPassword);
 
@@ -72,8 +73,9 @@ $usersToSeed = [
 ];
 
 foreach ($usersToSeed as $data) {
-    if (!isset($roles[$data['role_name']])) {
+    if (! isset($roles[$data['role_name']])) {
         echo "Role {$data['role_name']} not found, skipping.\n";
+
         continue;
     }
 

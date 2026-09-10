@@ -2,10 +2,10 @@
 
 namespace App\Services\Ai;
 
-use App\Models\Student;
+use App\Models\AiLearningRecommendation;
 use App\Models\AiPracticePlan;
 use App\Models\AiPracticePlanItem;
-use App\Models\AiLearningRecommendation;
+use App\Models\Student;
 use Carbon\Carbon;
 
 class StudentLearningAssistantService
@@ -50,7 +50,7 @@ class StudentLearningAssistantService
         // Determine general positive encouragement
         $encouragement = "Semangat belajar Qur'an hari ini! Awali setiap bacaan dengan niat yang ikhlas.";
         if ($recommendations->contains('recommendation_type', 'tahfizh_practice')) {
-            $encouragement = "Ayo jaga murajaah dan setoran hafalan ananda agar semakin kuat dan melekat di hati.";
+            $encouragement = 'Ayo jaga murajaah dan setoran hafalan ananda agar semakin kuat dan melekat di hati.';
         }
 
         return [
@@ -65,11 +65,11 @@ class StudentLearningAssistantService
     public function updateItemStatus(int $itemId, string $status): bool
     {
         $item = AiPracticePlanItem::find($itemId);
-        if (!$item) {
+        if (! $item) {
             return false;
         }
 
-        if (!in_array($status, ['not_started', 'in_progress', 'done', 'skipped'])) {
+        if (! in_array($status, ['not_started', 'in_progress', 'done', 'skipped'])) {
             return false;
         }
 
@@ -79,7 +79,7 @@ class StudentLearningAssistantService
         } else {
             $item->completed_at = null;
         }
-        
+
         $item->save();
 
         // Recalculate plan completion if needed

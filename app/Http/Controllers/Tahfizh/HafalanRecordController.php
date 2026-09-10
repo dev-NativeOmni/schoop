@@ -16,10 +16,7 @@ use App\Services\Notifications\NotificationDispatchService;
 use App\Services\Tahfizh\HafalanRecordService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
-use InvalidArgumentException;
 
 class HafalanRecordController extends Controller
 {

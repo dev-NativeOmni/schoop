@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Billing;
 
 use App\Http\Controllers\Controller;
+use App\Models\SystemModule;
 use App\Services\Billing\CurrentSchoolResolver;
 use App\Services\Billing\ModuleAccessService;
 use App\Services\Billing\SubscriptionStatusService;
-use App\Models\SystemModule;
 use Illuminate\View\View;
 
 class ModuleLockedController extends Controller
@@ -27,7 +27,7 @@ class ModuleLockedController extends Controller
 
         $activeSubscription = null;
         $reason = 'Akses ke modul ini dibatasi.';
-        
+
         if ($school) {
             $activeSubscription = $this->subscriptionStatusService->activeSubscriptionFor($school);
             $reason = $this->moduleAccessService->reasonForDeniedAccess($school, $moduleKey);

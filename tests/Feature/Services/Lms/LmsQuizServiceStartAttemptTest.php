@@ -21,6 +21,7 @@ class LmsQuizServiceStartAttemptTest extends TestCase
     use RefreshDatabase;
 
     private LmsQuizService $quizService;
+
     private School $school;
 
     protected function setUp(): void

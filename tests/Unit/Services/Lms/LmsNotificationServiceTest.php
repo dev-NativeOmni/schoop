@@ -20,6 +20,7 @@ use Tests\TestCase;
 class LmsNotificationServiceTest extends TestCase
 {
     private $dispatchService;
+
     private $service;
 
     protected function setUp(): void
@@ -40,24 +41,24 @@ class LmsNotificationServiceTest extends TestCase
         $dispatchService = Mockery::mock(NotificationDispatchService::class);
         $service = new LmsNotificationService($dispatchService);
 
-        $course = new LmsCourse();
+        $course = new LmsCourse;
         $course->id = 1;
         $course->title = 'Test Course';
 
-        $user1 = new User();
+        $user1 = new User;
         $user1->id = 101;
 
-        $student1 = new Student();
+        $student1 = new Student;
         $student1->id = 1;
         $student1->setRelation('user', $user1);
 
-        $student2 = new Student(); // no user
+        $student2 = new Student; // no user
         $student2->id = 2;
 
-        $user3 = new User();
+        $user3 = new User;
         $user3->id = 103;
 
-        $student3 = new Student();
+        $student3 = new Student;
         $student3->id = 3;
         $student3->setRelation('user', $user3);
 
@@ -72,7 +73,7 @@ class LmsNotificationServiceTest extends TestCase
 
                 $this->assertInstanceOf(AnnouncementNotification::class, $notification);
 
-                $toArray = $notification->toArray(new \stdClass());
+                $toArray = $notification->toArray(new \stdClass);
                 $this->assertEquals('Kelas Baru Tersedia', $toArray['title']);
                 $this->assertEquals("Kelas baru 'Test Course' telah dipublikasikan. Silakan cek materi pembelajaran Anda.", $toArray['body']);
                 $this->assertEquals('info', $toArray['type']);
@@ -90,18 +91,18 @@ class LmsNotificationServiceTest extends TestCase
         $dispatchService = Mockery::mock(NotificationDispatchService::class);
         $service = new LmsNotificationService($dispatchService);
 
-        $course = new LmsCourse();
+        $course = new LmsCourse;
         $course->id = 1;
         $course->title = 'Test Course';
 
-        $user1 = new User();
+        $user1 = new User;
         $user1->id = 101;
 
-        $student1 = new Student();
+        $student1 = new Student;
         $student1->id = 1;
         $student1->setRelation('user', $user1);
 
-        $student2 = new Student();
+        $student2 = new Student;
         $student2->id = 2;
         $student2->setRelation('user', $user1); // Same user
 
@@ -112,6 +113,7 @@ class LmsNotificationServiceTest extends TestCase
             ->withArgs(function ($recipients, $notification) {
                 $this->assertCount(1, $recipients);
                 $this->assertTrue($recipients->contains('id', 101));
+
                 return true;
             });
 
@@ -123,7 +125,7 @@ class LmsNotificationServiceTest extends TestCase
         $dispatchService = Mockery::mock(NotificationDispatchService::class);
         $service = new LmsNotificationService($dispatchService);
 
-        $course = new LmsCourse();
+        $course = new LmsCourse;
         $course->id = 1;
         $course->title = 'Test Course';
 
@@ -133,6 +135,7 @@ class LmsNotificationServiceTest extends TestCase
             ->once()
             ->withArgs(function ($recipients, $notification) {
                 $this->assertCount(0, $recipients);
+
                 return true;
             });
 
@@ -141,21 +144,21 @@ class LmsNotificationServiceTest extends TestCase
 
     public function test_notify_assignment_graded_sends_to_student_and_parents(): void
     {
-        $studentUser = new User();
+        $studentUser = new User;
         $studentUser->id = 1;
 
-        $parentUser = new User();
+        $parentUser = new User;
         $parentUser->id = 2;
 
-        $parent = new ParentProfile();
+        $parent = new ParentProfile;
         $parent->user = $parentUser;
 
-        $student = new Student();
+        $student = new Student;
         $student->full_name = 'John Doe';
         $student->user = $studentUser;
         $student->setRelation('parents', collect([$parent]));
 
-        $assignment = new LmsAssignment();
+        $assignment = new LmsAssignment;
         $assignment->title = 'Math Homework';
         $assignment->course_id = 10;
 
@@ -167,14 +170,14 @@ class LmsNotificationServiceTest extends TestCase
 
         $this->dispatchService->shouldReceive('sendToUsers')
             ->once()
-            ->withArgs(function (Collection $recipients, AnnouncementNotification $notification) use ($studentUser, $parentUser) {
+            ->withArgs(function (Collection $recipients, AnnouncementNotification $notification) {
                 // Ensure recipients are correct
                 $this->assertCount(2, $recipients);
                 $this->assertTrue($recipients->contains('id', 1));
                 $this->assertTrue($recipients->contains('id', 2));
 
                 // Inspect the notification
-                $toArray = $notification->toArray(new \stdClass());
+                $toArray = $notification->toArray(new \stdClass);
                 $this->assertEquals('Tugas Selesai Dinilai', $toArray['title']);
                 $this->assertEquals("Tugas 'Math Homework' untuk santri John Doe telah dinilai dengan skor 95.00.", $toArray['body']);
                 $this->assertEquals('success', $toArray['type']);
@@ -189,18 +192,18 @@ class LmsNotificationServiceTest extends TestCase
 
     public function test_notify_assignment_graded_handles_missing_student_user(): void
     {
-        $parentUser = new User();
+        $parentUser = new User;
         $parentUser->id = 2;
 
-        $parent = new ParentProfile();
+        $parent = new ParentProfile;
         $parent->user = $parentUser;
 
-        $student = new Student();
+        $student = new Student;
         $student->full_name = 'Jane Doe';
         $student->user = null;
         $student->setRelation('parents', collect([$parent]));
 
-        $assignment = new LmsAssignment();
+        $assignment = new LmsAssignment;
         $assignment->title = 'Science Project';
         $assignment->course_id = 11;
 
@@ -215,6 +218,7 @@ class LmsNotificationServiceTest extends TestCase
             ->withArgs(function (Collection $recipients, AnnouncementNotification $notification) {
                 $this->assertCount(1, $recipients);
                 $this->assertTrue($recipients->contains('id', 2));
+
                 return true;
             });
 
@@ -223,21 +227,21 @@ class LmsNotificationServiceTest extends TestCase
 
     public function test_notify_assignment_graded_deduplicates_recipients(): void
     {
-        $sharedUser = new User();
+        $sharedUser = new User;
         $sharedUser->id = 1;
 
-        $parent1 = new ParentProfile();
+        $parent1 = new ParentProfile;
         $parent1->user = $sharedUser;
 
-        $parent2 = new ParentProfile();
+        $parent2 = new ParentProfile;
         $parent2->user = $sharedUser;
 
-        $student = new Student();
+        $student = new Student;
         $student->full_name = 'Duplicate Doe';
         $student->user = $sharedUser;
         $student->setRelation('parents', collect([$parent1, $parent2]));
 
-        $assignment = new LmsAssignment();
+        $assignment = new LmsAssignment;
         $assignment->title = 'History Essay';
         $assignment->course_id = 12;
 
@@ -252,6 +256,7 @@ class LmsNotificationServiceTest extends TestCase
             ->withArgs(function (Collection $recipients, AnnouncementNotification $notification) {
                 $this->assertCount(1, $recipients);
                 $this->assertTrue($recipients->contains('id', 1));
+
                 return true;
             });
 
@@ -260,12 +265,12 @@ class LmsNotificationServiceTest extends TestCase
 
     public function test_notify_assignment_graded_handles_no_recipients_at_all(): void
     {
-        $student = new Student();
+        $student = new Student;
         $student->full_name = 'No Users Doe';
         $student->user = null;
         $student->setRelation('parents', collect([]));
 
-        $assignment = new LmsAssignment();
+        $assignment = new LmsAssignment;
         $assignment->title = 'Art Project';
         $assignment->course_id = 13;
 
@@ -279,6 +284,7 @@ class LmsNotificationServiceTest extends TestCase
             ->once()
             ->withArgs(function (Collection $recipients, AnnouncementNotification $notification) {
                 $this->assertCount(0, $recipients);
+
                 return true;
             });
 
@@ -290,13 +296,13 @@ class LmsNotificationServiceTest extends TestCase
         $dispatchService = Mockery::mock(NotificationDispatchService::class);
         $service = new LmsNotificationService($dispatchService);
 
-        $studentUser = new User();
+        $studentUser = new User;
         $studentUser->id = 1;
 
-        $parentUser = new User();
+        $parentUser = new User;
         $parentUser->id = 2;
 
-        $parent = new ParentProfile();
+        $parent = new ParentProfile;
         $parent->setRelation('user', $parentUser);
 
         $student = new Student(['full_name' => 'Budi Santoso']);
@@ -323,7 +329,7 @@ class LmsNotificationServiceTest extends TestCase
 
             $this->assertInstanceOf(AnnouncementNotification::class, $notification);
 
-            $array = $notification->toArray(new \stdClass());
+            $array = $notification->toArray(new \stdClass);
             $this->assertEquals('Kuis Selesai Dikerjakan', $array['title']);
             $this->assertEquals("Kuis 'Math Final' untuk santri Budi Santoso telah selesai dikerjakan dengan skor 85.50 (LULUS).", $array['body']);
             $this->assertEquals('info', $array['type']);
@@ -341,7 +347,7 @@ class LmsNotificationServiceTest extends TestCase
         $dispatchService = Mockery::mock(NotificationDispatchService::class);
         $service = new LmsNotificationService($dispatchService);
 
-        $studentUser = new User();
+        $studentUser = new User;
         $studentUser->id = 1;
 
         $student = new Student(['full_name' => 'Andi']);
@@ -364,7 +370,7 @@ class LmsNotificationServiceTest extends TestCase
 
             $this->assertInstanceOf(AnnouncementNotification::class, $notification);
 
-            $array = $notification->toArray(new \stdClass());
+            $array = $notification->toArray(new \stdClass);
             $this->assertEquals("Kuis 'Science Quiz' untuk santri Andi telah selesai dikerjakan dengan skor 40.00 (TIDAK LULUS).", $array['body']);
 
             return true;
@@ -379,13 +385,13 @@ class LmsNotificationServiceTest extends TestCase
         $service = new LmsNotificationService($dispatchService);
 
         // Scenario: duplicate user IDs across student and parents
-        $sharedUser = new User();
+        $sharedUser = new User;
         $sharedUser->id = 99;
 
-        $parent1 = new ParentProfile();
+        $parent1 = new ParentProfile;
         $parent1->setRelation('user', $sharedUser);
 
-        $parent2 = new ParentProfile();
+        $parent2 = new ParentProfile;
         $parent2->setRelation('user', $sharedUser); // Same user ID
 
         $student = new Student(['full_name' => 'Caca']);

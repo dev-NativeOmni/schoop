@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('lms_quiz_questions', function (Blueprint $table): void {
             $table->id();
-            
+
             $table->foreignId('school_id')
                 ->nullable()
                 ->constrained('schools')
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->text('explanation')->nullable();
             $table->integer('score_weight')->default(10);
             $table->integer('sort_order')->default(0);
-            
+
             $table->timestamps();
             $table->softDeletes();
 

@@ -11,8 +11,11 @@ class TahsinStudentProfile extends Model
     use BelongsToTenant;
 
     public const STATUS_NOT_STARTED = 'not_started';
+
     public const STATUS_IN_PROGRESS = 'in_progress';
+
     public const STATUS_PASSED = 'passed';
+
     public const STATUS_NEEDS_ATTENTION = 'needs_attention';
 
     protected $fillable = [

@@ -2,9 +2,9 @@
 
 namespace App\Services\Boarding;
 
+use App\Models\BoardingBed;
 use App\Models\BoardingDormitory;
 use App\Models\BoardingRoom;
-use App\Models\BoardingBed;
 
 class BoardingOccupancyService
 {
@@ -17,7 +17,7 @@ class BoardingOccupancyService
         $roomIds = $rooms->pluck('id');
 
         $totalCapacity = $rooms->sum('capacity');
-        
+
         $occupiedCount = BoardingBed::query()
             ->whereIn('boarding_room_id', $roomIds)
             ->where('status', 'occupied')
@@ -51,7 +51,7 @@ class BoardingOccupancyService
     public function getRoomStats(BoardingRoom $room): array
     {
         $beds = $room->beds;
-        
+
         $capacity = $room->capacity;
         $occupied = $beds->where('status', 'occupied')->count();
         $available = $beds->where('status', 'available')->count();
@@ -95,7 +95,7 @@ class BoardingOccupancyService
         }
 
         // Optimization: Batch fetch active rooms for all dormitories
-        $rooms = \App\Models\BoardingRoom::query()
+        $rooms = BoardingRoom::query()
             ->whereIn('boarding_dormitory_id', $dormitoryIds)
             ->where('is_active', true)
             ->get();
@@ -109,7 +109,7 @@ class BoardingOccupancyService
             $totalMaintenance = 0;
         } else {
             // Optimization: Batch count bed statuses using group by instead of N+1 queries
-            $bedCounts = \App\Models\BoardingBed::query()
+            $bedCounts = BoardingBed::query()
                 ->select('status', \DB::raw('count(*) as count'))
                 ->whereIn('boarding_room_id', $roomIds)
                 ->whereIn('status', ['occupied', 'available', 'maintenance'])

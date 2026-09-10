@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class BoardingRollCallSession extends Model
 {
     use BelongsToTenant;
-
     use SoftDeletes;
 
     protected $fillable = [

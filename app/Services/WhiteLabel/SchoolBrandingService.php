@@ -18,7 +18,7 @@ class SchoolBrandingService
             ->where('school_id', $schoolId)
             ->first();
 
-        if (!$profile) {
+        if (! $profile) {
             $school = School::query()->findOrFail($schoolId);
             $profile = SchoolBrandProfile::query()->create([
                 'school_id' => $schoolId,
@@ -48,7 +48,7 @@ class SchoolBrandingService
             if ($profile->logo_path) {
                 Storage::disk('public')->delete($profile->logo_path);
             }
-            $filename = 'logo_' . time() . '.' . $logo->getClientOriginalExtension();
+            $filename = 'logo_'.time().'.'.$logo->getClientOriginalExtension();
             $path = $logo->storeAs("white-label/{$schoolId}/brand", $filename, 'public');
             $data['logo_path'] = $path;
         }
@@ -58,7 +58,7 @@ class SchoolBrandingService
             if ($profile->favicon_path) {
                 Storage::disk('public')->delete($profile->favicon_path);
             }
-            $filename = 'favicon_' . time() . '.' . $favicon->getClientOriginalExtension();
+            $filename = 'favicon_'.time().'.'.$favicon->getClientOriginalExtension();
             $path = $favicon->storeAs("white-label/{$schoolId}/brand", $filename, 'public');
             $data['favicon_path'] = $path;
         }
@@ -68,7 +68,7 @@ class SchoolBrandingService
             if ($profile->login_background_path) {
                 Storage::disk('public')->delete($profile->login_background_path);
             }
-            $filename = 'login_bg_' . time() . '.' . $loginBg->getClientOriginalExtension();
+            $filename = 'login_bg_'.time().'.'.$loginBg->getClientOriginalExtension();
             $path = $loginBg->storeAs("white-label/{$schoolId}/brand", $filename, 'public');
             $data['login_background_path'] = $path;
         }
@@ -83,9 +83,10 @@ class SchoolBrandingService
      */
     public function getAssetUrl(?string $path): ?string
     {
-        if (!$path) {
+        if (! $path) {
             return null;
         }
+
         return Storage::disk('public')->url($path);
     }
 }

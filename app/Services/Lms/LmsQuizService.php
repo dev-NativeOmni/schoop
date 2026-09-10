@@ -3,9 +3,9 @@
 namespace App\Services\Lms;
 
 use App\Models\LmsQuiz;
-use App\Models\LmsQuizQuestion;
-use App\Models\LmsQuizAttempt;
 use App\Models\LmsQuizAnswer;
+use App\Models\LmsQuizAttempt;
+use App\Models\LmsQuizQuestion;
 use App\Services\Tenancy\TenantContextService;
 use Illuminate\Support\Facades\DB;
 
@@ -50,12 +50,13 @@ class LmsQuizService
             $data['school_id'] = $schoolId;
             $data['quiz_id'] = $quizId;
 
-            if (!isset($data['sort_order'])) {
+            if (! isset($data['sort_order'])) {
                 $maxSort = LmsQuizQuestion::where('quiz_id', $quizId)->max('sort_order');
                 $data['sort_order'] = $maxSort !== null ? $maxSort + 1 : 1;
             }
 
             $question = LmsQuizQuestion::create($data);
+
             return $question;
         });
     }
@@ -64,6 +65,7 @@ class LmsQuizService
     {
         return DB::transaction(function () use ($question, $data) {
             $question->update($data);
+
             return $question;
         });
     }

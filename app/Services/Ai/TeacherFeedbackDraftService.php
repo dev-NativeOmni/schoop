@@ -2,13 +2,12 @@
 
 namespace App\Services\Ai;
 
-use App\Models\Student;
+use App\Models\AiAssistanceOutput;
+use App\Models\AiAssistanceRequest;
 use App\Models\AiFeedbackTemplate;
 use App\Models\AiLearningProfile;
-use App\Models\AiAssistanceRequest;
-use App\Models\AiAssistanceOutput;
 use App\Models\AiTeacherReviewQueue;
-use App\Services\Ai\AiSafetyGuardService;
+use App\Models\Student;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,13 +41,13 @@ class TeacherFeedbackDraftService
             ->where('is_active', true)
             ->first();
 
-        $bodyTemplate = $template ? $template->body_template : "Ananda {student_name} telah menunjukkan usaha belajar yang baik. Pekan ini mari fokus pada latihan makhraj dan murajaah harian.";
+        $bodyTemplate = $template ? $template->body_template : 'Ananda {student_name} telah menunjukkan usaha belajar yang baik. Pekan ini mari fokus pada latihan makhraj dan murajaah harian.';
 
         // Resolve placeholders
         $studentName = $student->user?->name ?? 'Ananda';
         $tahfizhTrend = $profile?->tahfizh_trend ?? 'perlu konsistensi';
         $tahsinTrend = $profile?->tahsin_trend ?? 'perlu penguatan';
-        $focusArea = $profile && !empty($profile->focus_areas) ? $profile->focus_areas[0] : 'murajaah mandiri';
+        $focusArea = $profile && ! empty($profile->focus_areas) ? $profile->focus_areas[0] : 'murajaah mandiri';
 
         $draftText = strtr($bodyTemplate, [
             '{student_name}' => $studentName,
@@ -59,7 +58,7 @@ class TeacherFeedbackDraftService
 
         // Run safety checks
         $safetyResult = $this->safetyGuard->validateOutput($draftText);
-        if (!$safetyResult['safe']) {
+        if (! $safetyResult['safe']) {
             // Log safety event inside guard and redact negative words
             $draftText = $this->safetyGuard->redactNegativeWording($draftText, $student);
         }
@@ -86,7 +85,7 @@ class TeacherFeedbackDraftService
                 'student_id' => $student->id,
                 'output_type' => 'draft_teacher_feedback',
                 'status' => 'draft',
-                'title' => "Draf Catatan Umpan Balik Guru - " . $studentName,
+                'title' => 'Draf Catatan Umpan Balik Guru - '.$studentName,
                 'body' => $draftText,
                 'structured_output' => [
                     'template_key' => $templateKey,

@@ -2,11 +2,11 @@
 
 namespace App\Services\Boarding;
 
-use App\Models\BoardingRollCallSession;
 use App\Models\BoardingRollCallRecord;
+use App\Models\BoardingRollCallSession;
 use App\Models\BoardingStudentAssignment;
-use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class BoardingRollCallService
 {
@@ -31,7 +31,7 @@ class BoardingRollCallService
                 ->first();
 
             if ($existing) {
-                throw new Exception("Sesi absen sejenis yang masih terbuka sudah ada untuk tanggal tersebut.");
+                throw new Exception('Sesi absen sejenis yang masih terbuka sudah ada untuk tanggal tersebut.');
             }
 
             // Create session
@@ -87,8 +87,8 @@ class BoardingRollCallService
         $session = BoardingRollCallSession::findOrFail($sessionId);
 
         // Enforce closed lock, unless bypassed by admins
-        if ($session->status === 'closed' && !$bypassClosedCheck) {
-            throw new Exception("Sesi absen sudah ditutup dan tidak dapat diedit.");
+        if ($session->status === 'closed' && ! $bypassClosedCheck) {
+            throw new Exception('Sesi absen sudah ditutup dan tidak dapat diedit.');
         }
 
         // Save or update attendance record
@@ -112,9 +112,9 @@ class BoardingRollCallService
     public function closeSession(int $sessionId): void
     {
         $session = BoardingRollCallSession::findOrFail($sessionId);
-        
+
         if ($session->status === 'closed') {
-            throw new Exception("Sesi absen sudah ditutup.");
+            throw new Exception('Sesi absen sudah ditutup.');
         }
 
         $session->update([

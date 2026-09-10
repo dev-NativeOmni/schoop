@@ -13,7 +13,9 @@ use Illuminate\Http\Request;
 class SchoolBrandProfileController extends Controller
 {
     protected TenantContextService $tenantContext;
+
     protected SchoolBrandingService $brandingService;
+
     protected WhiteLabelAccessService $accessService;
 
     public function __construct(
@@ -32,6 +34,7 @@ class SchoolBrandProfileController extends Controller
         if ($user->isSuperAdmin() && $request->has('school_id')) {
             return (int) $request->input('school_id');
         }
+
         return $this->tenantContext->activeSchoolId() ?? abort(403, 'Context sekolah tidak ditemukan.');
     }
 
@@ -63,7 +66,7 @@ class SchoolBrandProfileController extends Controller
         $this->accessService->ensureCanManage($request->user(), $schoolId);
 
         $data = $request->validated();
-        
+
         $logo = $request->file('logo');
         $favicon = $request->file('favicon');
         $loginBg = $request->file('login_background');

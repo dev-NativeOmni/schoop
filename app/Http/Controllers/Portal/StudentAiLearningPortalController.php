@@ -4,19 +4,19 @@ namespace App\Http\Controllers\Portal;
 
 use App\Http\Controllers\Controller;
 use App\Models\AiPracticePlanItem;
-use App\Services\Ai\StudentLearningAssistantService;
-use App\Services\Ai\AiFeatureFlagService;
 use App\Services\Ai\AiAuditLogger;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use App\Services\Ai\AiFeatureFlagService;
+use App\Services\Ai\StudentLearningAssistantService;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class StudentAiLearningPortalController extends Controller
 {
     protected StudentLearningAssistantService $assistantService;
+
     protected AiFeatureFlagService $flagService;
+
     protected AiAuditLogger $auditLogger;
 
     public function __construct(
@@ -35,12 +35,12 @@ class StudentAiLearningPortalController extends Controller
         $schoolId = $user->school_id;
 
         // Check feature flag
-        if (!$this->flagService->isEnabled($schoolId, 'student_learning_assistant')) {
+        if (! $this->flagService->isEnabled($schoolId, 'student_learning_assistant')) {
             abort(403, 'Fitur asisten belajar AI dinonaktifkan oleh sekolah.');
         }
 
         $student = $user->studentProfile;
-        if (!$student) {
+        if (! $student) {
             abort(404, 'Profil santri tidak ditemukan.');
         }
 
@@ -59,13 +59,13 @@ class StudentAiLearningPortalController extends Controller
     {
         $user = Auth::user();
         $student = $user->studentProfile;
-        if (!$student) {
+        if (! $student) {
             abort(403, 'Unauthorized.');
         }
 
         // Verify the item belongs to the student
         $item = AiPracticePlanItem::find($itemId);
-        if (!$item || !$item->practicePlan || $item->practicePlan->student_id !== $student->id) {
+        if (! $item || ! $item->practicePlan || $item->practicePlan->student_id !== $student->id) {
             abort(403, 'Unauthorized access to practice plan item.');
         }
 

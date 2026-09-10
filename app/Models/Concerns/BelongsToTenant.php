@@ -23,7 +23,7 @@ trait BelongsToTenant
         static::addGlobalScope('school', function (Builder $builder): void {
             $schoolId = app(TenantContextService::class)->activeSchoolId();
             if ($schoolId) {
-                $builder->where($builder->getModel()->getTable() . '.school_id', $schoolId);
+                $builder->where($builder->getModel()->getTable().'.school_id', $schoolId);
             }
         });
     }
@@ -36,11 +36,11 @@ trait BelongsToTenant
             return $query;
         }
 
-        return $query->where($query->getModel()->getTable() . '.school_id', $schoolId);
+        return $query->where($query->getModel()->getTable().'.school_id', $schoolId);
     }
 
     public function scopeForTenant(Builder $query, int $schoolId): Builder
     {
-        return $query->where($query->getModel()->getTable() . '.school_id', $schoolId);
+        return $query->where($query->getModel()->getTable().'.school_id', $schoolId);
     }
 }

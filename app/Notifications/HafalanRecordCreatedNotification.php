@@ -39,7 +39,7 @@ class HafalanRecordCreatedNotification extends Notification
         return [
             'category' => 'hafalan_record_created',
             'title' => 'Setoran tahfizh baru',
-            'body' => $this->record->student?->full_name . ' telah menambahkan setoran tahfizh.',
+            'body' => $this->record->student?->full_name.' telah menambahkan setoran tahfizh.',
             'type' => 'success',
             'student_id' => $this->record->student_id,
             'student_name' => $this->record->student?->full_name,

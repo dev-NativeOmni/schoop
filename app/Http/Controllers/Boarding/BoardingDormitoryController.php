@@ -15,6 +15,7 @@ use Illuminate\View\View;
 class BoardingDormitoryController extends Controller
 {
     protected BoardingAccessService $accessService;
+
     protected BoardingOccupancyService $occupancyService;
 
     public function __construct(
@@ -45,6 +46,7 @@ class BoardingDormitoryController extends Controller
     public function create(Request $request): View
     {
         abort_unless($this->accessService->canManageMasterData($request->user()), 403);
+
         return view('boarding.dormitories.create');
     }
 

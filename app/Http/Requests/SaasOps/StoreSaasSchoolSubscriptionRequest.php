@@ -7,7 +7,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreSaasSchoolSubscriptionRequest extends FormRequest
 {
-    public function authorize(): bool { return app(SaasOperationsAccessService::class)->canManageSubscriptions($this->user()); }
+    public function authorize(): bool
+    {
+        return app(SaasOperationsAccessService::class)->canManageSubscriptions($this->user());
+    }
+
     public function rules(): array
     {
         return [

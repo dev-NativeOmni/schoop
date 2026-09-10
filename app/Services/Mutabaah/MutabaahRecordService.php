@@ -34,19 +34,19 @@ class MutabaahRecordService
 
             return MutabaahRecord::query()->updateOrCreate(
                 [
-                    'student_id'            => $student->id,
-                    'mutabaah_activity_id'  => $activity->id,
-                    'record_date'           => $recordDate,
+                    'student_id' => $student->id,
+                    'mutabaah_activity_id' => $activity->id,
+                    'record_date' => $recordDate,
                 ],
                 [
-                    'school_id'    => $student->school_id ?? null,
-                    'status'       => $item['status'] ?? 'not_done',
-                    'score'        => $item['score'] ?? null,
-                    'count_value'  => $item['count_value'] ?? null,
-                    'text_value'   => $item['text_value'] ?? null,
-                    'note'         => $item['note'] ?? null,
+                    'school_id' => $student->school_id ?? null,
+                    'status' => $item['status'] ?? 'not_done',
+                    'score' => $item['score'] ?? null,
+                    'count_value' => $item['count_value'] ?? null,
+                    'text_value' => $item['text_value'] ?? null,
+                    'note' => $item['note'] ?? null,
                     'submitted_by' => $submittedBy->id,
-                    'source'       => $source,
+                    'source' => $source,
                 ]
             );
         });

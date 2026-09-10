@@ -2,28 +2,29 @@
 
 namespace Tests\Feature;
 
-use App\Models\Role;
-use App\Models\School;
-use App\Models\User;
-use App\Models\UserSchoolMembership;
-use App\Models\TeacherProfile;
-use App\Models\Student;
-use App\Models\ParentProfile;
+use App\Models\LmsAssignment;
 use App\Models\LmsCourse;
+use App\Models\LmsCourseEnrollment;
 use App\Models\LmsCourseModule;
 use App\Models\LmsLesson;
-use App\Models\LmsAssignment;
-use App\Models\LmsAssignmentSubmission;
 use App\Models\LmsQuiz;
 use App\Models\LmsQuizQuestion;
-use App\Models\LmsQuizAttempt;
-use App\Models\LmsCourseEnrollment;
-use App\Models\LmsLessonProgress;
+use App\Models\ParentProfile;
+use App\Models\Role;
+use App\Models\School;
+use App\Models\SchoolSubscription;
+use App\Models\Student;
+use App\Models\SubscriptionPlan;
+use App\Models\TeacherProfile;
+use App\Models\User;
+use App\Models\UserSchoolMembership;
 use App\Services\Lms\LmsAccessService;
+use App\Services\Lms\LmsAssignmentService;
 use App\Services\Lms\LmsProgressService;
 use App\Services\Lms\LmsQuizService;
-use App\Services\Lms\LmsAssignmentService;
-use App\Services\Lms\LmsAnalyticsSnapshotService;
+use Database\Seeders\PlanModuleSeeder;
+use Database\Seeders\SubscriptionPlanSeeder;
+use Database\Seeders\SystemModuleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -34,15 +35,21 @@ class Phase24LmsIntegrationTest extends TestCase
     use RefreshDatabase;
 
     private School $schoolA;
+
     private School $schoolB;
 
     private User $adminA;
+
     private User $teacherA;
+
     private User $studentA;
+
     private User $parentA;
 
     private TeacherProfile $teacherProfileA;
+
     private Student $studentProfileA;
+
     private ParentProfile $parentProfileA;
 
     protected function setUp(): void
@@ -138,12 +145,12 @@ class Phase24LmsIntegrationTest extends TestCase
         UserSchoolMembership::create(['user_id' => $this->parentA->id, 'school_id' => $this->schoolA->id, 'role_id' => $parentRole->id, 'membership_status' => 'active']);
 
         // Seed and create active school subscription for schoolA to enable 'lms' module
-        $this->seed(\Database\Seeders\SystemModuleSeeder::class);
-        $this->seed(\Database\Seeders\SubscriptionPlanSeeder::class);
-        $this->seed(\Database\Seeders\PlanModuleSeeder::class);
+        $this->seed(SystemModuleSeeder::class);
+        $this->seed(SubscriptionPlanSeeder::class);
+        $this->seed(PlanModuleSeeder::class);
 
-        $enterprisePlan = \App\Models\SubscriptionPlan::where('code', 'enterprise')->firstOrFail();
-        \App\Models\SchoolSubscription::create([
+        $enterprisePlan = SubscriptionPlan::where('code', 'enterprise')->firstOrFail();
+        SchoolSubscription::create([
             'school_id' => $this->schoolA->id,
             'subscription_plan_id' => $enterprisePlan->id,
             'status' => 'active',
@@ -278,14 +285,14 @@ class Phase24LmsIntegrationTest extends TestCase
             ->where('student_id', $this->studentProfileA->id)
             ->first();
 
-        $this->assertEquals(50.00, (float)$enrollment->progress_percentage);
+        $this->assertEquals(50.00, (float) $enrollment->progress_percentage);
         $this->assertEquals('active', $enrollment->status);
 
         // Mark second required lesson complete
         $progressService->markAsComplete($this->studentProfileA->id, $lesson2->id);
 
         $enrollment->refresh();
-        $this->assertEquals(100.00, (float)$enrollment->progress_percentage);
+        $this->assertEquals(100.00, (float) $enrollment->progress_percentage);
         $this->assertEquals('completed', $enrollment->status);
     }
 
@@ -336,7 +343,7 @@ class Phase24LmsIntegrationTest extends TestCase
         $attempt = $quizService->submitAttempt($attempt->id, $submittedAnswers);
 
         // Weight = 10 correct out of 20 total = 50%
-        $this->assertEquals(50.00, (float)$attempt->score);
+        $this->assertEquals(50.00, (float) $attempt->score);
         $this->assertFalse($attempt->is_passed);
         $this->assertEquals('completed', $attempt->status);
     }

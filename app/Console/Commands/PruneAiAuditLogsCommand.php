@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\AiAuditLog;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class PruneAiAuditLogsCommand extends Command
 {
@@ -38,6 +38,7 @@ class PruneAiAuditLogsCommand extends Command
             ->delete();
 
         $this->info("Pruned {$deletedCount} old AI audit log records.");
+
         return 0;
     }
 }

@@ -34,7 +34,7 @@ class SchoolSubscriptionController extends Controller
     public function store(StoreSchoolSubscriptionRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        
+
         if ($request->has('metadata_raw')) {
             $data['metadata'] = json_decode($request->input('metadata_raw'), true) ?? [];
         }
@@ -49,6 +49,7 @@ class SchoolSubscriptionController extends Controller
     public function show(SchoolSubscription $schoolSubscription): View
     {
         $schoolSubscription->load(['school', 'plan']);
+
         return view('billing.school-subscriptions.show', compact('schoolSubscription'));
     }
 

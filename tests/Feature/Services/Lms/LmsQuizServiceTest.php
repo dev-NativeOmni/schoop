@@ -18,10 +18,15 @@ class LmsQuizServiceTest extends TestCase
     use RefreshDatabase;
 
     private School $school;
+
     private LmsCourse $course;
+
     private LmsCourseModule $module;
+
     private LmsLesson $lesson;
+
     private LmsQuizService $quizService;
+
     private User $user;
 
     protected function setUp(): void
@@ -31,15 +36,15 @@ class LmsQuizServiceTest extends TestCase
         // Create dependencies
         $this->school = School::create([
             'name' => 'Test School',
-            'code' => 'TEST' . rand(1000, 9999),
+            'code' => 'TEST'.rand(1000, 9999),
             'is_active' => true,
         ]);
 
         $this->course = LmsCourse::create([
             'school_id' => $this->school->id,
             'title' => 'Test Course',
-            'slug' => 'test-course-' . rand(1000, 9999),
-            'course_code' => 'TC' . rand(100, 999),
+            'slug' => 'test-course-'.rand(1000, 9999),
+            'course_code' => 'TC'.rand(100, 999),
             'visibility' => 'published',
         ]);
 
@@ -54,7 +59,7 @@ class LmsQuizServiceTest extends TestCase
             'course_id' => $this->course->id,
             'module_id' => $this->module->id,
             'title' => 'Test Lesson',
-            'slug' => 'test-lesson-' . rand(1000, 9999),
+            'slug' => 'test-lesson-'.rand(1000, 9999),
             'lesson_type' => 'quiz',
             'visibility' => 'published',
         ]);

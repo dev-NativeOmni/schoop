@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Portal;
 
 use App\Http\Controllers\Controller;
 use App\Models\BoardingRollCallRecord;
-use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -17,7 +16,7 @@ class ParentBoardingPortalController extends Controller
 
         $parentProfile = $user->parentProfile;
         $students = $parentProfile ? $parentProfile->students()->with(['activeBoardingAssignment.dormitory', 'activeBoardingAssignment.room', 'activeBoardingAssignment.bed'])->get() : collect();
-        
+
         $selectedStudentId = $request->input('student_id', $students->first()?->id);
         $student = $students->firstWhere('id', $selectedStudentId);
 

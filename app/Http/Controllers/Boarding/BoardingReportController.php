@@ -7,12 +7,12 @@ use App\Http\Requests\Boarding\BoardingReportFilterRequest;
 use App\Models\BoardingDormitory;
 use App\Services\Boarding\BoardingAccessService;
 use App\Services\Boarding\BoardingReportService;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class BoardingReportController extends Controller
 {
     protected BoardingAccessService $accessService;
+
     protected BoardingReportService $reportService;
 
     public function __construct(
@@ -28,7 +28,7 @@ class BoardingReportController extends Controller
         abort_unless($this->accessService->canAccessDashboard($request->user()), 403);
 
         $schoolId = $request->user()->school_id;
-        
+
         $startDate = $request->input('start_date', now()->subDays(30)->toDateString());
         $endDate = $request->input('end_date', now()->toDateString());
         $dormitoryId = $request->input('boarding_dormitory_id');

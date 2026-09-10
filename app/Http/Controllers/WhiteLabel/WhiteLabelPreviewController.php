@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\WhiteLabel\PublishWhiteLabelRequest;
 use App\Models\School;
 use App\Services\Tenancy\TenantContextService;
+use App\Services\WhiteLabel\SchoolBrandingService;
+use App\Services\WhiteLabel\SchoolPwaManifestService;
 use App\Services\WhiteLabel\SchoolThemeService;
 use App\Services\WhiteLabel\WhiteLabelAccessService;
 use App\Services\WhiteLabel\WhiteLabelPublicationService;
@@ -14,8 +16,11 @@ use Illuminate\Http\Request;
 class WhiteLabelPreviewController extends Controller
 {
     protected TenantContextService $tenantContext;
+
     protected SchoolThemeService $themeService;
+
     protected WhiteLabelAccessService $accessService;
+
     protected WhiteLabelPublicationService $publicationService;
 
     public function __construct(
@@ -36,6 +41,7 @@ class WhiteLabelPreviewController extends Controller
         if ($user->isSuperAdmin() && $request->has('school_id')) {
             return (int) $request->input('school_id');
         }
+
         return $this->tenantContext->activeSchoolId() ?? abort(403, 'Context sekolah tidak ditemukan.');
     }
 
@@ -45,11 +51,11 @@ class WhiteLabelPreviewController extends Controller
         $this->accessService->ensureCanManage($request->user(), $schoolId);
 
         $school = School::findOrFail($schoolId);
-        
+
         // Fetch working (draft) settings for previewing
-        $brand = app(\App\Services\WhiteLabel\SchoolBrandingService::class)->getOrCreateProfile($schoolId);
+        $brand = app(SchoolBrandingService::class)->getOrCreateProfile($schoolId);
         $theme = $this->themeService->getOrCreateTheme($schoolId);
-        $pwa = app(\App\Services\WhiteLabel\SchoolPwaManifestService::class)->getOrCreatePwaSetting($schoolId);
+        $pwa = app(SchoolPwaManifestService::class)->getOrCreatePwaSetting($schoolId);
 
         $cssVariables = $this->themeService->generateCssVariables($theme);
 
@@ -76,9 +82,10 @@ class WhiteLabelPreviewController extends Controller
 
         try {
             $this->publicationService->rollback($schoolId, $id, $request->user()->id);
+
             return redirect()
                 ->route('white-label.dashboard', ['school_id' => $schoolId])
-                ->with('success', 'Tema dan profil berhasil di-rollback ke snapshot #' . $id);
+                ->with('success', 'Tema dan profil berhasil di-rollback ke snapshot #'.$id);
         } catch (\Exception $e) {
             return redirect()
                 ->route('white-label.dashboard', ['school_id' => $schoolId])

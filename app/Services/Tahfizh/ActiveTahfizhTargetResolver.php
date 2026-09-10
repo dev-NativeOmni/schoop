@@ -41,14 +41,14 @@ class ActiveTahfizhTargetResolver
                     });
             })
             ->orderByRaw(
-                "
+                '
                 CASE
                     WHEN student_id = ? THEN 1
                     WHEN class_room_id = ? THEN 2
                     WHEN program_type = ? THEN 3
                     ELSE 4
                 END
-                ",
+                ',
                 [
                     $student->id,
                     $student->class_room_id,

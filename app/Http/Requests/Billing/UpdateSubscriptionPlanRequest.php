@@ -16,7 +16,7 @@ class UpdateSubscriptionPlanRequest extends FormRequest
         $planId = $this->route('plan')?->id ?? $this->route('subscription_plan')?->id ?? $this->route('id');
 
         return [
-            'code' => ['required', 'string', 'max:100', 'unique:subscription_plans,code,' . $planId],
+            'code' => ['required', 'string', 'max:100', 'unique:subscription_plans,code,'.$planId],
             'name' => ['required', 'string', 'max:150'],
             'monthly_price' => ['nullable', 'integer', 'min:0'],
             'yearly_price' => ['nullable', 'integer', 'min:0'],

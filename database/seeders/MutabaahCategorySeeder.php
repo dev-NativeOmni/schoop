@@ -15,24 +15,24 @@ class MutabaahCategorySeeder extends Seeder
     {
         $categories = [
             [
-                'name'        => 'Ibadah Wajib',
+                'name' => 'Ibadah Wajib',
                 'description' => 'Aktivitas ibadah wajib harian.',
-                'sort_order'  => 10,
+                'sort_order' => 10,
             ],
             [
-                'name'        => 'Ibadah Sunnah',
+                'name' => 'Ibadah Sunnah',
                 'description' => 'Aktivitas ibadah sunnah harian atau pekanan.',
-                'sort_order'  => 20,
+                'sort_order' => 20,
             ],
             [
-                'name'        => 'Quran dan Dzikir',
+                'name' => 'Quran dan Dzikir',
                 'description' => 'Tilawah, dzikir, dan aktivitas Quran harian.',
-                'sort_order'  => 30,
+                'sort_order' => 30,
             ],
             [
-                'name'        => 'Adab dan Karakter',
+                'name' => 'Adab dan Karakter',
                 'description' => 'Pembiasaan adab dan karakter santri.',
-                'sort_order'  => 40,
+                'sort_order' => 40,
             ],
         ];
 
@@ -40,17 +40,17 @@ class MutabaahCategorySeeder extends Seeder
             MutabaahCategory::query()->updateOrCreate(
                 [
                     'school_id' => null,
-                    'slug'      => Str::slug($category['name']),
+                    'slug' => Str::slug($category['name']),
                 ],
                 [
-                    'name'        => $category['name'],
+                    'name' => $category['name'],
                     'description' => $category['description'],
-                    'sort_order'  => $category['sort_order'],
-                    'is_active'   => true,
+                    'sort_order' => $category['sort_order'],
+                    'is_active' => true,
                 ]
             );
         }
 
-        $this->command->info('MutabaahCategorySeeder: ' . count($categories) . ' categories seeded.');
+        $this->command->info('MutabaahCategorySeeder: '.count($categories).' categories seeded.');
     }
 }

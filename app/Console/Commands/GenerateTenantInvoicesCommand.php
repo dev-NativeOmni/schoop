@@ -10,6 +10,7 @@ use Illuminate\Console\Command;
 class GenerateTenantInvoicesCommand extends Command
 {
     protected $signature = 'app:generate-tenant-invoices {--dry-run}';
+
     protected $description = 'Generate draft tenant invoices for due subscriptions without sending or charging automatically.';
 
     public function handle(TenantBillingService $billing): int

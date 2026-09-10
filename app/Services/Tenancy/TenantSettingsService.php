@@ -21,7 +21,7 @@ class TenantSettingsService
             ->where('setting_key', $key)
             ->first();
 
-        if (!$setting) {
+        if (! $setting) {
             return $default;
         }
 

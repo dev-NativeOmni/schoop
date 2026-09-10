@@ -101,7 +101,7 @@ class StudentPaymentService
                 'amount' => $amount,
                 'source_type' => StudentPayment::class,
                 'source_id' => $payment->id,
-                'description' => 'Pembayaran ' . $payment->receipt_number,
+                'description' => 'Pembayaran '.$payment->receipt_number,
                 'created_by' => $user->id,
             ]);
 
@@ -160,7 +160,7 @@ class StudentPaymentService
                 'amount' => $payment->amount,
                 'source_type' => StudentPayment::class,
                 'source_id' => $payment->id,
-                'description' => 'Void pembayaran ' . $payment->receipt_number,
+                'description' => 'Void pembayaran '.$payment->receipt_number,
                 'created_by' => $user->id,
             ]);
 

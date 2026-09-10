@@ -21,7 +21,7 @@ class LmsProgressService
     public function markAsInProgress(int $studentId, int $lessonId): LmsLessonProgress
     {
         $schoolId = $this->tenantContext->activeSchoolId();
-        
+
         $progress = LmsLessonProgress::firstOrCreate([
             'lesson_id' => $lessonId,
             'student_id' => $studentId,
@@ -65,13 +65,14 @@ class LmsProgressService
     {
         return DB::transaction(function () use ($studentId, $courseId) {
             $course = LmsCourse::find($courseId);
-            if (!$course) {
+            if (! $course) {
                 return 0.00;
             }
 
             $lessonIds = $course->lessons()->pluck('id')->toArray();
             if (empty($lessonIds)) {
                 $this->updateEnrollmentProgress($studentId, $courseId, 0.00);
+
                 return 0.00;
             }
 
@@ -137,6 +138,7 @@ class LmsProgressService
             $this->recalculateProgress($enrollment->student_id, $enrollment->course_id);
             $count++;
         }
+
         return $count;
     }
 }

@@ -1,93 +1,121 @@
 <?php
 
+use App\Http\Controllers\Admin\SystemStatusController;
+use App\Http\Controllers\Ai\AiFeatureFlagController;
+use App\Http\Controllers\Ai\AiFeedbackDraftController;
+use App\Http\Controllers\Ai\AiLearningDashboardController;
+use App\Http\Controllers\Ai\AiLearningProfileController;
+use App\Http\Controllers\Ai\AiPracticePlanController;
+use App\Http\Controllers\Ai\AiRecommendationController;
+use App\Http\Controllers\Ai\AiSafetyEventController;
+use App\Http\Controllers\Ai\AiTeacherReviewQueueController;
+use App\Http\Controllers\Analytics\AcademicAnalyticsController;
+use App\Http\Controllers\Analytics\ExecutiveAnalyticsDashboardController;
+use App\Http\Controllers\Analytics\ExecutiveReportController;
+use App\Http\Controllers\Analytics\FinanceAnalyticsController;
+use App\Http\Controllers\Analytics\MetricDictionaryController;
+use App\Http\Controllers\Analytics\MobileApiAnalyticsController;
+use App\Http\Controllers\Analytics\OperationalAnalyticsController;
+use App\Http\Controllers\Analytics\SchoolAnalyticsDashboardController;
+use App\Http\Controllers\Analytics\SupportAnalyticsController;
+use App\Http\Controllers\Analytics\TenantHealthAnalyticsController;
+use App\Http\Controllers\Attendance\AttendanceManualRecordController;
+use App\Http\Controllers\Attendance\AttendanceQrCardController;
+use App\Http\Controllers\Attendance\AttendanceReportController;
+use App\Http\Controllers\Attendance\AttendanceScannerController;
+use App\Http\Controllers\Attendance\AttendanceSessionController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Billing\ModuleLockedController;
+use App\Http\Controllers\Billing\PlanModuleController;
+use App\Http\Controllers\Billing\SchoolModuleOverrideController;
+use App\Http\Controllers\Billing\SchoolSubscriptionController;
+use App\Http\Controllers\Billing\SubscriptionPlanController;
+use App\Http\Controllers\Boarding\BoardingBedController;
+use App\Http\Controllers\Boarding\BoardingDashboardController;
+use App\Http\Controllers\Boarding\BoardingDisciplineLogController;
+use App\Http\Controllers\Boarding\BoardingDormitoryController;
+use App\Http\Controllers\Boarding\BoardingHealthLogController;
+use App\Http\Controllers\Boarding\BoardingLeaveRequestController;
+use App\Http\Controllers\Boarding\BoardingReportController;
+use App\Http\Controllers\Boarding\BoardingRollCallController;
+use App\Http\Controllers\Boarding\BoardingRoomController;
+use App\Http\Controllers\Boarding\BoardingStudentAssignmentController;
+use App\Http\Controllers\Boarding\BoardingSupervisorController;
+use App\Http\Controllers\Cashless\CashlessMerchantController;
+use App\Http\Controllers\Cashless\CashlessPosController;
+use App\Http\Controllers\Cashless\CashlessPosSessionController;
+use App\Http\Controllers\Cashless\CashlessProductController;
+use App\Http\Controllers\Cashless\CashlessRefundController;
+use App\Http\Controllers\Cashless\CashlessReportController;
+use App\Http\Controllers\Cashless\CashlessSettlementController;
+use App\Http\Controllers\Cashless\CashlessTopUpController;
+use App\Http\Controllers\Cashless\CashlessWalletController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DeveloperPortal\ApiClientController;
+use App\Http\Controllers\DeveloperPortal\ApiDocumentationPageController;
+use App\Http\Controllers\DeveloperPortal\ApiRequestLogController;
+use App\Http\Controllers\DeveloperPortal\ApiScopeController;
+use App\Http\Controllers\DeveloperPortal\DeveloperPortalDashboardController;
+use App\Http\Controllers\DeveloperPortal\PartnerIntegrationController;
+use App\Http\Controllers\DeveloperPortal\WebhookDeliveryController;
+use App\Http\Controllers\DeveloperPortal\WebhookEndpointController;
+use App\Http\Controllers\Exports\TahfizhExportController;
+use App\Http\Controllers\Finance\FinanceFeeCategoryController;
+use App\Http\Controllers\Finance\FinanceFeeItemController;
+use App\Http\Controllers\Finance\FinanceLedgerController;
+use App\Http\Controllers\Finance\FinanceReportController;
+use App\Http\Controllers\Finance\StudentBillController;
+use App\Http\Controllers\Finance\StudentPaymentController;
+use App\Http\Controllers\Lms\LmsAssignmentController;
+use App\Http\Controllers\Lms\LmsAssignmentSubmissionController;
+use App\Http\Controllers\Lms\LmsCourseController;
+use App\Http\Controllers\Lms\LmsCourseModuleController;
+use App\Http\Controllers\Lms\LmsDashboardController;
+use App\Http\Controllers\Lms\LmsEnrollmentController;
+use App\Http\Controllers\Lms\LmsLessonController;
+use App\Http\Controllers\Lms\LmsLessonResourceController;
+use App\Http\Controllers\Lms\LmsProgressReportController;
+use App\Http\Controllers\Lms\LmsQuizAttemptController;
+use App\Http\Controllers\Lms\LmsQuizController;
+use App\Http\Controllers\Lms\LmsQuizQuestionController;
 use App\Http\Controllers\MasterData\ClassRoomController;
 use App\Http\Controllers\MasterData\ParentController;
 use App\Http\Controllers\MasterData\SchoolController;
 use App\Http\Controllers\MasterData\StudentController;
 use App\Http\Controllers\MasterData\TeacherController;
 use App\Http\Controllers\MasterData\UserController;
-use App\Http\Controllers\Tahfizh\HafalanRecordController;
-use App\Http\Controllers\Reports\MonthlyTahfizhReportController;
-use App\Http\Controllers\Reports\QuarterlyTahfizhReportController;
-use App\Http\Controllers\Reports\TahfizhDashboardController;
-use App\Http\Controllers\Portal\ParentProgressPortalController;
-use App\Http\Controllers\Portal\StudentProgressPortalController;
-use App\Http\Controllers\Notifications\AnnouncementController;
-use App\Http\Controllers\Notifications\NotificationCenterController;
-use App\Http\Controllers\Exports\TahfizhExportController;
-use App\Http\Controllers\Admin\SystemStatusController;
-use App\Http\Controllers\Tahfizh\TahfizhDebtController;
-use App\Http\Controllers\Tahfizh\TahfizhTargetController;
 use App\Http\Controllers\Mutabaah\MutabaahActivityController;
 use App\Http\Controllers\Mutabaah\MutabaahDailyInputController;
 use App\Http\Controllers\Mutabaah\MutabaahReportController;
-use App\Http\Controllers\Portal\ParentMutabaahPortalController;
-use App\Http\Controllers\Portal\StudentMutabaahPortalController;
-use App\Http\Controllers\Attendance\AttendanceQrCardController;
-use App\Http\Controllers\Attendance\AttendanceSessionController;
-use App\Http\Controllers\Attendance\AttendanceScannerController;
-use App\Http\Controllers\Attendance\AttendanceManualRecordController;
-use App\Http\Controllers\Attendance\AttendanceReportController;
+use App\Http\Controllers\Notifications\AnnouncementController;
+use App\Http\Controllers\Notifications\NotificationCenterController;
+use App\Http\Controllers\Portal\ParentAiLearningPortalController;
 use App\Http\Controllers\Portal\ParentAttendancePortalController;
-use App\Http\Controllers\Portal\StudentAttendancePortalController;
-use App\Http\Controllers\Tahsin\TahsinLevelController;
-use App\Http\Controllers\Tahsin\TahsinSkillController;
-use App\Http\Controllers\Tahsin\TahsinStudentProfileController;
-use App\Http\Controllers\Tahsin\TahsinAssessmentController;
-use App\Http\Controllers\Tahsin\TahsinReportController;
-use App\Http\Controllers\Portal\ParentTahsinPortalController;
-use App\Http\Controllers\Portal\StudentTahsinPortalController;
-use App\Http\Controllers\Finance\FinanceFeeCategoryController;
-use App\Http\Controllers\Finance\FinanceFeeItemController;
-use App\Http\Controllers\Finance\StudentBillController;
-use App\Http\Controllers\Finance\StudentPaymentController;
-use App\Http\Controllers\Finance\FinanceLedgerController;
-use App\Http\Controllers\Finance\FinanceReportController;
+use App\Http\Controllers\Portal\ParentBoardingPortalController;
+use App\Http\Controllers\Portal\ParentCashlessPortalController;
 use App\Http\Controllers\Portal\ParentFinancePortalController;
+use App\Http\Controllers\Portal\ParentLmsPortalController;
+use App\Http\Controllers\Portal\ParentMutabaahPortalController;
+use App\Http\Controllers\Portal\ParentProgressPortalController;
+use App\Http\Controllers\Portal\ParentTahsinPortalController;
+use App\Http\Controllers\Portal\StudentAiLearningPortalController;
+use App\Http\Controllers\Portal\StudentAttendancePortalController;
+use App\Http\Controllers\Portal\StudentBoardingPortalController;
+use App\Http\Controllers\Portal\StudentCashlessPortalController;
 use App\Http\Controllers\Portal\StudentFinancePortalController;
-use App\Http\Controllers\SchoolOs\AcademicYearController;
-use App\Http\Controllers\SchoolOs\SchoolOsDashboardController;
-use App\Http\Controllers\SchoolOs\SchoolOsSearchController;
-use App\Http\Controllers\SchoolOs\SchoolSettingController;
-use App\Http\Controllers\SchoolOs\Student360Controller;
-use App\Http\Controllers\SchoolOs\SystemModuleController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Portal\StudentLmsPortalController;
+use App\Http\Controllers\Portal\StudentMutabaahPortalController;
+use App\Http\Controllers\Portal\StudentProgressPortalController;
+use App\Http\Controllers\Portal\StudentTahsinPortalController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Public\TenantPublicLandingController;
+use App\Http\Controllers\Public\TenantPwaManifestController;
 use App\Http\Controllers\QuranMushafController;
 use App\Http\Controllers\QuranPdfController;
-use App\Http\Controllers\Boarding\BoardingDashboardController;
-use App\Http\Controllers\Boarding\BoardingDormitoryController;
-use App\Http\Controllers\Boarding\BoardingRoomController;
-use App\Http\Controllers\Boarding\BoardingBedController;
-use App\Http\Controllers\Boarding\BoardingSupervisorController;
-use App\Http\Controllers\Boarding\BoardingStudentAssignmentController;
-use App\Http\Controllers\Boarding\BoardingLeaveRequestController;
-use App\Http\Controllers\Boarding\BoardingHealthLogController;
-use App\Http\Controllers\Boarding\BoardingDisciplineLogController;
-use App\Http\Controllers\Boarding\BoardingRollCallController;
-use App\Http\Controllers\Boarding\BoardingReportController;
-use App\Http\Controllers\Portal\ParentBoardingPortalController;
-use App\Http\Controllers\Portal\StudentBoardingPortalController;
-use App\Http\Controllers\Tenancy\TenantAuditLogController;
-use App\Http\Controllers\Tenancy\TenantDashboardController;
-use App\Http\Controllers\Tenancy\TenantMembershipController;
-use App\Http\Controllers\Tenancy\TenantModuleController;
-use App\Http\Controllers\Tenancy\TenantSettingController;
-use App\Http\Controllers\Tenancy\TenantSwitcherController;
-use App\Http\Controllers\Cashless\CashlessMerchantController;
-use App\Http\Controllers\Cashless\CashlessProductController;
-use App\Http\Controllers\Cashless\CashlessWalletController;
-use App\Http\Controllers\Cashless\CashlessTopUpController;
-use App\Http\Controllers\Cashless\CashlessPosSessionController;
-use App\Http\Controllers\Cashless\CashlessPosController;
-use App\Http\Controllers\Cashless\CashlessRefundController;
-use App\Http\Controllers\Cashless\CashlessSettlementController;
-use App\Http\Controllers\Cashless\CashlessReportController;
-use App\Http\Controllers\Portal\ParentCashlessPortalController;
-use App\Http\Controllers\Portal\StudentCashlessPortalController;
+use App\Http\Controllers\Reports\MonthlyTahfizhReportController;
+use App\Http\Controllers\Reports\QuarterlyTahfizhReportController;
+use App\Http\Controllers\Reports\TahfizhDashboardController;
 use App\Http\Controllers\SaasOps\CustomerSuccessNoteController;
 use App\Http\Controllers\SaasOps\ImplementationProjectController;
 use App\Http\Controllers\SaasOps\IncidentReportController;
@@ -101,44 +129,36 @@ use App\Http\Controllers\SaasOps\SaasSubscriptionPlanController;
 use App\Http\Controllers\SaasOps\SaasTenantInvoiceController;
 use App\Http\Controllers\SaasOps\SlaPolicyController;
 use App\Http\Controllers\SaasOps\SupportTicketController;
-use App\Http\Controllers\DeveloperPortal\ApiClientController;
-use App\Http\Controllers\DeveloperPortal\ApiDocumentationPageController;
-use App\Http\Controllers\DeveloperPortal\ApiRequestLogController;
-use App\Http\Controllers\DeveloperPortal\ApiScopeController;
-use App\Http\Controllers\DeveloperPortal\DeveloperPortalDashboardController;
-use App\Http\Controllers\DeveloperPortal\PartnerIntegrationController;
-use App\Http\Controllers\DeveloperPortal\WebhookDeliveryController;
-use App\Http\Controllers\DeveloperPortal\WebhookEndpointController;
-use App\Http\Controllers\Analytics\ExecutiveAnalyticsDashboardController;
-use App\Http\Controllers\Analytics\SchoolAnalyticsDashboardController;
-use App\Http\Controllers\Analytics\TenantHealthAnalyticsController;
-use App\Http\Controllers\Analytics\AcademicAnalyticsController;
-use App\Http\Controllers\Analytics\OperationalAnalyticsController;
-use App\Http\Controllers\Analytics\FinanceAnalyticsController;
-use App\Http\Controllers\Analytics\SupportAnalyticsController;
-use App\Http\Controllers\Analytics\MobileApiAnalyticsController;
-use App\Http\Controllers\Analytics\ExecutiveReportController;
-use App\Http\Controllers\Analytics\MetricDictionaryController;
-use App\Http\Controllers\Ai\AiLearningDashboardController;
-use App\Http\Controllers\Ai\AiLearningProfileController;
-use App\Http\Controllers\Ai\AiRecommendationController;
-use App\Http\Controllers\Ai\AiPracticePlanController;
-use App\Http\Controllers\Ai\AiTeacherReviewQueueController;
-use App\Http\Controllers\Ai\AiFeedbackDraftController;
-use App\Http\Controllers\Ai\AiFeatureFlagController;
-use App\Http\Controllers\Ai\AiSafetyEventController;
-use App\Http\Controllers\Portal\ParentAiLearningPortalController;
-use App\Http\Controllers\Portal\StudentAiLearningPortalController;
-use App\Http\Controllers\Billing\SubscriptionPlanController;
-use App\Http\Controllers\Billing\PlanModuleController;
-use App\Http\Controllers\Billing\SchoolSubscriptionController;
-use App\Http\Controllers\Billing\SchoolModuleOverrideController;
-use App\Http\Controllers\Billing\ModuleLockedController;
+use App\Http\Controllers\SchoolOs\AcademicYearController;
+use App\Http\Controllers\SchoolOs\SchoolOsDashboardController;
+use App\Http\Controllers\SchoolOs\SchoolOsSearchController;
+use App\Http\Controllers\SchoolOs\SchoolSettingController;
+use App\Http\Controllers\SchoolOs\Student360Controller;
+use App\Http\Controllers\SchoolOs\SystemModuleController;
+use App\Http\Controllers\Tahfizh\HafalanRecordController;
+use App\Http\Controllers\Tahfizh\TahfizhDebtController;
+use App\Http\Controllers\Tahfizh\TahfizhTargetController;
+use App\Http\Controllers\Tahsin\TahsinAssessmentController;
+use App\Http\Controllers\Tahsin\TahsinLevelController;
+use App\Http\Controllers\Tahsin\TahsinReportController;
+use App\Http\Controllers\Tahsin\TahsinSkillController;
+use App\Http\Controllers\Tahsin\TahsinStudentProfileController;
+use App\Http\Controllers\Tenancy\TenantAuditLogController;
+use App\Http\Controllers\Tenancy\TenantDashboardController;
+use App\Http\Controllers\Tenancy\TenantMembershipController;
+use App\Http\Controllers\Tenancy\TenantModuleController;
+use App\Http\Controllers\Tenancy\TenantSettingController;
+use App\Http\Controllers\Tenancy\TenantSwitcherController;
+use App\Http\Controllers\WhiteLabel\SchoolBrandProfileController;
+use App\Http\Controllers\WhiteLabel\SchoolDomainMappingController;
+use App\Http\Controllers\WhiteLabel\SchoolPwaSettingController;
+use App\Http\Controllers\WhiteLabel\SchoolThemeSettingController;
+use App\Http\Controllers\WhiteLabel\WhiteLabelDashboardController;
+use App\Http\Controllers\WhiteLabel\WhiteLabelPreviewController;
+use Illuminate\Support\Facades\Route;
 
-
-
-Route::get('/', [App\Http\Controllers\Public\TenantPublicLandingController::class, 'index'])->name('tenant.public.landing');
-Route::get('/manifest.json', [App\Http\Controllers\Public\TenantPwaManifestController::class, 'show'])->name('tenant.pwa.manifest');
+Route::get('/', [TenantPublicLandingController::class, 'index'])->name('tenant.public.landing');
+Route::get('/manifest.json', [TenantPwaManifestController::class, 'show'])->name('tenant.pwa.manifest');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
@@ -210,528 +230,527 @@ Route::middleware('auth')->group(function (): void {
 
     Route::middleware(['subscription.active'])->group(function (): void {
         // Tahfizh Setoran Routes
-    Route::middleware(['role:super_admin,admin,teacher', 'module:tahfizh'])
-        ->prefix('tahfizh')
-        ->name('tahfizh.')
-        ->group(function (): void {
-            Route::get('hafalan-records/create', [HafalanRecordController::class, 'create'])
-                ->name('hafalan-records.create');
+        Route::middleware(['role:super_admin,admin,teacher', 'module:tahfizh'])
+            ->prefix('tahfizh')
+            ->name('tahfizh.')
+            ->group(function (): void {
+                Route::get('hafalan-records/create', [HafalanRecordController::class, 'create'])
+                    ->name('hafalan-records.create');
 
-            Route::post('hafalan-records', [HafalanRecordController::class, 'store'])
-                ->name('hafalan-records.store');
+                Route::post('hafalan-records', [HafalanRecordController::class, 'store'])
+                    ->name('hafalan-records.store');
+            });
+
+        Route::middleware(['role:super_admin,admin,teacher,principal', 'module:tahfizh'])
+            ->prefix('tahfizh')
+            ->name('tahfizh.')
+            ->group(function (): void {
+                Route::get('hafalan-records', [HafalanRecordController::class, 'index'])
+                    ->name('hafalan-records.index');
+
+                Route::get('hafalan-records/{hafalan_record}', [HafalanRecordController::class, 'show'])
+                    ->name('hafalan-records.show');
+            });
+
+        Route::middleware(['role:super_admin,admin,teacher', 'module:tahfizh'])
+            ->prefix('tahfizh')
+            ->name('tahfizh.')
+            ->group(function (): void {
+                Route::get('hafalan-records/{hafalan_record}/edit', [HafalanRecordController::class, 'edit'])
+                    ->name('hafalan-records.edit');
+
+                Route::put('hafalan-records/{hafalan_record}', [HafalanRecordController::class, 'update'])
+                    ->name('hafalan-records.update');
+
+                Route::delete('hafalan-records/{hafalan_record}', [HafalanRecordController::class, 'destroy'])
+                    ->name('hafalan-records.destroy');
+            });
+
+        // Tahfizh Targets and Debts Routes
+        Route::middleware(['role:super_admin,admin', 'module:tahfizh'])
+            ->prefix('tahfizh')
+            ->name('tahfizh.')
+            ->group(function (): void {
+                Route::get('targets/create', [TahfizhTargetController::class, 'create'])
+                    ->name('targets.create');
+
+                Route::post('targets', [TahfizhTargetController::class, 'store'])
+                    ->name('targets.store');
+
+                Route::get('targets/{target}/edit', [TahfizhTargetController::class, 'edit'])
+                    ->name('targets.edit');
+
+                Route::put('targets/{target}', [TahfizhTargetController::class, 'update'])
+                    ->name('targets.update');
+
+                Route::delete('targets/{target}', [TahfizhTargetController::class, 'destroy'])
+                    ->name('targets.destroy');
+
+                Route::post('debts/calculate', [TahfizhDebtController::class, 'calculate'])
+                    ->name('debts.calculate');
+            });
+
+        Route::middleware(['role:super_admin,admin,principal,teacher', 'module:tahfizh'])
+            ->prefix('tahfizh')
+            ->name('tahfizh.')
+            ->group(function (): void {
+                Route::get('targets', [TahfizhTargetController::class, 'index'])
+                    ->name('targets.index');
+
+                Route::get('targets/{target}', [TahfizhTargetController::class, 'show'])
+                    ->name('targets.show');
+
+                Route::get('debts', [TahfizhDebtController::class, 'index'])
+                    ->name('debts.index');
+
+                Route::get('debts/{debt}', [TahfizhDebtController::class, 'show'])
+                    ->name('debts.show');
+            });
+
+        // Tahfizh Reports Routes
+        Route::middleware(['role:super_admin,admin,principal,teacher', 'module:tahfizh'])
+            ->prefix('reports/tahfizh')
+            ->name('reports.tahfizh.')
+            ->group(function (): void {
+                Route::get('dashboard', TahfizhDashboardController::class)
+                    ->name('dashboard');
+
+                Route::get('monthly', [MonthlyTahfizhReportController::class, 'index'])
+                    ->name('monthly.index');
+
+                Route::get('monthly/students/{student}', [MonthlyTahfizhReportController::class, 'show'])
+                    ->name('monthly.show');
+
+                Route::get('quarterly', [QuarterlyTahfizhReportController::class, 'index'])
+                    ->name('quarterly.index');
+
+                Route::get('quarterly/students/{student}', [QuarterlyTahfizhReportController::class, 'show'])
+                    ->name('quarterly.show');
+            });
+
+        // Parent Portal Routes
+        Route::middleware(['role:parent', 'module:tahfizh'])
+            ->prefix('portal/parent')
+            ->name('portal.parent.')
+            ->group(function (): void {
+                Route::get('dashboard', [ParentProgressPortalController::class, 'dashboard'])
+                    ->name('dashboard');
+
+                Route::get('children/{student}', [ParentProgressPortalController::class, 'progress'])
+                    ->name('children.progress');
+
+                Route::get('children/{student}/records', [ParentProgressPortalController::class, 'records'])
+                    ->name('children.records');
+
+                Route::get('children/{student}/monthly', [ParentProgressPortalController::class, 'monthly'])
+                    ->name('children.monthly');
+            });
+
+        // Student Portal Routes
+        Route::middleware(['role:student', 'module:tahfizh'])
+            ->prefix('portal/student')
+            ->name('portal.student.')
+            ->group(function (): void {
+                Route::get('dashboard', [StudentProgressPortalController::class, 'dashboard'])
+                    ->name('dashboard');
+
+                Route::get('records', [StudentProgressPortalController::class, 'records'])
+                    ->name('records');
+
+                Route::get('monthly', [StudentProgressPortalController::class, 'monthly'])
+                    ->name('monthly');
+            });
+
+        // Notification Center Routes
+        Route::prefix('notifications')
+            ->name('notifications.')
+            ->middleware('module:notifications')
+            ->group(function (): void {
+                Route::get('/', [NotificationCenterController::class, 'index'])
+                    ->name('index');
+
+                Route::post('mark-all-as-read', [NotificationCenterController::class, 'markAllAsRead'])
+                    ->name('mark-all-as-read');
+
+                Route::get('{notification}', [NotificationCenterController::class, 'show'])
+                    ->name('show');
+
+                Route::patch('{notification}/mark-as-read', [NotificationCenterController::class, 'markAsRead'])
+                    ->name('mark-as-read');
+
+                Route::delete('{notification}', [NotificationCenterController::class, 'destroy'])
+                    ->name('destroy');
+            });
+
+        // Announcement Routes
+        Route::middleware(['role:super_admin,admin', 'module:notifications'])
+            ->prefix('notifications/announcements')
+            ->name('notifications.announcements.')
+            ->group(function (): void {
+                Route::get('create', [AnnouncementController::class, 'create'])
+                    ->name('create');
+
+                Route::post('/', [AnnouncementController::class, 'store'])
+                    ->name('store');
+            });
+
+        // Export Routes
+        Route::middleware(['role:super_admin,admin,principal,teacher', 'module:exports'])
+            ->prefix('exports/tahfizh')
+            ->name('exports.tahfizh.')
+            ->group(function (): void {
+                Route::get('/', [TahfizhExportController::class, 'index'])
+                    ->name('index');
+
+                Route::get('monthly/excel', [TahfizhExportController::class, 'monthlyExcel'])
+                    ->name('monthly.excel');
+
+                Route::get('monthly/pdf', [TahfizhExportController::class, 'monthlyPdf'])
+                    ->name('monthly.pdf');
+
+                Route::get('quarterly/excel', [TahfizhExportController::class, 'quarterlyExcel'])
+                    ->name('quarterly.excel');
+
+                Route::get('quarterly/pdf', [TahfizhExportController::class, 'quarterlyPdf'])
+                    ->name('quarterly.pdf');
+
+                Route::get('dashboard/excel', [TahfizhExportController::class, 'dashboardExcel'])
+                    ->name('dashboard.excel');
+
+                Route::get('dashboard/pdf', [TahfizhExportController::class, 'dashboardPdf'])
+                    ->name('dashboard.pdf');
+            });
+
+        // System Status Routes
+        Route::middleware('role:super_admin,admin')
+            ->prefix('admin/system')
+            ->name('admin.system.')
+            ->group(function (): void {
+                Route::get('status', SystemStatusController::class)
+                    ->name('status');
+            });
+
+        // Mutabaah Routes
+        Route::middleware(['role:super_admin,admin,teacher,principal', 'module:mutabaah'])
+            ->prefix('mutabaah')
+            ->name('mutabaah.')
+            ->group(function (): void {
+                Route::get('reports/dashboard', [MutabaahReportController::class, 'dashboard'])
+                    ->name('reports.dashboard');
+
+                Route::get('reports/student/{student}', [MutabaahReportController::class, 'studentReport'])
+                    ->name('reports.student');
+
+                Route::get('daily', [MutabaahDailyInputController::class, 'index'])
+                    ->name('daily.index');
+
+                Route::post('daily', [MutabaahDailyInputController::class, 'store'])
+                    ->name('daily.store');
+            });
+
+        Route::middleware(['role:super_admin,admin', 'module:mutabaah'])
+            ->prefix('mutabaah')
+            ->name('mutabaah.')
+            ->group(function (): void {
+                Route::resource('activities', MutabaahActivityController::class);
+            });
+
+        // Parent Mutabaah Portal Route
+        Route::get('/portal/parent/mutabaah/{student}', [ParentMutabaahPortalController::class, 'show'])
+            ->middleware(['role:parent', 'module:mutabaah'])
+            ->name('portal.parent.mutabaah');
+
+        // Student Mutabaah Portal Route
+        Route::get('/portal/student/mutabaah', [StudentMutabaahPortalController::class, 'index'])
+            ->middleware(['role:student', 'module:mutabaah'])
+            ->name('portal.student.mutabaah');
+
+        // Attendance Routes
+        Route::prefix('attendance')
+            ->name('attendance.')
+            ->middleware(['role:super_admin,admin,admin_sekolah,kepala_sekolah,principal,teacher,guru,guru_tahfidz', 'module:attendance'])
+            ->group(function (): void {
+                Route::get('/qr-cards', [AttendanceQrCardController::class, 'index'])
+                    ->name('qr-cards.index');
+
+                Route::get('/qr-cards/print', [AttendanceQrCardController::class, 'print'])
+                    ->name('qr-cards.print');
+
+                Route::post('/qr-cards/{student}/rotate', [AttendanceQrCardController::class, 'rotate'])
+                    ->name('qr-cards.rotate');
+
+                Route::get('/scanner', [AttendanceScannerController::class, 'index'])
+                    ->name('scanner.index');
+
+                Route::post('/scanner/scan', [AttendanceScannerController::class, 'scan'])
+                    ->name('scanner.scan');
+
+                Route::get('/manual/create', [AttendanceManualRecordController::class, 'create'])
+                    ->name('manual.create');
+
+                Route::post('/manual', [AttendanceManualRecordController::class, 'store'])
+                    ->name('manual.store');
+
+                Route::get('/reports/dashboard', [AttendanceReportController::class, 'dashboard'])
+                    ->name('reports.dashboard');
+
+                Route::resource('sessions', AttendanceSessionController::class);
+            });
+
+        // Parent Attendance Portal Route
+        Route::get('/portal/parent/attendance', [ParentAttendancePortalController::class, 'index'])
+            ->middleware(['role:parent', 'module:attendance'])
+            ->name('portal.parent.attendance');
+
+        // Student Attendance Portal Route
+        Route::get('/portal/student/attendance', [StudentAttendancePortalController::class, 'index'])
+            ->middleware(['role:student', 'module:attendance'])
+            ->name('portal.student.attendance');
+
+        // Tahsin Management Routes
+        Route::prefix('tahsin')
+            ->name('tahsin.')
+            ->middleware(['role:super_admin,admin,admin_sekolah,kepala_sekolah,principal,teacher,guru,guru_tahfidz', 'module:tahsin'])
+            ->group(function (): void {
+                Route::get('/reports/dashboard', [TahsinReportController::class, 'dashboard'])
+                    ->name('reports.dashboard');
+
+                Route::get('/profiles', [TahsinStudentProfileController::class, 'index'])
+                    ->name('profiles.index');
+
+                Route::get('/profiles/{student}', [TahsinStudentProfileController::class, 'show'])
+                    ->name('profiles.show');
+
+                Route::get('/profiles/{student}/edit', [TahsinStudentProfileController::class, 'edit'])
+                    ->name('profiles.edit');
+
+                Route::put('/profiles/{student}', [TahsinStudentProfileController::class, 'update'])
+                    ->name('profiles.update');
+
+                Route::get('/assessments', [TahsinAssessmentController::class, 'index'])
+                    ->name('assessments.index');
+
+                Route::get('/assessments/create', [TahsinAssessmentController::class, 'create'])
+                    ->name('assessments.create');
+
+                Route::post('/assessments', [TahsinAssessmentController::class, 'store'])
+                    ->name('assessments.store');
+
+                Route::get('/assessments/{assessment}', [TahsinAssessmentController::class, 'show'])
+                    ->name('assessments.show');
+
+                Route::resource('levels', TahsinLevelController::class);
+                Route::resource('skills', TahsinSkillController::class);
+            });
+
+        // Parent Tahsin Portal Route
+        Route::get('/portal/parent/tahsin', [ParentTahsinPortalController::class, 'index'])
+            ->middleware(['role:parent', 'module:tahsin'])
+            ->name('portal.parent.tahsin');
+
+        // Student Tahsin Portal Route
+        Route::get('/portal/student/tahsin', [StudentTahsinPortalController::class, 'index'])
+            ->middleware(['role:student', 'module:tahsin'])
+            ->name('portal.student.tahsin');
+
+        // Student Finance Ledger Routes
+        Route::prefix('finance')
+            ->name('finance.')
+            ->middleware(['role:super_admin,admin,principal,finance', 'module:finance'])
+            ->group(function (): void {
+                Route::get('/reports/dashboard', [FinanceReportController::class, 'dashboard'])
+                    ->name('reports.dashboard');
+
+                Route::get('/bills', [StudentBillController::class, 'index'])
+                    ->name('bills.index');
+
+                Route::get('/bills/create', [StudentBillController::class, 'create'])
+                    ->name('bills.create');
+
+                Route::post('/bills', [StudentBillController::class, 'store'])
+                    ->name('bills.store');
+
+                Route::get('/bills/{bill}', [StudentBillController::class, 'show'])
+                    ->name('bills.show');
+
+                Route::patch('/bills/{bill}/void', [StudentBillController::class, 'void'])
+                    ->name('bills.void');
+
+                Route::get('/payments', [StudentPaymentController::class, 'index'])
+                    ->name('payments.index');
+
+                Route::get('/payments/create', [StudentPaymentController::class, 'create'])
+                    ->name('payments.create');
+
+                Route::post('/payments', [StudentPaymentController::class, 'store'])
+                    ->name('payments.store');
+
+                Route::get('/payments/{payment}', [StudentPaymentController::class, 'show'])
+                    ->name('payments.show');
+
+                Route::patch('/payments/{payment}/void', [StudentPaymentController::class, 'void'])
+                    ->name('payments.void');
+
+                Route::get('/ledgers/students/{student}', [FinanceLedgerController::class, 'student'])
+                    ->name('ledgers.student');
+
+                Route::resource('fee-categories', FinanceFeeCategoryController::class);
+                Route::resource('fee-items', FinanceFeeItemController::class);
+            });
+
+        Route::get('/portal/parent/finance', [ParentFinancePortalController::class, 'index'])
+            ->middleware(['role:parent', 'module:finance'])
+            ->name('portal.parent.finance');
+
+        Route::get('/portal/parent/cashless', [ParentCashlessPortalController::class, 'index'])
+            ->middleware(['role:parent', 'module:cashless'])
+            ->name('portal.parent.cashless');
+
+        Route::put('/portal/parent/cashless/{wallet}', [ParentCashlessPortalController::class, 'update'])
+            ->middleware(['role:parent', 'module:cashless'])
+            ->name('portal.parent.cashless.update');
+
+        Route::get('/portal/student/finance', [StudentFinancePortalController::class, 'index'])
+            ->middleware(['role:student', 'module:finance'])
+            ->name('portal.student.finance');
+
+        Route::get('/portal/student/cashless', StudentCashlessPortalController::class)
+            ->middleware(['role:student', 'module:cashless'])
+            ->name('portal.student.cashless');
+
+        Route::prefix('schoolos')
+            ->name('schoolos.')
+            ->middleware('module:schoolos')
+            ->group(function (): void {
+                Route::get('/', [SchoolOsDashboardController::class, 'index'])
+                    ->name('dashboard');
+
+                Route::get('/search', SchoolOsSearchController::class)
+                    ->name('search');
+
+                Route::get('/students/{student}/360', [Student360Controller::class, 'show'])
+                    ->name('students.show');
+
+                Route::resource('academic-years', AcademicYearController::class)
+                    ->except(['show', 'destroy']);
+
+                Route::get('/settings', [SchoolSettingController::class, 'index'])
+                    ->name('settings.index');
+
+                Route::patch('/settings', [SchoolSettingController::class, 'update'])
+                    ->name('settings.update');
+
+                Route::get('/modules', [SystemModuleController::class, 'index'])
+                    ->name('modules.index');
+
+                Route::patch('/modules/{systemModule}', [SystemModuleController::class, 'update'])
+                    ->name('modules.update');
+            });
+
+        // Boarding School Management System Routes
+        Route::middleware(['role:super_admin,admin,principal,boarding_supervisor', 'module:boarding'])->prefix('boarding')->name('boarding.')->group(function (): void {
+            Route::get('/', BoardingDashboardController::class)->name('dashboard');
+
+            // Master Data CRUD
+            Route::resource('dormitories', BoardingDormitoryController::class);
+            Route::resource('rooms', BoardingRoomController::class);
+            Route::resource('beds', BoardingBedController::class);
+            Route::resource('supervisors', BoardingSupervisorController::class)->parameters([
+                'supervisors' => 'supervisor',
+            ]);
+
+            // Student Assignments
+            Route::get('assignments', [BoardingStudentAssignmentController::class, 'index'])->name('assignments.index');
+            Route::get('assignments/create', [BoardingStudentAssignmentController::class, 'create'])->name('assignments.create');
+            Route::post('assignments', [BoardingStudentAssignmentController::class, 'store'])->name('assignments.store');
+            Route::get('assignments/{assignment}', [BoardingStudentAssignmentController::class, 'show'])->name('assignments.show');
+            Route::put('assignments/{assignment}/end', [BoardingStudentAssignmentController::class, 'end'])->name('assignments.end');
+            Route::post('assignments/{assignment}/move', [BoardingStudentAssignmentController::class, 'move'])->name('assignments.move');
+
+            // Leave Requests
+            Route::get('leave-requests', [BoardingLeaveRequestController::class, 'index'])->name('leave-requests.index');
+            Route::get('leave-requests/create', [BoardingLeaveRequestController::class, 'create'])->name('leave-requests.create');
+            Route::post('leave-requests', [BoardingLeaveRequestController::class, 'store'])->name('leave-requests.store');
+            Route::get('leave-requests/{leaveRequest}', [BoardingLeaveRequestController::class, 'show'])->name('leave-requests.show');
+            Route::post('leave-requests/{leaveRequest}/approve', [BoardingLeaveRequestController::class, 'approve'])->name('leave-requests.approve');
+            Route::post('leave-requests/{leaveRequest}/reject', [BoardingLeaveRequestController::class, 'reject'])->name('leave-requests.reject');
+            Route::post('leave-requests/{leaveRequest}/mark-returned', [BoardingLeaveRequestController::class, 'markReturned'])->name('leave-requests.mark-returned');
+            Route::post('leave-requests/{leaveRequest}/cancel', [BoardingLeaveRequestController::class, 'cancel'])->name('leave-requests.cancel');
+
+            // Health Logs
+            Route::get('health-logs', [BoardingHealthLogController::class, 'index'])->name('health-logs.index');
+            Route::get('health-logs/create', [BoardingHealthLogController::class, 'create'])->name('health-logs.create');
+            Route::post('health-logs', [BoardingHealthLogController::class, 'store'])->name('health-logs.store');
+            Route::get('health-logs/{healthLog}', [BoardingHealthLogController::class, 'show'])->name('health-logs.show');
+
+            // Discipline Logs
+            Route::get('discipline-logs', [BoardingDisciplineLogController::class, 'index'])->name('discipline-logs.index');
+            Route::get('discipline-logs/create', [BoardingDisciplineLogController::class, 'create'])->name('discipline-logs.create');
+            Route::post('discipline-logs', [BoardingDisciplineLogController::class, 'store'])->name('discipline-logs.store');
+            Route::get('discipline-logs/{disciplineLog}', [BoardingDisciplineLogController::class, 'show'])->name('discipline-logs.show');
+
+            // Roll Calls
+            Route::get('roll-calls', [BoardingRollCallController::class, 'index'])->name('roll-calls.index');
+            Route::get('roll-calls/create', [BoardingRollCallController::class, 'create'])->name('roll-calls.create');
+            Route::post('roll-calls', [BoardingRollCallController::class, 'store'])->name('roll-calls.store');
+            Route::get('roll-calls/{rollCall}', [BoardingRollCallController::class, 'show'])->name('roll-calls.show');
+            Route::post('roll-calls/{rollCall}/records', [BoardingRollCallController::class, 'storeRecords'])->name('roll-calls.records.store');
+            Route::post('roll-calls/{rollCall}/close', [BoardingRollCallController::class, 'close'])->name('roll-calls.close');
+
+            // Reports
+            Route::get('reports', BoardingReportController::class)->name('reports.dashboard');
         });
 
-    Route::middleware(['role:super_admin,admin,teacher,principal', 'module:tahfizh'])
-        ->prefix('tahfizh')
-        ->name('tahfizh.')
-        ->group(function (): void {
-            Route::get('hafalan-records', [HafalanRecordController::class, 'index'])
-                ->name('hafalan-records.index');
+        // Parent Boarding Portal Route
+        Route::get('/portal/parent/boarding', ParentBoardingPortalController::class)
+            ->middleware(['role:parent', 'module:boarding'])
+            ->name('portal.parent.boarding');
 
-            Route::get('hafalan-records/{hafalan_record}', [HafalanRecordController::class, 'show'])
-                ->name('hafalan-records.show');
+        // Student Boarding Portal Route
+        Route::get('/portal/student/boarding', StudentBoardingPortalController::class)
+            ->middleware(['role:student', 'module:boarding'])
+            ->name('portal.student.boarding');
+
+        // Phase 24 — LMS Lite & Learning Content Routes
+        Route::middleware(['auth', 'role:super_admin,admin,principal,teacher', 'module:lms'])->prefix('lms')->name('lms.')->group(function (): void {
+            Route::get('/', [LmsDashboardController::class, 'index'])->name('dashboard');
+            Route::resource('courses', LmsCourseController::class);
+            Route::resource('modules', LmsCourseModuleController::class);
+            Route::post('modules/reorder', [LmsCourseModuleController::class, 'reorder'])->name('modules.reorder');
+            Route::resource('lessons', LmsLessonController::class);
+            Route::post('lessons/reorder', [LmsLessonController::class, 'reorder'])->name('lessons.reorder');
+            Route::resource('resources', LmsLessonResourceController::class);
+            Route::resource('enrollments', LmsEnrollmentController::class);
+            Route::resource('assignments', LmsAssignmentController::class);
+            Route::post('submissions/{submission}/grade', [LmsAssignmentSubmissionController::class, 'grade'])->name('submissions.grade');
+            Route::resource('quizzes', LmsQuizController::class);
+            Route::resource('quizzes.questions', LmsQuizQuestionController::class);
+            Route::get('attempts/{attempt}', [LmsQuizAttemptController::class, 'show'])->name('attempts.show');
+            Route::get('reports', [LmsProgressReportController::class, 'index'])->name('reports.index');
         });
 
-    Route::middleware(['role:super_admin,admin,teacher', 'module:tahfizh'])
-        ->prefix('tahfizh')
-        ->name('tahfizh.')
-        ->group(function (): void {
-            Route::get('hafalan-records/{hafalan_record}/edit', [HafalanRecordController::class, 'edit'])
-                ->name('hafalan-records.edit');
+        // LMS Secure Private File Access Route (authenticated users only)
+        Route::get('/lms/private-file/{type}/{id}', [LmsLessonResourceController::class, 'downloadPrivateFile'])
+            ->middleware(['auth', 'module:lms'])
+            ->name('lms.private-file.download');
 
-            Route::put('hafalan-records/{hafalan_record}', [HafalanRecordController::class, 'update'])
-                ->name('hafalan-records.update');
-
-            Route::delete('hafalan-records/{hafalan_record}', [HafalanRecordController::class, 'destroy'])
-                ->name('hafalan-records.destroy');
+        // Portal Student LMS Routes
+        Route::middleware(['auth', 'role:student', 'module:lms'])->prefix('portal/student/lms')->name('portal.student.lms.')->group(function (): void {
+            Route::get('/', [StudentLmsPortalController::class, 'index'])->name('index');
+            Route::get('/course/{course}', [StudentLmsPortalController::class, 'showCourse'])->name('course.show');
+            Route::get('/lesson/{lesson}', [StudentLmsPortalController::class, 'showLesson'])->name('lesson.show');
+            Route::post('/lesson/{lesson}/complete', [StudentLmsPortalController::class, 'completeLesson'])->name('lesson.complete');
+            Route::post('/assignment/{assignment}/submit', [StudentLmsPortalController::class, 'submitAssignment'])->name('assignment.submit');
+            Route::post('/quiz/{quiz}/start', [StudentLmsPortalController::class, 'startQuiz'])->name('quiz.start');
+            Route::get('/quiz/attempt/{attempt}', [StudentLmsPortalController::class, 'showQuizAttempt'])->name('quiz.attempt.show');
+            Route::post('/quiz/attempt/{attempt}/submit', [StudentLmsPortalController::class, 'submitQuizAttempt'])->name('quiz.attempt.submit');
         });
 
-    // Tahfizh Targets and Debts Routes
-    Route::middleware(['role:super_admin,admin', 'module:tahfizh'])
-        ->prefix('tahfizh')
-        ->name('tahfizh.')
-        ->group(function (): void {
-            Route::get('targets/create', [TahfizhTargetController::class, 'create'])
-                ->name('targets.create');
-
-            Route::post('targets', [TahfizhTargetController::class, 'store'])
-                ->name('targets.store');
-
-            Route::get('targets/{target}/edit', [TahfizhTargetController::class, 'edit'])
-                ->name('targets.edit');
-
-            Route::put('targets/{target}', [TahfizhTargetController::class, 'update'])
-                ->name('targets.update');
-
-            Route::delete('targets/{target}', [TahfizhTargetController::class, 'destroy'])
-                ->name('targets.destroy');
-
-            Route::post('debts/calculate', [TahfizhDebtController::class, 'calculate'])
-                ->name('debts.calculate');
+        // Portal Parent LMS Routes
+        Route::middleware(['auth', 'role:parent', 'module:lms'])->prefix('portal/parent/lms')->name('portal.parent.lms.')->group(function (): void {
+            Route::get('/', [ParentLmsPortalController::class, 'index'])->name('index');
+            Route::get('/student/{student}/course/{course}', [ParentLmsPortalController::class, 'showChildProgress'])->name('child.course.show');
         });
-
-    Route::middleware(['role:super_admin,admin,principal,teacher', 'module:tahfizh'])
-        ->prefix('tahfizh')
-        ->name('tahfizh.')
-        ->group(function (): void {
-            Route::get('targets', [TahfizhTargetController::class, 'index'])
-                ->name('targets.index');
-
-            Route::get('targets/{target}', [TahfizhTargetController::class, 'show'])
-                ->name('targets.show');
-
-            Route::get('debts', [TahfizhDebtController::class, 'index'])
-                ->name('debts.index');
-
-            Route::get('debts/{debt}', [TahfizhDebtController::class, 'show'])
-                ->name('debts.show');
-        });
-
-    // Tahfizh Reports Routes
-    Route::middleware(['role:super_admin,admin,principal,teacher', 'module:tahfizh'])
-        ->prefix('reports/tahfizh')
-        ->name('reports.tahfizh.')
-        ->group(function (): void {
-            Route::get('dashboard', TahfizhDashboardController::class)
-                ->name('dashboard');
-
-            Route::get('monthly', [MonthlyTahfizhReportController::class, 'index'])
-                ->name('monthly.index');
-
-            Route::get('monthly/students/{student}', [MonthlyTahfizhReportController::class, 'show'])
-                ->name('monthly.show');
-
-            Route::get('quarterly', [QuarterlyTahfizhReportController::class, 'index'])
-                ->name('quarterly.index');
-
-            Route::get('quarterly/students/{student}', [QuarterlyTahfizhReportController::class, 'show'])
-                ->name('quarterly.show');
-        });
-
-    // Parent Portal Routes
-    Route::middleware(['role:parent', 'module:tahfizh'])
-        ->prefix('portal/parent')
-        ->name('portal.parent.')
-        ->group(function (): void {
-            Route::get('dashboard', [ParentProgressPortalController::class, 'dashboard'])
-                ->name('dashboard');
-
-            Route::get('children/{student}', [ParentProgressPortalController::class, 'progress'])
-                ->name('children.progress');
-
-            Route::get('children/{student}/records', [ParentProgressPortalController::class, 'records'])
-                ->name('children.records');
-
-            Route::get('children/{student}/monthly', [ParentProgressPortalController::class, 'monthly'])
-                ->name('children.monthly');
-        });
-
-    // Student Portal Routes
-    Route::middleware(['role:student', 'module:tahfizh'])
-        ->prefix('portal/student')
-        ->name('portal.student.')
-        ->group(function (): void {
-            Route::get('dashboard', [StudentProgressPortalController::class, 'dashboard'])
-                ->name('dashboard');
-
-            Route::get('records', [StudentProgressPortalController::class, 'records'])
-                ->name('records');
-
-            Route::get('monthly', [StudentProgressPortalController::class, 'monthly'])
-                ->name('monthly');
-        });
-
-    // Notification Center Routes
-    Route::prefix('notifications')
-        ->name('notifications.')
-        ->middleware('module:notifications')
-        ->group(function (): void {
-            Route::get('/', [NotificationCenterController::class, 'index'])
-                ->name('index');
-
-            Route::post('mark-all-as-read', [NotificationCenterController::class, 'markAllAsRead'])
-                ->name('mark-all-as-read');
-
-            Route::get('{notification}', [NotificationCenterController::class, 'show'])
-                ->name('show');
-
-            Route::patch('{notification}/mark-as-read', [NotificationCenterController::class, 'markAsRead'])
-                ->name('mark-as-read');
-
-            Route::delete('{notification}', [NotificationCenterController::class, 'destroy'])
-                ->name('destroy');
-        });
-
-// Announcement Routes
-    Route::middleware(['role:super_admin,admin', 'module:notifications'])
-        ->prefix('notifications/announcements')
-        ->name('notifications.announcements.')
-        ->group(function (): void {
-            Route::get('create', [AnnouncementController::class, 'create'])
-                ->name('create');
-
-            Route::post('/', [AnnouncementController::class, 'store'])
-                ->name('store');
-        });
-
-    // Export Routes
-    Route::middleware(['role:super_admin,admin,principal,teacher', 'module:exports'])
-        ->prefix('exports/tahfizh')
-        ->name('exports.tahfizh.')
-        ->group(function (): void {
-            Route::get('/', [TahfizhExportController::class, 'index'])
-                ->name('index');
-
-            Route::get('monthly/excel', [TahfizhExportController::class, 'monthlyExcel'])
-                ->name('monthly.excel');
-
-            Route::get('monthly/pdf', [TahfizhExportController::class, 'monthlyPdf'])
-                ->name('monthly.pdf');
-
-            Route::get('quarterly/excel', [TahfizhExportController::class, 'quarterlyExcel'])
-                ->name('quarterly.excel');
-
-            Route::get('quarterly/pdf', [TahfizhExportController::class, 'quarterlyPdf'])
-                ->name('quarterly.pdf');
-
-            Route::get('dashboard/excel', [TahfizhExportController::class, 'dashboardExcel'])
-                ->name('dashboard.excel');
-
-            Route::get('dashboard/pdf', [TahfizhExportController::class, 'dashboardPdf'])
-                ->name('dashboard.pdf');
-        });
-
-    // System Status Routes
-    Route::middleware('role:super_admin,admin')
-        ->prefix('admin/system')
-        ->name('admin.system.')
-        ->group(function (): void {
-            Route::get('status', SystemStatusController::class)
-                ->name('status');
-        });
-
-    // Mutabaah Routes
-    Route::middleware(['role:super_admin,admin,teacher,principal', 'module:mutabaah'])
-        ->prefix('mutabaah')
-        ->name('mutabaah.')
-        ->group(function (): void {
-            Route::get('reports/dashboard', [MutabaahReportController::class, 'dashboard'])
-                ->name('reports.dashboard');
-
-            Route::get('reports/student/{student}', [MutabaahReportController::class, 'studentReport'])
-                ->name('reports.student');
-
-            Route::get('daily', [MutabaahDailyInputController::class, 'index'])
-                ->name('daily.index');
-
-            Route::post('daily', [MutabaahDailyInputController::class, 'store'])
-                ->name('daily.store');
-        });
-
-    Route::middleware(['role:super_admin,admin', 'module:mutabaah'])
-        ->prefix('mutabaah')
-        ->name('mutabaah.')
-        ->group(function (): void {
-            Route::resource('activities', MutabaahActivityController::class);
-        });
-
-    // Parent Mutabaah Portal Route
-    Route::get('/portal/parent/mutabaah/{student}', [ParentMutabaahPortalController::class, 'show'])
-        ->middleware(['role:parent', 'module:mutabaah'])
-        ->name('portal.parent.mutabaah');
-
-    // Student Mutabaah Portal Route
-    Route::get('/portal/student/mutabaah', [StudentMutabaahPortalController::class, 'index'])
-        ->middleware(['role:student', 'module:mutabaah'])
-        ->name('portal.student.mutabaah');
-
-    // Attendance Routes
-    Route::prefix('attendance')
-        ->name('attendance.')
-        ->middleware(['role:super_admin,admin,admin_sekolah,kepala_sekolah,principal,teacher,guru,guru_tahfidz', 'module:attendance'])
-        ->group(function (): void {
-            Route::get('/qr-cards', [AttendanceQrCardController::class, 'index'])
-                ->name('qr-cards.index');
-
-            Route::get('/qr-cards/print', [AttendanceQrCardController::class, 'print'])
-                ->name('qr-cards.print');
-
-            Route::post('/qr-cards/{student}/rotate', [AttendanceQrCardController::class, 'rotate'])
-                ->name('qr-cards.rotate');
-
-            Route::get('/scanner', [AttendanceScannerController::class, 'index'])
-                ->name('scanner.index');
-
-            Route::post('/scanner/scan', [AttendanceScannerController::class, 'scan'])
-                ->name('scanner.scan');
-
-            Route::get('/manual/create', [AttendanceManualRecordController::class, 'create'])
-                ->name('manual.create');
-
-            Route::post('/manual', [AttendanceManualRecordController::class, 'store'])
-                ->name('manual.store');
-
-            Route::get('/reports/dashboard', [AttendanceReportController::class, 'dashboard'])
-                ->name('reports.dashboard');
-
-            Route::resource('sessions', AttendanceSessionController::class);
-        });
-
-    // Parent Attendance Portal Route
-    Route::get('/portal/parent/attendance', [ParentAttendancePortalController::class, 'index'])
-        ->middleware(['role:parent', 'module:attendance'])
-        ->name('portal.parent.attendance');
-
-    // Student Attendance Portal Route
-    Route::get('/portal/student/attendance', [StudentAttendancePortalController::class, 'index'])
-        ->middleware(['role:student', 'module:attendance'])
-        ->name('portal.student.attendance');
-
-    // Tahsin Management Routes
-    Route::prefix('tahsin')
-        ->name('tahsin.')
-        ->middleware(['role:super_admin,admin,admin_sekolah,kepala_sekolah,principal,teacher,guru,guru_tahfidz', 'module:tahsin'])
-        ->group(function (): void {
-            Route::get('/reports/dashboard', [TahsinReportController::class, 'dashboard'])
-                ->name('reports.dashboard');
-
-            Route::get('/profiles', [TahsinStudentProfileController::class, 'index'])
-                ->name('profiles.index');
-
-            Route::get('/profiles/{student}', [TahsinStudentProfileController::class, 'show'])
-                ->name('profiles.show');
-
-            Route::get('/profiles/{student}/edit', [TahsinStudentProfileController::class, 'edit'])
-                ->name('profiles.edit');
-
-            Route::put('/profiles/{student}', [TahsinStudentProfileController::class, 'update'])
-                ->name('profiles.update');
-
-            Route::get('/assessments', [TahsinAssessmentController::class, 'index'])
-                ->name('assessments.index');
-
-            Route::get('/assessments/create', [TahsinAssessmentController::class, 'create'])
-                ->name('assessments.create');
-
-            Route::post('/assessments', [TahsinAssessmentController::class, 'store'])
-                ->name('assessments.store');
-
-            Route::get('/assessments/{assessment}', [TahsinAssessmentController::class, 'show'])
-                ->name('assessments.show');
-
-            Route::resource('levels', TahsinLevelController::class);
-            Route::resource('skills', TahsinSkillController::class);
-        });
-
-    // Parent Tahsin Portal Route
-    Route::get('/portal/parent/tahsin', [ParentTahsinPortalController::class, 'index'])
-        ->middleware(['role:parent', 'module:tahsin'])
-        ->name('portal.parent.tahsin');
-
-    // Student Tahsin Portal Route
-    Route::get('/portal/student/tahsin', [StudentTahsinPortalController::class, 'index'])
-        ->middleware(['role:student', 'module:tahsin'])
-        ->name('portal.student.tahsin');
-
-    // Student Finance Ledger Routes
-    Route::prefix('finance')
-        ->name('finance.')
-        ->middleware(['role:super_admin,admin,principal,finance', 'module:finance'])
-        ->group(function (): void {
-            Route::get('/reports/dashboard', [FinanceReportController::class, 'dashboard'])
-                ->name('reports.dashboard');
-
-            Route::get('/bills', [StudentBillController::class, 'index'])
-                ->name('bills.index');
-
-            Route::get('/bills/create', [StudentBillController::class, 'create'])
-                ->name('bills.create');
-
-            Route::post('/bills', [StudentBillController::class, 'store'])
-                ->name('bills.store');
-
-            Route::get('/bills/{bill}', [StudentBillController::class, 'show'])
-                ->name('bills.show');
-
-            Route::patch('/bills/{bill}/void', [StudentBillController::class, 'void'])
-                ->name('bills.void');
-
-            Route::get('/payments', [StudentPaymentController::class, 'index'])
-                ->name('payments.index');
-
-            Route::get('/payments/create', [StudentPaymentController::class, 'create'])
-                ->name('payments.create');
-
-            Route::post('/payments', [StudentPaymentController::class, 'store'])
-                ->name('payments.store');
-
-            Route::get('/payments/{payment}', [StudentPaymentController::class, 'show'])
-                ->name('payments.show');
-
-            Route::patch('/payments/{payment}/void', [StudentPaymentController::class, 'void'])
-                ->name('payments.void');
-
-            Route::get('/ledgers/students/{student}', [FinanceLedgerController::class, 'student'])
-                ->name('ledgers.student');
-
-            Route::resource('fee-categories', FinanceFeeCategoryController::class);
-            Route::resource('fee-items', FinanceFeeItemController::class);
-        });
-
-    Route::get('/portal/parent/finance', [ParentFinancePortalController::class, 'index'])
-        ->middleware(['role:parent', 'module:finance'])
-        ->name('portal.parent.finance');
-
-    Route::get('/portal/parent/cashless', [ParentCashlessPortalController::class, 'index'])
-        ->middleware(['role:parent', 'module:cashless'])
-        ->name('portal.parent.cashless');
-
-    Route::put('/portal/parent/cashless/{wallet}', [ParentCashlessPortalController::class, 'update'])
-        ->middleware(['role:parent', 'module:cashless'])
-        ->name('portal.parent.cashless.update');
-
-    Route::get('/portal/student/finance', [StudentFinancePortalController::class, 'index'])
-        ->middleware(['role:student', 'module:finance'])
-        ->name('portal.student.finance');
-
-    Route::get('/portal/student/cashless', StudentCashlessPortalController::class)
-        ->middleware(['role:student', 'module:cashless'])
-        ->name('portal.student.cashless');
-
-    Route::prefix('schoolos')
-        ->name('schoolos.')
-        ->middleware('module:schoolos')
-        ->group(function (): void {
-            Route::get('/', [SchoolOsDashboardController::class, 'index'])
-                ->name('dashboard');
-
-            Route::get('/search', SchoolOsSearchController::class)
-                ->name('search');
-
-            Route::get('/students/{student}/360', [Student360Controller::class, 'show'])
-                ->name('students.show');
-
-            Route::resource('academic-years', AcademicYearController::class)
-                ->except(['show', 'destroy']);
-
-            Route::get('/settings', [SchoolSettingController::class, 'index'])
-                ->name('settings.index');
-
-            Route::patch('/settings', [SchoolSettingController::class, 'update'])
-                ->name('settings.update');
-
-            Route::get('/modules', [SystemModuleController::class, 'index'])
-                ->name('modules.index');
-
-            Route::patch('/modules/{systemModule}', [SystemModuleController::class, 'update'])
-                ->name('modules.update');
-        });
-
-
-    // Boarding School Management System Routes
-    Route::middleware(['role:super_admin,admin,principal,boarding_supervisor', 'module:boarding'])->prefix('boarding')->name('boarding.')->group(function (): void {
-        Route::get('/', BoardingDashboardController::class)->name('dashboard');
-
-        // Master Data CRUD
-        Route::resource('dormitories', BoardingDormitoryController::class);
-        Route::resource('rooms', BoardingRoomController::class);
-        Route::resource('beds', BoardingBedController::class);
-        Route::resource('supervisors', BoardingSupervisorController::class)->parameters([
-            'supervisors' => 'supervisor',
-        ]);
-
-        // Student Assignments
-        Route::get('assignments', [BoardingStudentAssignmentController::class, 'index'])->name('assignments.index');
-        Route::get('assignments/create', [BoardingStudentAssignmentController::class, 'create'])->name('assignments.create');
-        Route::post('assignments', [BoardingStudentAssignmentController::class, 'store'])->name('assignments.store');
-        Route::get('assignments/{assignment}', [BoardingStudentAssignmentController::class, 'show'])->name('assignments.show');
-        Route::put('assignments/{assignment}/end', [BoardingStudentAssignmentController::class, 'end'])->name('assignments.end');
-        Route::post('assignments/{assignment}/move', [BoardingStudentAssignmentController::class, 'move'])->name('assignments.move');
-
-        // Leave Requests
-        Route::get('leave-requests', [BoardingLeaveRequestController::class, 'index'])->name('leave-requests.index');
-        Route::get('leave-requests/create', [BoardingLeaveRequestController::class, 'create'])->name('leave-requests.create');
-        Route::post('leave-requests', [BoardingLeaveRequestController::class, 'store'])->name('leave-requests.store');
-        Route::get('leave-requests/{leaveRequest}', [BoardingLeaveRequestController::class, 'show'])->name('leave-requests.show');
-        Route::post('leave-requests/{leaveRequest}/approve', [BoardingLeaveRequestController::class, 'approve'])->name('leave-requests.approve');
-        Route::post('leave-requests/{leaveRequest}/reject', [BoardingLeaveRequestController::class, 'reject'])->name('leave-requests.reject');
-        Route::post('leave-requests/{leaveRequest}/mark-returned', [BoardingLeaveRequestController::class, 'markReturned'])->name('leave-requests.mark-returned');
-        Route::post('leave-requests/{leaveRequest}/cancel', [BoardingLeaveRequestController::class, 'cancel'])->name('leave-requests.cancel');
-
-        // Health Logs
-        Route::get('health-logs', [BoardingHealthLogController::class, 'index'])->name('health-logs.index');
-        Route::get('health-logs/create', [BoardingHealthLogController::class, 'create'])->name('health-logs.create');
-        Route::post('health-logs', [BoardingHealthLogController::class, 'store'])->name('health-logs.store');
-        Route::get('health-logs/{healthLog}', [BoardingHealthLogController::class, 'show'])->name('health-logs.show');
-
-        // Discipline Logs
-        Route::get('discipline-logs', [BoardingDisciplineLogController::class, 'index'])->name('discipline-logs.index');
-        Route::get('discipline-logs/create', [BoardingDisciplineLogController::class, 'create'])->name('discipline-logs.create');
-        Route::post('discipline-logs', [BoardingDisciplineLogController::class, 'store'])->name('discipline-logs.store');
-        Route::get('discipline-logs/{disciplineLog}', [BoardingDisciplineLogController::class, 'show'])->name('discipline-logs.show');
-
-        // Roll Calls
-        Route::get('roll-calls', [BoardingRollCallController::class, 'index'])->name('roll-calls.index');
-        Route::get('roll-calls/create', [BoardingRollCallController::class, 'create'])->name('roll-calls.create');
-        Route::post('roll-calls', [BoardingRollCallController::class, 'store'])->name('roll-calls.store');
-        Route::get('roll-calls/{rollCall}', [BoardingRollCallController::class, 'show'])->name('roll-calls.show');
-        Route::post('roll-calls/{rollCall}/records', [BoardingRollCallController::class, 'storeRecords'])->name('roll-calls.records.store');
-        Route::post('roll-calls/{rollCall}/close', [BoardingRollCallController::class, 'close'])->name('roll-calls.close');
-
-        // Reports
-        Route::get('reports', BoardingReportController::class)->name('reports.dashboard');
-    });
-
-    // Parent Boarding Portal Route
-    Route::get('/portal/parent/boarding', ParentBoardingPortalController::class)
-        ->middleware(['role:parent', 'module:boarding'])
-        ->name('portal.parent.boarding');
-
-    // Student Boarding Portal Route
-    Route::get('/portal/student/boarding', StudentBoardingPortalController::class)
-        ->middleware(['role:student', 'module:boarding'])
-        ->name('portal.student.boarding');
-
-    // Phase 24 — LMS Lite & Learning Content Routes
-    Route::middleware(['auth', 'role:super_admin,admin,principal,teacher', 'module:lms'])->prefix('lms')->name('lms.')->group(function (): void {
-        Route::get('/', [\App\Http\Controllers\Lms\LmsDashboardController::class, 'index'])->name('dashboard');
-        Route::resource('courses', \App\Http\Controllers\Lms\LmsCourseController::class);
-        Route::resource('modules', \App\Http\Controllers\Lms\LmsCourseModuleController::class);
-        Route::post('modules/reorder', [\App\Http\Controllers\Lms\LmsCourseModuleController::class, 'reorder'])->name('modules.reorder');
-        Route::resource('lessons', \App\Http\Controllers\Lms\LmsLessonController::class);
-        Route::post('lessons/reorder', [\App\Http\Controllers\Lms\LmsLessonController::class, 'reorder'])->name('lessons.reorder');
-        Route::resource('resources', \App\Http\Controllers\Lms\LmsLessonResourceController::class);
-        Route::resource('enrollments', \App\Http\Controllers\Lms\LmsEnrollmentController::class);
-        Route::resource('assignments', \App\Http\Controllers\Lms\LmsAssignmentController::class);
-        Route::post('submissions/{submission}/grade', [\App\Http\Controllers\Lms\LmsAssignmentSubmissionController::class, 'grade'])->name('submissions.grade');
-        Route::resource('quizzes', \App\Http\Controllers\Lms\LmsQuizController::class);
-        Route::resource('quizzes.questions', \App\Http\Controllers\Lms\LmsQuizQuestionController::class);
-        Route::get('attempts/{attempt}', [\App\Http\Controllers\Lms\LmsQuizAttemptController::class, 'show'])->name('attempts.show');
-        Route::get('reports', [\App\Http\Controllers\Lms\LmsProgressReportController::class, 'index'])->name('reports.index');
-    });
-
-    // LMS Secure Private File Access Route (authenticated users only)
-    Route::get('/lms/private-file/{type}/{id}', [\App\Http\Controllers\Lms\LmsLessonResourceController::class, 'downloadPrivateFile'])
-        ->middleware(['auth', 'module:lms'])
-        ->name('lms.private-file.download');
-
-    // Portal Student LMS Routes
-    Route::middleware(['auth', 'role:student', 'module:lms'])->prefix('portal/student/lms')->name('portal.student.lms.')->group(function (): void {
-        Route::get('/', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'index'])->name('index');
-        Route::get('/course/{course}', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'showCourse'])->name('course.show');
-        Route::get('/lesson/{lesson}', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'showLesson'])->name('lesson.show');
-        Route::post('/lesson/{lesson}/complete', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'completeLesson'])->name('lesson.complete');
-        Route::post('/assignment/{assignment}/submit', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'submitAssignment'])->name('assignment.submit');
-        Route::post('/quiz/{quiz}/start', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'startQuiz'])->name('quiz.start');
-        Route::get('/quiz/attempt/{attempt}', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'showQuizAttempt'])->name('quiz.attempt.show');
-        Route::post('/quiz/attempt/{attempt}/submit', [\App\Http\Controllers\Portal\StudentLmsPortalController::class, 'submitQuizAttempt'])->name('quiz.attempt.submit');
-    });
-
-    // Portal Parent LMS Routes
-    Route::middleware(['auth', 'role:parent', 'module:lms'])->prefix('portal/parent/lms')->name('portal.parent.lms.')->group(function (): void {
-        Route::get('/', [\App\Http\Controllers\Portal\ParentLmsPortalController::class, 'index'])->name('index');
-        Route::get('/student/{student}/course/{course}', [\App\Http\Controllers\Portal\ParentLmsPortalController::class, 'showChildProgress'])->name('child.course.show');
-    });
 
     });
 
@@ -931,33 +950,33 @@ Route::middleware('auth')->group(function (): void {
 
             // White-Label School App Builder Routes
             Route::prefix('white-label')->name('white-label.')->middleware(['role:super_admin,admin,admin_sekolah', 'subscription.active', 'module:white_label'])->group(function (): void {
-                Route::get('/', [App\Http\Controllers\WhiteLabel\WhiteLabelDashboardController::class, 'index'])->name('dashboard');
-                
+                Route::get('/', [WhiteLabelDashboardController::class, 'index'])->name('dashboard');
+
                 // Brand Profile
-                Route::get('/brand', [App\Http\Controllers\WhiteLabel\SchoolBrandProfileController::class, 'show'])->name('brand.show');
-                Route::get('/brand/edit', [App\Http\Controllers\WhiteLabel\SchoolBrandProfileController::class, 'edit'])->name('brand.edit');
-                Route::put('/brand', [App\Http\Controllers\WhiteLabel\SchoolBrandProfileController::class, 'update'])->name('brand.update');
-                
+                Route::get('/brand', [SchoolBrandProfileController::class, 'show'])->name('brand.show');
+                Route::get('/brand/edit', [SchoolBrandProfileController::class, 'edit'])->name('brand.edit');
+                Route::put('/brand', [SchoolBrandProfileController::class, 'update'])->name('brand.update');
+
                 // Theme Builder
-                Route::get('/theme/edit', [App\Http\Controllers\WhiteLabel\SchoolThemeSettingController::class, 'edit'])->name('themes.edit');
-                Route::put('/theme', [App\Http\Controllers\WhiteLabel\SchoolThemeSettingController::class, 'update'])->name('themes.update');
-                Route::get('/theme/preview', [App\Http\Controllers\WhiteLabel\SchoolThemeSettingController::class, 'preview'])->name('themes.preview');
-                
+                Route::get('/theme/edit', [SchoolThemeSettingController::class, 'edit'])->name('themes.edit');
+                Route::put('/theme', [SchoolThemeSettingController::class, 'update'])->name('themes.update');
+                Route::get('/theme/preview', [SchoolThemeSettingController::class, 'preview'])->name('themes.preview');
+
                 // Domain Mapping
-                Route::post('/domains/{domain}/verify', [App\Http\Controllers\WhiteLabel\SchoolDomainMappingController::class, 'verify'])->name('domains.verify');
-                Route::post('/domains/{domain}/activate', [App\Http\Controllers\WhiteLabel\SchoolDomainMappingController::class, 'activate'])->name('domains.activate');
-                Route::post('/domains/{domain}/disable', [App\Http\Controllers\WhiteLabel\SchoolDomainMappingController::class, 'disable'])->name('domains.disable');
-                Route::resource('/domains', App\Http\Controllers\WhiteLabel\SchoolDomainMappingController::class)->names('domains');
-                
+                Route::post('/domains/{domain}/verify', [SchoolDomainMappingController::class, 'verify'])->name('domains.verify');
+                Route::post('/domains/{domain}/activate', [SchoolDomainMappingController::class, 'activate'])->name('domains.activate');
+                Route::post('/domains/{domain}/disable', [SchoolDomainMappingController::class, 'disable'])->name('domains.disable');
+                Route::resource('/domains', SchoolDomainMappingController::class)->names('domains');
+
                 // PWA Settings
-                Route::get('/pwa', [App\Http\Controllers\WhiteLabel\SchoolPwaSettingController::class, 'show'])->name('pwa.show');
-                Route::get('/pwa/edit', [App\Http\Controllers\WhiteLabel\SchoolPwaSettingController::class, 'edit'])->name('pwa.edit');
-                Route::put('/pwa', [App\Http\Controllers\WhiteLabel\SchoolPwaSettingController::class, 'update'])->name('pwa.update');
-                
+                Route::get('/pwa', [SchoolPwaSettingController::class, 'show'])->name('pwa.show');
+                Route::get('/pwa/edit', [SchoolPwaSettingController::class, 'edit'])->name('pwa.edit');
+                Route::put('/pwa', [SchoolPwaSettingController::class, 'update'])->name('pwa.update');
+
                 // Preview, Publish & Rollback
-                Route::get('/preview', [App\Http\Controllers\WhiteLabel\WhiteLabelPreviewController::class, 'show'])->name('preview.show');
-                Route::post('/publish', [App\Http\Controllers\WhiteLabel\WhiteLabelPreviewController::class, 'publish'])->name('publish');
-                Route::post('/rollback/{id}', [App\Http\Controllers\WhiteLabel\WhiteLabelPreviewController::class, 'rollback'])->name('rollback');
+                Route::get('/preview', [WhiteLabelPreviewController::class, 'show'])->name('preview.show');
+                Route::post('/publish', [WhiteLabelPreviewController::class, 'publish'])->name('publish');
+                Route::post('/rollback/{id}', [WhiteLabelPreviewController::class, 'rollback'])->name('rollback');
             });
         });
     });

@@ -3,12 +3,10 @@
 namespace App\Services\Lms;
 
 use App\Models\LmsAssignmentSubmission;
-use App\Models\LmsQuizAttempt;
 use App\Models\LmsCourse;
-use App\Models\Student;
-use App\Models\User;
-use App\Services\Notifications\NotificationDispatchService;
+use App\Models\LmsQuizAttempt;
 use App\Notifications\AnnouncementNotification;
+use App\Services\Notifications\NotificationDispatchService;
 
 class LmsNotificationService
 {

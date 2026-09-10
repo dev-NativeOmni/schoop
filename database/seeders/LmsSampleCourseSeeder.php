@@ -2,24 +2,23 @@
 
 namespace Database\Seeders;
 
-use App\Models\School;
-use App\Models\User;
-use App\Models\Role;
-use App\Models\TeacherProfile;
-use App\Models\Student;
+use App\Models\LmsAssignment;
 use App\Models\LmsCourse;
+use App\Models\LmsCourseEnrollment;
+use App\Models\LmsCourseInstructor;
 use App\Models\LmsCourseModule;
 use App\Models\LmsLesson;
 use App\Models\LmsLessonResource;
-use App\Models\LmsCourseInstructor;
-use App\Models\LmsCourseEnrollment;
-use App\Models\LmsAssignment;
 use App\Models\LmsQuiz;
 use App\Models\LmsQuizQuestion;
-use App\Services\Tenancy\TenantContextService;
+use App\Models\Role;
+use App\Models\School;
+use App\Models\Student;
+use App\Models\TeacherProfile;
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class LmsSampleCourseSeeder extends Seeder
 {
@@ -27,7 +26,7 @@ class LmsSampleCourseSeeder extends Seeder
     {
         // 1. Get or create school
         $school = School::first();
-        if (!$school) {
+        if (! $school) {
             $school = School::create([
                 'name' => 'Pesantren HafizPlus',
                 'unique_code' => 'HP001',
@@ -45,7 +44,7 @@ class LmsSampleCourseSeeder extends Seeder
 
         // 2. Get or create teacher user and profile
         $teacherProfile = TeacherProfile::where('school_id', $school->id)->first();
-        if (!$teacherProfile) {
+        if (! $teacherProfile) {
             $teacherUser = User::create([
                 'school_id' => $school->id,
                 'role_id' => $teacherRole->id,
@@ -59,7 +58,7 @@ class LmsSampleCourseSeeder extends Seeder
             $teacherProfile = TeacherProfile::create([
                 'user_id' => $teacherUser->id,
                 'school_id' => $school->id,
-                'employee_number' => 'EMP' . rand(1000, 9999),
+                'employee_number' => 'EMP'.rand(1000, 9999),
                 'specialization' => 'Bahasa Arab',
                 'is_active' => true,
             ]);
@@ -67,7 +66,7 @@ class LmsSampleCourseSeeder extends Seeder
 
         // 3. Get or create student user and profile
         $student = Student::where('school_id', $school->id)->first();
-        if (!$student) {
+        if (! $student) {
             $studentUser = User::create([
                 'school_id' => $school->id,
                 'role_id' => $studentRole->id,
@@ -81,7 +80,7 @@ class LmsSampleCourseSeeder extends Seeder
             $student = Student::create([
                 'user_id' => $studentUser->id,
                 'school_id' => $school->id,
-                'student_number' => 'STUD' . rand(1000, 9999),
+                'student_number' => 'STUD'.rand(1000, 9999),
                 'full_name' => 'Ali bin Abi Thalib',
                 'is_active' => true,
             ]);
@@ -90,7 +89,7 @@ class LmsSampleCourseSeeder extends Seeder
         // 4. Create Course
         $courseTitle = 'Bahasa Arab Dasar (Nahwu & Sharaf)';
         $courseSlug = Str::slug($courseTitle);
-        
+
         // Ensure slug unique
         $existing = LmsCourse::where('school_id', $school->id)->where('slug', $courseSlug)->first();
         if ($existing) {
@@ -134,7 +133,7 @@ class LmsSampleCourseSeeder extends Seeder
         ]);
 
         // 6. Create Lessons
-        
+
         // Lesson 1: Text
         $lessonText = LmsLesson::create([
             'school_id' => $school->id,
@@ -199,7 +198,7 @@ class LmsSampleCourseSeeder extends Seeder
                 'A' => 'Kemasukan Alif Lam (Al-)',
                 'B' => 'Terikat dengan waktu lampau',
                 'C' => 'Tidak memiliki arti sendiri',
-                'D' => 'Diakhiri sukun'
+                'D' => 'Diakhiri sukun',
             ],
             'correct_answer' => 'A',
             'score_weight' => 10,
@@ -213,7 +212,7 @@ class LmsSampleCourseSeeder extends Seeder
             'question_type' => 'true_false',
             'options' => [
                 'true' => 'Benar',
-                'false' => 'Salah'
+                'false' => 'Salah',
             ],
             'correct_answer' => 'true',
             'score_weight' => 10,

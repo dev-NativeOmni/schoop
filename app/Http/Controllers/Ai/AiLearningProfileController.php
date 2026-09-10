@@ -3,23 +3,26 @@
 namespace App\Http\Controllers\Ai;
 
 use App\Http\Controllers\Controller;
-use App\Models\Student;
 use App\Models\AiLearningProfile;
-use App\Services\Ai\QuranLearningProfileService;
+use App\Models\Student;
 use App\Services\Ai\AiAccessService;
 use App\Services\Ai\AiAuditLogger;
+use App\Services\Ai\QuranLearningProfileService;
 use App\Services\Tenancy\TenantContextService;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AiLearningProfileController extends Controller
 {
     protected QuranLearningProfileService $profileService;
+
     protected AiAccessService $accessService;
+
     protected AiAuditLogger $auditLogger;
+
     protected TenantContextService $tenantContext;
 
     public function __construct(
@@ -37,7 +40,7 @@ class AiLearningProfileController extends Controller
     public function index(Request $request): View
     {
         $schoolId = $this->tenantContext->activeSchoolId();
-        
+
         $profiles = AiLearningProfile::query()
             ->where('school_id', $schoolId)
             ->with(['student.user'])
@@ -50,20 +53,20 @@ class AiLearningProfileController extends Controller
     public function show(AiLearningProfile $learningProfile): View
     {
         $student = $learningProfile->student;
-        if (!$this->accessService->canViewStudentAiData(Auth::user(), $student)) {
+        if (! $this->accessService->canViewStudentAiData(Auth::user(), $student)) {
             abort(403, 'Unauthorized access to student AI data.');
         }
 
         $learningProfile->load(['student.user', 'signals', 'recommendations']);
 
         return view('ai.learning-profiles.show', [
-            'profile' => $learningProfile
+            'profile' => $learningProfile,
         ]);
     }
 
     public function generate(Request $request, Student $student): RedirectResponse
     {
-        if (!$this->accessService->canReviewAiOutput(Auth::user(), $student)) {
+        if (! $this->accessService->canReviewAiOutput(Auth::user(), $student)) {
             abort(403, 'Unauthorized to generate AI learning profile.');
         }
 
@@ -85,7 +88,7 @@ class AiLearningProfileController extends Controller
     public function review(AiLearningProfile $profile): RedirectResponse
     {
         $student = $profile->student;
-        if (!$this->accessService->canReviewAiOutput(Auth::user(), $student)) {
+        if (! $this->accessService->canReviewAiOutput(Auth::user(), $student)) {
             abort(403, 'Unauthorized to review AI output.');
         }
 
@@ -110,7 +113,7 @@ class AiLearningProfileController extends Controller
     public function publish(AiLearningProfile $profile): RedirectResponse
     {
         $student = $profile->student;
-        if (!$this->accessService->canReviewAiOutput(Auth::user(), $student)) {
+        if (! $this->accessService->canReviewAiOutput(Auth::user(), $student)) {
             abort(403, 'Unauthorized to publish AI output.');
         }
 

@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Student;
-use App\Services\Ai\PracticePlanGenerator;
 use App\Services\Ai\AiAuditLogger;
+use App\Services\Ai\PracticePlanGenerator;
+use Illuminate\Console\Command;
 
 class GenerateAiPracticePlansCommand extends Command
 {
@@ -46,6 +46,7 @@ class GenerateAiPracticePlansCommand extends Command
 
         if ($students->isEmpty()) {
             $this->info('No students found matching the criteria.');
+
             return 0;
         }
 
@@ -64,6 +65,7 @@ class GenerateAiPracticePlansCommand extends Command
         }
 
         $this->info('AI practice plans generated successfully.');
+
         return 0;
     }
 }

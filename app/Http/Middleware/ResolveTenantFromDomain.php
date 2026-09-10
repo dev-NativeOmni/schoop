@@ -7,12 +7,13 @@ use App\Services\Tenancy\TenantContextService;
 use App\Services\WhiteLabel\TenantDomainResolver;
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Session;
+use Symfony\Component\HttpFoundation\Response;
 
 class ResolveTenantFromDomain
 {
     protected TenantDomainResolver $domainResolver;
+
     protected TenantAccessService $tenantAccess;
 
     public function __construct(TenantDomainResolver $domainResolver, TenantAccessService $tenantAccess)
@@ -23,7 +24,6 @@ class ResolveTenantFromDomain
 
     public function handle(Request $request, Closure $next): Response
     {
-
 
         $host = $request->getHost();
         $school = null;
@@ -42,11 +42,11 @@ class ResolveTenantFromDomain
 
             // Enforce access boundary if user is authenticated
             $user = $request->user();
-            if ($user && !$user->isSuperAdmin()) {
-                if (!$this->tenantAccess->userCanAccessSchool($user, $school->id)) {
+            if ($user && ! $user->isSuperAdmin()) {
+                if (! $this->tenantAccess->userCanAccessSchool($user, $school->id)) {
                     // Clear active school from session so they are not stuck on invalid context
                     Session::forget(TenantContextService::SESSION_KEY);
-                    abort(403, 'Anda tidak memiliki akses ke sekolah ini melalui domain ' . $host);
+                    abort(403, 'Anda tidak memiliki akses ke sekolah ini melalui domain '.$host);
                 }
             }
         }

@@ -72,7 +72,7 @@ class TahfizhExportController extends Controller
             status: $request->input('status')
         );
 
-        $filename = 'laporan-tahfizh-bulanan-' . $periodStart->format('Y-m') . '.xlsx';
+        $filename = 'laporan-tahfizh-bulanan-'.$periodStart->format('Y-m').'.xlsx';
 
         return Excel::download(
             new MonthlyTahfizhReportExport($rows, $periodStart, $periodEnd),
@@ -97,7 +97,7 @@ class TahfizhExportController extends Controller
             status: $request->input('status')
         );
 
-        $filename = 'laporan-tahfizh-bulanan-' . $periodStart->format('Y-m') . '.pdf';
+        $filename = 'laporan-tahfizh-bulanan-'.$periodStart->format('Y-m').'.pdf';
 
         $pdf = Pdf::loadView('exports.pdf.monthly-tahfizh-report', [
             'rows' => $rows,
@@ -131,7 +131,7 @@ class TahfizhExportController extends Controller
             status: $request->input('status')
         );
 
-        $filename = 'laporan-tahfizh-triwulan-' . $periodStart->format('Y-m-d') . '-' . $periodEnd->format('Y-m-d') . '.xlsx';
+        $filename = 'laporan-tahfizh-triwulan-'.$periodStart->format('Y-m-d').'-'.$periodEnd->format('Y-m-d').'.xlsx';
 
         $periodLabel = $periodResolver->quarterLabel(
             year: $this->nullableInteger($request->input('year')),
@@ -169,7 +169,7 @@ class TahfizhExportController extends Controller
             status: $request->input('status')
         );
 
-        $filename = 'laporan-tahfizh-triwulan-' . $periodStart->format('Y-m-d') . '-' . $periodEnd->format('Y-m-d') . '.pdf';
+        $filename = 'laporan-tahfizh-triwulan-'.$periodStart->format('Y-m-d').'-'.$periodEnd->format('Y-m-d').'.pdf';
 
         $pdf = Pdf::loadView('exports.pdf.quarterly-tahfizh-report', [
             'rows' => $rows,
@@ -204,7 +204,7 @@ class TahfizhExportController extends Controller
             status: $request->input('status')
         );
 
-        $filename = 'ringkasan-dashboard-tahfizh-' . $periodStart->format('Y-m-d') . '-' . $periodEnd->format('Y-m-d') . '.xlsx';
+        $filename = 'ringkasan-dashboard-tahfizh-'.$periodStart->format('Y-m-d').'-'.$periodEnd->format('Y-m-d').'.xlsx';
 
         return Excel::download(
             new DashboardTahfizhSummaryExport($summary, $periodStart, $periodEnd),
@@ -232,7 +232,7 @@ class TahfizhExportController extends Controller
             status: $request->input('status')
         );
 
-        $filename = 'ringkasan-dashboard-tahfizh-' . $periodStart->format('Y-m-d') . '-' . $periodEnd->format('Y-m-d') . '.pdf';
+        $filename = 'ringkasan-dashboard-tahfizh-'.$periodStart->format('Y-m-d').'-'.$periodEnd->format('Y-m-d').'.pdf';
 
         $pdf = Pdf::loadView('exports.pdf.dashboard-tahfizh-summary', [
             'summary' => $summary,

@@ -2,8 +2,8 @@
 
 namespace App\Services\Ai;
 
-use App\Models\Student;
 use App\Models\AiSafetyEvent;
+use App\Models\Student;
 use Illuminate\Support\Facades\Auth;
 
 class AiSafetyGuardService
@@ -48,7 +48,7 @@ class AiSafetyGuardService
             }
         }
 
-        if (!empty($detectedWords)) {
+        if (! empty($detectedWords)) {
             // Log Safety Event
             AiSafetyEvent::query()
                 ->withoutGlobalScopes()
@@ -58,12 +58,12 @@ class AiSafetyGuardService
                     'student_id' => $student->id,
                     'event_type' => 'negative_label_detected',
                     'severity' => 'attention',
-                    'description' => "Terdeteksi pelabelan negatif (" . implode(', ', $detectedWords) . ") pada draf rekomendasi untuk santri ID {$student->id}.",
+                    'description' => 'Terdeteksi pelabelan negatif ('.implode(', ', $detectedWords).") pada draf rekomendasi untuk santri ID {$student->id}.",
                     'metadata' => [
                         'detected_words' => $detectedWords,
                         'original_text' => $text,
                         'sanitized_text' => $replacedText,
-                    ]
+                    ],
                 ]);
         }
 
@@ -73,9 +73,10 @@ class AiSafetyGuardService
     public function sanitizeForParent(string $text): string
     {
         $disclaimer = "\n\n(Rekomendasi ini dibuat oleh sistem untuk membantu proses belajar dan telah/harus direview oleh guru. Keputusan pembelajaran tetap mengikuti arahan guru.)";
-        if (!str_contains($text, "Rekomendasi ini dibuat oleh sistem")) {
-            return $text . $disclaimer;
+        if (! str_contains($text, 'Rekomendasi ini dibuat oleh sistem')) {
+            return $text.$disclaimer;
         }
+
         return $text;
     }
 

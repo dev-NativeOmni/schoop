@@ -5,14 +5,15 @@ namespace App\Http\Controllers\Portal;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Lms\SubmitLmsAssignmentRequest;
 use App\Http\Requests\Lms\SubmitLmsQuizAttemptRequest;
+use App\Models\LmsAssignment;
 use App\Models\LmsCourse;
 use App\Models\LmsLesson;
-use App\Models\LmsAssignment;
+use App\Models\LmsLessonProgress;
 use App\Models\LmsQuiz;
 use App\Models\LmsQuizAttempt;
 use App\Services\Lms\LmsAccessService;
-use App\Services\Lms\LmsProgressService;
 use App\Services\Lms\LmsAssignmentService;
+use App\Services\Lms\LmsProgressService;
 use App\Services\Lms\LmsQuizService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,7 +34,7 @@ class StudentLmsPortalController extends Controller
     public function index(Request $request): View
     {
         $student = Auth::user()->studentProfile;
-        if (!$student) {
+        if (! $student) {
             abort(403, 'Santri profile tidak ditemukan.');
         }
 
@@ -46,7 +47,7 @@ class StudentLmsPortalController extends Controller
 
     public function showCourse(LmsCourse $course): View
     {
-        if (!$this->accessService->canViewCourse(Auth::user(), $course)) {
+        if (! $this->accessService->canViewCourse(Auth::user(), $course)) {
             abort(403);
         }
 
@@ -56,7 +57,7 @@ class StudentLmsPortalController extends Controller
         }]);
 
         // Fetch completed lesson IDs for checkmarks
-        $completedLessonIds = \App\Models\LmsLessonProgress::where('student_id', $student->id)
+        $completedLessonIds = LmsLessonProgress::where('student_id', $student->id)
             ->where('status', 'completed')
             ->pluck('lesson_id')
             ->toArray();
@@ -66,12 +67,12 @@ class StudentLmsPortalController extends Controller
 
     public function showLesson(LmsLesson $lesson): View
     {
-        if (!$this->accessService->canViewLesson(Auth::user(), $lesson)) {
+        if (! $this->accessService->canViewLesson(Auth::user(), $lesson)) {
             abort(403);
         }
 
         $student = Auth::user()->studentProfile;
-        
+
         // Mark lesson progress as in progress
         $this->progressService->markAsInProgress($student->id, $lesson->id);
 
@@ -81,7 +82,7 @@ class StudentLmsPortalController extends Controller
             $query->where('student_id', $student->id);
         }]);
 
-        $progress = \App\Models\LmsLessonProgress::where('student_id', $student->id)
+        $progress = LmsLessonProgress::where('student_id', $student->id)
             ->where('lesson_id', $lesson->id)
             ->first();
 
@@ -90,7 +91,7 @@ class StudentLmsPortalController extends Controller
 
     public function completeLesson(LmsLesson $lesson): RedirectResponse
     {
-        if (!$this->accessService->canViewLesson(Auth::user(), $lesson)) {
+        if (! $this->accessService->canViewLesson(Auth::user(), $lesson)) {
             abort(403);
         }
 
@@ -107,12 +108,12 @@ class StudentLmsPortalController extends Controller
 
     public function submitAssignment(SubmitLmsAssignmentRequest $request, LmsAssignment $assignment): RedirectResponse
     {
-        if (!$this->accessService->canSubmitAssignment(Auth::user(), $assignment)) {
+        if (! $this->accessService->canSubmitAssignment(Auth::user(), $assignment)) {
             abort(403);
         }
 
         $student = Auth::user()->studentProfile;
-        
+
         try {
             $this->assignmentService->submitAssignment(
                 $assignment->id,
@@ -130,12 +131,12 @@ class StudentLmsPortalController extends Controller
 
     public function startQuiz(LmsQuiz $quiz): RedirectResponse
     {
-        if (!$this->accessService->canAttemptQuiz(Auth::user(), $quiz)) {
+        if (! $this->accessService->canAttemptQuiz(Auth::user(), $quiz)) {
             abort(403);
         }
 
         $student = Auth::user()->studentProfile;
-        
+
         try {
             $attempt = $this->quizService->startAttempt($quiz->id, $student->id);
         } catch (\RuntimeException $e) {
@@ -148,7 +149,7 @@ class StudentLmsPortalController extends Controller
     public function showQuizAttempt(LmsQuizAttempt $attempt): View
     {
         $student = Auth::user()->studentProfile;
-        if (!$student || $attempt->student_id !== $student->id) {
+        if (! $student || $attempt->student_id !== $student->id) {
             abort(403);
         }
 
@@ -167,7 +168,7 @@ class StudentLmsPortalController extends Controller
     public function submitQuizAttempt(SubmitLmsQuizAttemptRequest $request, LmsQuizAttempt $attempt): RedirectResponse
     {
         $student = Auth::user()->studentProfile;
-        if (!$student || $attempt->student_id !== $student->id) {
+        if (! $student || $attempt->student_id !== $student->id) {
             abort(403);
         }
 

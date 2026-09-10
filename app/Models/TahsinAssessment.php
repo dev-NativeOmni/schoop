@@ -11,18 +11,24 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TahsinAssessment extends Model
 {
     use BelongsToTenant;
-
     use SoftDeletes;
 
     public const TYPE_PLACEMENT = 'placement';
+
     public const TYPE_DAILY = 'daily';
+
     public const TYPE_WEEKLY = 'weekly';
+
     public const TYPE_MONTHLY = 'monthly';
+
     public const TYPE_FINAL = 'final';
 
     public const GRADE_EXCELLENT = 'excellent';
+
     public const GRADE_GOOD = 'good';
+
     public const GRADE_FAIR = 'fair';
+
     public const GRADE_NEEDS_IMPROVEMENT = 'needs_improvement';
 
     protected $fillable = [

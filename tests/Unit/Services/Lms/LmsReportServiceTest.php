@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\Services\Lms;
 
-use App\Models\LmsCourse;
-use App\Models\LmsCourseModule;
-use App\Models\LmsCourseEnrollment;
-use App\Models\LmsLesson;
-use App\Models\LmsLessonProgress;
 use App\Models\LmsAssignment;
 use App\Models\LmsAssignmentSubmission;
+use App\Models\LmsCourse;
+use App\Models\LmsCourseEnrollment;
+use App\Models\LmsCourseModule;
+use App\Models\LmsLesson;
+use App\Models\LmsLessonProgress;
 use App\Models\LmsQuiz;
 use App\Models\LmsQuizAttempt;
 use App\Models\School;
@@ -23,7 +23,7 @@ class LmsReportServiceTest extends TestCase
 
     public function test_get_student_course_summary_returns_empty_array_if_not_enrolled(): void
     {
-        $service = new LmsReportService();
+        $service = new LmsReportService;
         $result = $service->getStudentCourseSummary(1, 1);
         $this->assertEmpty($result);
     }
@@ -125,7 +125,7 @@ class LmsReportServiceTest extends TestCase
             'completed_at' => now(),
         ]);
 
-        $service = new LmsReportService();
+        $service = new LmsReportService;
         $result = $service->getStudentCourseSummary($student->id, $course->id);
 
         $this->assertEquals(10.0, $result['progress_percentage']);

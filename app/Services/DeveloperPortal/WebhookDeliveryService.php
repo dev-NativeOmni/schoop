@@ -2,6 +2,7 @@
 
 namespace App\Services\DeveloperPortal;
 
+use App\Jobs\SendWebhookJob;
 use App\Models\WebhookDelivery;
 use Illuminate\Support\Facades\Http;
 use Throwable;
@@ -96,7 +97,7 @@ class WebhookDeliveryService
 
         foreach ($deliveries as $delivery) {
             $delivery->update(['status' => 'retrying']);
-            \App\Jobs\SendWebhookJob::dispatch($delivery);
+            SendWebhookJob::dispatch($delivery);
         }
 
         return $deliveries->count();

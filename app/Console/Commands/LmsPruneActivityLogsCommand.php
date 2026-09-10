@@ -17,9 +17,9 @@ class LmsPruneActivityLogsCommand extends Command
         $date = now()->subDays($days);
 
         $this->info("Pruning LMS activity logs older than {$days} days (before {$date->toDateTimeString()})...");
-        
+
         $deleted = LmsActivityLog::where('created_at', '<', $date)->delete();
-        
+
         $this->info("Pruning complete. Deleted {$deleted} log record(s).");
 
         return self::SUCCESS;

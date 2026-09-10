@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 class TenantPwaManifestController extends Controller
 {
     protected TenantContextService $tenantContext;
+
     protected SchoolPwaManifestService $pwaService;
 
     public function __construct(TenantContextService $tenantContext, SchoolPwaManifestService $pwaService)
@@ -38,15 +39,15 @@ class TenantPwaManifestController extends Controller
                         'src' => asset('images/logo_pwa.svg'),
                         'sizes' => '192x192',
                         'type' => 'image/svg+xml',
-                        'purpose' => 'any maskable'
+                        'purpose' => 'any maskable',
                     ],
                     [
                         'src' => asset('images/logo_pwa.svg'),
                         'sizes' => '512x512',
                         'type' => 'image/svg+xml',
-                        'purpose' => 'any maskable'
-                    ]
-                ]
+                        'purpose' => 'any maskable',
+                    ],
+                ],
             ];
         }
 

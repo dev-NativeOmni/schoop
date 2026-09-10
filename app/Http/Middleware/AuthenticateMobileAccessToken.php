@@ -5,8 +5,8 @@ namespace App\Http\Middleware;
 use App\Services\Mobile\MobileTokenService;
 use App\Support\MobileApiResponse;
 use Closure;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthenticateMobileAccessToken

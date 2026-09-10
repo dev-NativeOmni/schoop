@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
 class QuranPdfController extends Controller
@@ -46,7 +46,7 @@ class QuranPdfController extends Controller
 
             return back()->with('success', 'Mushaf Google Drive berhasil dihubungkan.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal menyimpan konfigurasi: ' . $e->getMessage());
+            return back()->with('error', 'Gagal menyimpan konfigurasi: '.$e->getMessage());
         }
     }
 }

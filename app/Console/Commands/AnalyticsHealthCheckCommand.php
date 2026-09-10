@@ -78,19 +78,21 @@ class AnalyticsHealthCheckCommand extends Command
             } catch (\Exception $e) {
                 $logsWritable = false;
             }
-            $this->line('- Access logs: ' . ($logsWritable ? 'OK' : 'ERROR (unwritable)'));
+            $this->line('- Access logs: '.($logsWritable ? 'OK' : 'ERROR (unwritable)'));
 
             $cashlessActive = Schema::hasTable('wallet_transactions');
-            $this->line('- Optional module cashless: ' . ($cashlessActive ? 'OK (detected)' : 'WARNING (not active)'));
+            $this->line('- Optional module cashless: '.($cashlessActive ? 'OK (detected)' : 'WARNING (not active)'));
 
             $mobileActive = Schema::hasTable('mobile_devices');
-            $this->line('- Optional module mobile: ' . ($mobileActive ? 'OK (detected)' : 'WARNING (not active)'));
+            $this->line('- Optional module mobile: '.($mobileActive ? 'OK (detected)' : 'WARNING (not active)'));
 
             $this->info('Status: OK');
+
             return self::SUCCESS;
         }
 
         $this->error('Status: ERROR');
+
         return self::FAILURE;
     }
 }

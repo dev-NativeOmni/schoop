@@ -20,8 +20,8 @@ class ParentController extends Controller
     public function index(): View
     {
         $query = ParentProfile::query()->with(['user', 'school', 'students']);
-        
-        if (!auth()->user()->isSuperAdmin()) {
+
+        if (! auth()->user()->isSuperAdmin()) {
             $query->where(['school_id' => auth()->user()->school_id]);
         }
 
@@ -40,7 +40,7 @@ class ParentController extends Controller
             : collect([auth()->user()->school]);
 
         $studentsQuery = Student::query();
-        if (!$isSuperAdmin) {
+        if (! $isSuperAdmin) {
             $studentsQuery->where(['school_id' => $schoolId]);
         }
         $students = $studentsQuery->orderByRaw('full_name')->get();
@@ -87,7 +87,7 @@ class ParentController extends Controller
 
     public function show(ParentProfile $parent): View
     {
-        if (!auth()->user()->isSuperAdmin() && $parent->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $parent->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data orang tua ini.');
         }
 
@@ -98,7 +98,7 @@ class ParentController extends Controller
 
     public function edit(ParentProfile $parent): View
     {
-        if (!auth()->user()->isSuperAdmin() && $parent->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $parent->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data orang tua ini.');
         }
 
@@ -111,7 +111,7 @@ class ParentController extends Controller
             : collect([auth()->user()->school]);
 
         $studentsQuery = Student::query();
-        if (!$isSuperAdmin) {
+        if (! $isSuperAdmin) {
             $studentsQuery->where(['school_id' => $schoolId]);
         }
         $students = $studentsQuery->orderByRaw('full_name')->get();
@@ -126,7 +126,7 @@ class ParentController extends Controller
 
     public function update(UpdateParentRequest $request, ParentProfile $parent): RedirectResponse
     {
-        if (!auth()->user()->isSuperAdmin() && $parent->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $parent->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data orang tua ini.');
         }
 
@@ -166,7 +166,7 @@ class ParentController extends Controller
 
     public function destroy(ParentProfile $parent): RedirectResponse
     {
-        if (!auth()->user()->isSuperAdmin() && $parent->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $parent->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data orang tua ini.');
         }
 

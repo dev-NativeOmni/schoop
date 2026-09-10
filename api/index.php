@@ -33,7 +33,7 @@ $_ENV['FORCE_HTTPS'] = 'true';
 $_SERVER['FORCE_HTTPS'] = 'true';
 
 // Create writable temporary directories on Vercel cold-start
-if (!is_dir('/tmp/storage/framework/views')) {
+if (! is_dir('/tmp/storage/framework/views')) {
     $storageDirs = [
         '/tmp/storage/app/public',
         '/tmp/storage/app/private',
@@ -47,13 +47,13 @@ if (!is_dir('/tmp/storage/framework/views')) {
     ];
 
     foreach ($storageDirs as $dir) {
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
     }
 
-    if (file_exists(__DIR__ . '/../bootstrap/providers.php') && !file_exists('/tmp/storage/bootstrap/providers.php')) {
-        copy(__DIR__ . '/../bootstrap/providers.php', '/tmp/storage/bootstrap/providers.php');
+    if (file_exists(__DIR__.'/../bootstrap/providers.php') && ! file_exists('/tmp/storage/bootstrap/providers.php')) {
+        copy(__DIR__.'/../bootstrap/providers.php', '/tmp/storage/bootstrap/providers.php');
     }
 }
 
@@ -67,12 +67,12 @@ try {
 
     $request = Request::capture();
     $app->handleRequest($request);
-} catch (\Throwable $e) {
-    error_log('[Vercel Fatal] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+} catch (Throwable $e) {
+    error_log('[Vercel Fatal] '.$e->getMessage().' in '.$e->getFile().':'.$e->getLine());
     http_response_code(500);
     echo '<!DOCTYPE html><html><head><title>500 Internal Error</title><meta name="viewport" content="width=device-width, initial-scale=1"></head><body style="font-family:sans-serif;padding:2rem;background:#060b14;color:#f8fafc;">';
     echo '<h1 style="color:#f43f5e;">System Initialization Notice</h1>';
-    echo '<p style="color:#cbd5e1;">' . htmlspecialchars($e->getMessage()) . '</p>';
-    echo '<p style="font-size:12px;color:#94a3b8;">' . htmlspecialchars($e->getFile()) . ':' . $e->getLine() . '</p>';
+    echo '<p style="color:#cbd5e1;">'.htmlspecialchars($e->getMessage()).'</p>';
+    echo '<p style="font-size:12px;color:#94a3b8;">'.htmlspecialchars($e->getFile()).':'.$e->getLine().'</p>';
     echo '</body></html>';
 }

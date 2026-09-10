@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('lms_activity_logs', function (Blueprint $table): void {
             $table->id();
-            
+
             $table->foreignId('school_id')
                 ->nullable()
                 ->constrained('schools')
@@ -26,14 +26,14 @@ return new class extends Migration
 
             $table->string('activity_type'); // e.g. course_view, lesson_complete, etc.
             $table->text('description');
-            
+
             $table->string('subject_type')->nullable();
             $table->unsignedBigInteger('subject_id')->nullable();
-            
+
             $table->json('properties')->nullable();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
-            
+
             $table->timestamp('created_at')->nullable();
 
             $table->index('school_id');

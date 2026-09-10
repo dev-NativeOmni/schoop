@@ -32,8 +32,8 @@ class DatabaseBackupService
 
         Storage::disk('local')->makeDirectory($backupPath);
 
-        $filename = 'backup-' . $database . '-' . now()->format('Y-m-d-His') . '.sql';
-        $relativePath = $backupPath . '/' . $filename;
+        $filename = 'backup-'.$database.'-'.now()->format('Y-m-d-His').'.sql';
+        $relativePath = $backupPath.'/'.$filename;
         $absolutePath = Storage::disk('local')->path($relativePath);
 
         $mysqldump = env('BACKUP_MYSQLDUMP_PATH') ?: 'mysqldump';
@@ -43,9 +43,9 @@ class DatabaseBackupService
             "--host={$host}",
             "--port={$port}",
             "--user={$username}",
-            "--single-transaction",
-            "--routines",
-            "--triggers",
+            '--single-transaction',
+            '--routines',
+            '--triggers',
             $database,
         ];
 
@@ -57,11 +57,11 @@ class DatabaseBackupService
 
         $result = Process::env($environment)
             ->timeout(300)
-            ->run(array_merge($command, ['--result-file=' . $absolutePath]));
+            ->run(array_merge($command, ['--result-file='.$absolutePath]));
 
         if (! $result->successful()) {
             throw new RuntimeException(
-                'Backup database gagal: ' . trim($result->errorOutput() ?: $result->output())
+                'Backup database gagal: '.trim($result->errorOutput() ?: $result->output())
             );
         }
 

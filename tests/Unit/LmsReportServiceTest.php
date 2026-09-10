@@ -2,11 +2,11 @@
 
 namespace Tests\Unit;
 
-use App\Services\Lms\LmsReportService;
 use App\Models\LmsCourse;
 use App\Models\LmsCourseEnrollment;
 use App\Models\School;
 use App\Models\Student;
+use App\Services\Lms\LmsReportService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -31,7 +31,7 @@ class LmsReportServiceTest extends TestCase
         app()->instance('resolved_domain_school_id', $this->school->id);
     }
 
-    public function test_getCourseCompletionStats_calculates_correctly()
+    public function test_get_course_completion_stats_calculates_correctly()
     {
         $course = LmsCourse::create([
             'school_id' => $this->school->id,
@@ -92,7 +92,7 @@ class LmsReportServiceTest extends TestCase
             'status' => 'active',
         ]);
 
-        $service = new LmsReportService();
+        $service = new LmsReportService;
         $stats = $service->getCourseCompletionStats($course->id);
 
         $this->assertArrayHasKey('total_enrolled', $stats);
@@ -104,7 +104,7 @@ class LmsReportServiceTest extends TestCase
         $this->assertEquals(50.0, $stats['completion_rate']);
     }
 
-    public function test_getCourseCompletionStats_returns_zeros_when_no_enrollments()
+    public function test_get_course_completion_stats_returns_zeros_when_no_enrollments()
     {
         $course = LmsCourse::create([
             'school_id' => $this->school->id,
@@ -113,7 +113,7 @@ class LmsReportServiceTest extends TestCase
             'course_code' => 'EC01',
         ]);
 
-        $service = new LmsReportService();
+        $service = new LmsReportService;
         $stats = $service->getCourseCompletionStats($course->id);
 
         $this->assertArrayHasKey('total_enrolled', $stats);

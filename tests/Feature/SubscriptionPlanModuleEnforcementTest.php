@@ -6,10 +6,14 @@ use App\Models\Role;
 use App\Models\SaasSchoolSubscription;
 use App\Models\SaasSubscriptionPlan;
 use App\Models\School;
+use App\Models\SchoolSubscription;
+use App\Models\SubscriptionPlan;
 use App\Models\TenantModule;
 use App\Models\User;
 use App\Models\UserSchoolMembership;
 use App\Services\SaasOps\PlanModuleAccessService;
+use Database\Seeders\RoleSeeder;
+use Database\Seeders\SystemModuleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,15 +22,17 @@ class SubscriptionPlanModuleEnforcementTest extends TestCase
     use RefreshDatabase;
 
     private School $school;
+
     private User $admin;
+
     private Role $adminRole;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->seed(\Database\Seeders\RoleSeeder::class);
-        $this->seed(\Database\Seeders\SystemModuleSeeder::class);
+        $this->seed(RoleSeeder::class);
+        $this->seed(SystemModuleSeeder::class);
 
         $this->adminRole = Role::query()->where('name', 'admin')->firstOrFail();
 
@@ -153,7 +159,7 @@ class SubscriptionPlanModuleEnforcementTest extends TestCase
     private function createSubscription(array $allowedModules, string $status = 'active'): SaasSchoolSubscription
     {
         $plan = SaasSubscriptionPlan::query()->create([
-            'code' => 'basic-test-' . strtolower($status),
+            'code' => 'basic-test-'.strtolower($status),
             'name' => 'Basic Test',
             'billing_cycle' => 'monthly',
             'monthly_price' => 0,
@@ -163,7 +169,7 @@ class SubscriptionPlanModuleEnforcementTest extends TestCase
             'status' => 'active',
         ]);
 
-        $tenantPlan = \App\Models\SubscriptionPlan::query()->firstOrCreate(
+        $tenantPlan = SubscriptionPlan::query()->firstOrCreate(
             ['code' => 'test-plan'],
             [
                 'name' => 'Test Plan',
@@ -173,7 +179,7 @@ class SubscriptionPlanModuleEnforcementTest extends TestCase
             ]
         );
 
-        \App\Models\SchoolSubscription::query()->create([
+        SchoolSubscription::query()->create([
             'school_id' => $this->school->id,
             'subscription_plan_id' => $tenantPlan->id,
             'status' => $status === 'active' ? 'active' : 'canceled',

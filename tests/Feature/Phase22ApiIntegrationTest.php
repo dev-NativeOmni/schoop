@@ -3,14 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\ApiClient;
-use App\Models\ApiClientToken;
 use App\Models\ApiScope;
 use App\Models\School;
 use App\Models\Student;
-use App\Models\User;
 use App\Services\DeveloperPortal\ApiClientTokenService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\RateLimiter;
 use Tests\TestCase;
 
 class Phase22ApiIntegrationTest extends TestCase
@@ -52,7 +49,7 @@ class Phase22ApiIntegrationTest extends TestCase
         [$plainToken, $tokenModel] = $tokenService->generate($client, 'Test Token');
 
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $plainToken,
+            'Authorization' => 'Bearer '.$plainToken,
         ])->getJson('/api/v1/students');
 
         $response->assertStatus(200);
@@ -102,7 +99,7 @@ class Phase22ApiIntegrationTest extends TestCase
         $tokenService->revoke($tokenModel, null, 'Revoking test');
 
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $plainToken,
+            'Authorization' => 'Bearer '.$plainToken,
         ])->getJson('/api/v1/students');
 
         $response->assertStatus(401);
@@ -135,7 +132,7 @@ class Phase22ApiIntegrationTest extends TestCase
 
         // Try calling finance bills which requires finance:read
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $plainToken,
+            'Authorization' => 'Bearer '.$plainToken,
         ])->getJson('/api/v1/finance/bills');
 
         $response->assertStatus(403);
@@ -187,11 +184,11 @@ class Phase22ApiIntegrationTest extends TestCase
         [$plainToken, $tokenModel] = $tokenService->generate($clientA, 'Test Token A');
 
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $plainToken,
+            'Authorization' => 'Bearer '.$plainToken,
         ])->getJson('/api/v1/students');
 
         $response->assertStatus(200);
-        
+
         $students = $response->json('data.students');
         $this->assertCount(1, $students);
         $this->assertEquals('Santri Tenant A', $students[0]['name']);
@@ -222,7 +219,7 @@ class Phase22ApiIntegrationTest extends TestCase
         $tokenService = app(ApiClientTokenService::class);
         [$plainToken, $tokenModel] = $tokenService->generate($client, 'Test Token');
 
-        $headers = ['Authorization' => 'Bearer ' . $plainToken];
+        $headers = ['Authorization' => 'Bearer '.$plainToken];
 
         // 1st request
         $this->withHeaders($headers)->getJson('/api/v1/students')->assertStatus(200);

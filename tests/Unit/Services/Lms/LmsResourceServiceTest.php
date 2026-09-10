@@ -25,8 +25,11 @@ class LmsResourceServiceTest extends TestCase
     use RefreshDatabase;
 
     private LmsResourceService $service;
+
     private School $school;
+
     private User $user;
+
     private LmsLesson $lesson;
 
     protected function setUp(): void
@@ -109,6 +112,7 @@ class LmsResourceServiceTest extends TestCase
             'uploaded_by' => $this->user->id,
         ]);
     }
+
     public function test_create_resource_with_file(): void
     {
         Storage::fake('local');
@@ -142,6 +146,7 @@ class LmsResourceServiceTest extends TestCase
             'file_path' => $resource->file_path,
         ]);
     }
+
     public function test_create_resource_with_invalid_file_extension(): void
     {
         Storage::fake('local');
@@ -154,11 +159,12 @@ class LmsResourceServiceTest extends TestCase
             'resource_type' => 'file',
         ];
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Format berkas tidak diizinkan demi alasan keamanan sistem.');
 
         $this->service->createResource($data, $file, $this->user->id);
     }
+
     public function test_create_resource_with_invalid_mime_type(): void
     {
         Storage::fake('local');
@@ -172,11 +178,12 @@ class LmsResourceServiceTest extends TestCase
             'resource_type' => 'file',
         ];
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('MIME type berkas tidak sesuai dengan tipe dokumen yang diperbolehkan.');
 
         $this->service->createResource($data, $file, $this->user->id);
     }
+
     public function test_create_resource_increments_sort_order(): void
     {
         $data1 = [

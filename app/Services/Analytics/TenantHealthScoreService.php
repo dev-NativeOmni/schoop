@@ -2,21 +2,22 @@
 
 namespace App\Services\Analytics;
 
+use App\Models\MobileApiUsageSnapshot;
 use App\Models\School;
 use App\Models\SchoolAcademicSnapshot;
 use App\Models\SchoolFinanceSnapshot;
 use App\Models\SchoolOperationalSnapshot;
 use App\Models\SchoolSupportSnapshot;
-use App\Models\MobileApiUsageSnapshot;
 use App\Models\TenantHealthScore;
 use App\Models\TenantHealthScoreComponent;
 use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class TenantHealthScoreService
 {
-    public function calculateForSchools(\Illuminate\Database\Eloquent\Collection $schools, CarbonInterface $date): void
+    public function calculateForSchools(Collection $schools, CarbonInterface $date): void
     {
         $dateStr = $date->toDateString();
         $schoolIds = $schools->pluck('id')->toArray();
@@ -114,6 +115,7 @@ class TenantHealthScoreService
                         'recommendations' => ['Jalankan capture snapshot harian terlebih dahulu.'],
                     ]
                 );
+
                 continue;
             }
 
@@ -312,7 +314,7 @@ class TenantHealthScoreService
             [
                 'score' => $totalScore,
                 'status' => $status,
-                'summary' => "Skor kesehatan terkalkulasi sebesar {$totalScore}/100. Status sekolah: " . strtoupper($status),
+                'summary' => "Skor kesehatan terkalkulasi sebesar {$totalScore}/100. Status sekolah: ".strtoupper($status),
                 'risk_flags' => $riskFlags,
                 'recommendations' => $recommendations,
             ]
@@ -358,6 +360,7 @@ class TenantHealthScoreService
         if ($score >= 40) {
             return 'risk';
         }
+
         return 'critical';
     }
 }

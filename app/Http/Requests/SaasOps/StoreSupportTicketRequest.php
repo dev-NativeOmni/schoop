@@ -7,7 +7,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreSupportTicketRequest extends FormRequest
 {
-    public function authorize(): bool { return app(SaasOperationsAccessService::class)->canManageSupport($this->user()) || $this->user()->hasRole(['admin', 'admin_sekolah', 'principal', 'kepala_sekolah', 'teacher', 'merchant']); }
+    public function authorize(): bool
+    {
+        return app(SaasOperationsAccessService::class)->canManageSupport($this->user()) || $this->user()->hasRole(['admin', 'admin_sekolah', 'principal', 'kepala_sekolah', 'teacher', 'merchant']);
+    }
+
     public function rules(): array
     {
         return [

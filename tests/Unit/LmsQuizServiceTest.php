@@ -2,15 +2,15 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use App\Services\Lms\LmsQuizService;
 use App\Models\LmsQuizQuestion;
-use App\Services\Tenancy\TenantContextService;
-use App\Services\Lms\LmsProgressService;
-use App\Services\Lms\LmsNotificationService;
 use App\Services\Lms\LmsActivityLogger;
+use App\Services\Lms\LmsNotificationService;
+use App\Services\Lms\LmsProgressService;
+use App\Services\Lms\LmsQuizService;
+use App\Services\Tenancy\TenantContextService;
 use Illuminate\Support\Facades\DB;
 use Mockery;
+use Tests\TestCase;
 
 class LmsQuizServiceTest extends TestCase
 {

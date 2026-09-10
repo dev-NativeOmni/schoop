@@ -2,12 +2,11 @@
 
 namespace App\Services\Ai;
 
-use App\Models\AiTeacherReviewQueue;
 use App\Models\AiAssistanceOutput;
 use App\Models\AiLearningProfile;
 use App\Models\AiLearningRecommendation;
 use App\Models\AiPracticePlan;
-use App\Services\Ai\AiAuditLogger;
+use App\Models\AiTeacherReviewQueue;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 

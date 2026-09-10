@@ -99,7 +99,7 @@ class BoardingBedController extends Controller
     public function update(UpdateBoardingBedRequest $request, BoardingBed $bed): RedirectResponse
     {
         abort_unless($this->accessService->canManageMasterData($request->user()), 403);
-        
+
         $room = BoardingRoom::findOrFail($request->boarding_room_id);
         abort_unless($room->dormitory->school_id === $request->user()->school_id, 403);
         abort_unless($bed->room->dormitory->school_id === $request->user()->school_id, 403);

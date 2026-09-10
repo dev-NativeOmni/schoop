@@ -2,20 +2,17 @@
 
 namespace App\Services\Analytics;
 
-use App\Models\AcademicYear;
 use App\Models\AnalyticsSnapshot;
-use App\Models\AttendanceRecord;
 use App\Models\HafalanRecord;
+use App\Models\MobileApiUsageSnapshot;
 use App\Models\MutabaahRecord;
 use App\Models\School;
 use App\Models\SchoolAcademicSnapshot;
 use App\Models\SchoolFinanceSnapshot;
 use App\Models\SchoolOperationalSnapshot;
 use App\Models\SchoolSupportSnapshot;
-use App\Models\MobileApiUsageSnapshot;
 use App\Models\Student;
 use App\Models\TeacherProfile;
-use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +26,7 @@ class AnalyticsSnapshotService
 
         // Capture for each school
         $schoolIds = School::query()->where('is_active', true)->pluck('id')->toArray();
-        if (!empty($schoolIds)) {
+        if (! empty($schoolIds)) {
             $this->captureForSchools($schoolIds, $date);
         }
 
@@ -64,12 +61,14 @@ class AnalyticsSnapshotService
     }
 
     /**
-     * @param int|array $schoolIds
+     * @param  int|array  $schoolIds
      */
     public function captureAcademic($schoolIds, CarbonInterface $date): void
     {
         $schoolIds = (array) $schoolIds;
-        if (empty($schoolIds)) return;
+        if (empty($schoolIds)) {
+            return;
+        }
 
         $dateStr = $date->toDateString();
 
@@ -97,7 +96,7 @@ class AnalyticsSnapshotService
                 ->whereIn('school_id', $schoolIds)
                 ->where('is_active', true)
                 ->groupBy('school_id')->selectRaw('school_id, sum(daily_target_lines) as total')->pluck('total', 'school_id');
-            
+
             $actualLinesSum = HafalanRecord::query()
                 ->whereIn('school_id', $schoolIds)
                 ->whereDate('created_at', $dateStr)
@@ -126,7 +125,7 @@ class AnalyticsSnapshotService
                 ->whereIn('school_id', $schoolIds)
                 ->whereDate('assessment_date', $dateStr)
                 ->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
-            
+
             if (Schema::hasTable('tahsin_assessment_items')) {
                 $tahsinAvg = DB::table('tahsin_assessment_items')
                     ->join('tahsin_assessments', 'tahsin_assessment_items.tahsin_assessment_id', '=', 'tahsin_assessments.id')
@@ -188,12 +187,14 @@ class AnalyticsSnapshotService
     }
 
     /**
-     * @param int|array $schoolIds
+     * @param  int|array  $schoolIds
      */
     public function captureOperational($schoolIds, CarbonInterface $date): void
     {
         $schoolIds = (array) $schoolIds;
-        if (empty($schoolIds)) return;
+        if (empty($schoolIds)) {
+            return;
+        }
 
         $dateStr = $date->toDateString();
 
@@ -292,12 +293,14 @@ class AnalyticsSnapshotService
     }
 
     /**
-     * @param int|array $schoolIds
+     * @param  int|array  $schoolIds
      */
     public function captureFinance($schoolIds, CarbonInterface $date): void
     {
         $schoolIds = (array) $schoolIds;
-        if (empty($schoolIds)) return;
+        if (empty($schoolIds)) {
+            return;
+        }
 
         $dateStr = $date->toDateString();
 
@@ -441,12 +444,14 @@ class AnalyticsSnapshotService
     }
 
     /**
-     * @param int|array|null $schoolIds
+     * @param  int|array|null  $schoolIds
      */
     public function captureSupport($schoolIds, CarbonInterface $date): void
     {
         $schoolIds = is_null($schoolIds) ? [null] : (array) $schoolIds;
-        if (empty($schoolIds)) return;
+        if (empty($schoolIds)) {
+            return;
+        }
 
         $dateStr = $date->toDateString();
 
@@ -467,7 +472,7 @@ class AnalyticsSnapshotService
 
         if (Schema::hasTable('support_tickets')) {
             $query = DB::table('support_tickets');
-            if (!$isGlobal) {
+            if (! $isGlobal) {
                 $query->whereIn('school_id', $schoolIds);
                 $openCount = (clone $query)->whereIn('status', ['open', 'in_progress'])->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
                 $critical = (clone $query)->where('priority', 'critical')->whereIn('status', ['open', 'in_progress'])->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
@@ -476,31 +481,31 @@ class AnalyticsSnapshotService
                 $low = (clone $query)->where('priority', 'low')->whereIn('status', ['open', 'in_progress'])->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
                 $slaBreached = (clone $query)->where('sla_breached', true)->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
             } else {
-                $openCount = collect(["" => (clone $query)->whereIn('status', ['open', 'in_progress'])->count()]);
-                $critical = collect(["" => (clone $query)->where('priority', 'critical')->whereIn('status', ['open', 'in_progress'])->count()]);
-                $high = collect(["" => (clone $query)->where('priority', 'high')->whereIn('status', ['open', 'in_progress'])->count()]);
-                $medium = collect(["" => (clone $query)->where('priority', 'medium')->whereIn('status', ['open', 'in_progress'])->count()]);
-                $low = collect(["" => (clone $query)->where('priority', 'low')->whereIn('status', ['open', 'in_progress'])->count()]);
-                $slaBreached = collect(["" => (clone $query)->where('sla_breached', true)->count()]);
+                $openCount = collect(['' => (clone $query)->whereIn('status', ['open', 'in_progress'])->count()]);
+                $critical = collect(['' => (clone $query)->where('priority', 'critical')->whereIn('status', ['open', 'in_progress'])->count()]);
+                $high = collect(['' => (clone $query)->where('priority', 'high')->whereIn('status', ['open', 'in_progress'])->count()]);
+                $medium = collect(['' => (clone $query)->where('priority', 'medium')->whereIn('status', ['open', 'in_progress'])->count()]);
+                $low = collect(['' => (clone $query)->where('priority', 'low')->whereIn('status', ['open', 'in_progress'])->count()]);
+                $slaBreached = collect(['' => (clone $query)->where('sla_breached', true)->count()]);
             }
         }
 
         if (Schema::hasTable('incident_reports')) {
             $queryInc = DB::table('incident_reports');
-            if (!$isGlobal) {
+            if (! $isGlobal) {
                 $queryInc->whereIn('school_id', $schoolIds);
                 $incidents = (clone $queryInc)->whereDate('detected_at', $dateStr)->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
                 $sev1 = (clone $queryInc)->where('severity', 'sev1')->whereDate('detected_at', $dateStr)->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
                 $sev2 = (clone $queryInc)->where('severity', 'sev2')->whereDate('detected_at', $dateStr)->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
             } else {
-                $incidents = collect(["" => (clone $queryInc)->whereDate('detected_at', $dateStr)->count()]);
-                $sev1 = collect(["" => (clone $queryInc)->where('severity', 'sev1')->whereDate('detected_at', $dateStr)->count()]);
-                $sev2 = collect(["" => (clone $queryInc)->where('severity', 'sev2')->whereDate('detected_at', $dateStr)->count()]);
+                $incidents = collect(['' => (clone $queryInc)->whereDate('detected_at', $dateStr)->count()]);
+                $sev1 = collect(['' => (clone $queryInc)->where('severity', 'sev1')->whereDate('detected_at', $dateStr)->count()]);
+                $sev2 = collect(['' => (clone $queryInc)->where('severity', 'sev2')->whereDate('detected_at', $dateStr)->count()]);
             }
         }
 
         foreach ($schoolIds as $schoolId) {
-            $idx = $isGlobal ? "" : $schoolId;
+            $idx = $isGlobal ? '' : $schoolId;
             $sOpenCount = $openCount->get($idx) ?? 0;
             $sCritical = $critical->get($idx) ?? 0;
             $sHigh = $high->get($idx) ?? 0;
@@ -538,12 +543,14 @@ class AnalyticsSnapshotService
     }
 
     /**
-     * @param int|array|null $schoolIds
+     * @param  int|array|null  $schoolIds
      */
     public function captureMobileApi($schoolIds, CarbonInterface $date): void
     {
         $schoolIds = is_null($schoolIds) ? [null] : (array) $schoolIds;
-        if (empty($schoolIds)) return;
+        if (empty($schoolIds)) {
+            return;
+        }
 
         $dateStr = $date->toDateString();
 
@@ -568,62 +575,62 @@ class AnalyticsSnapshotService
 
         if (Schema::hasTable('mobile_devices')) {
             $query = DB::table('mobile_devices');
-            if (!$isGlobal) {
+            if (! $isGlobal) {
                 $query->whereIn('school_id', $schoolIds);
                 $devicesCount = (clone $query)->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
                 $androidCount = (clone $query)->where('platform', 'android')->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
                 $iosCount = (clone $query)->where('platform', 'ios')->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
             } else {
-                $devicesCount = collect(["" => (clone $query)->count()]);
-                $androidCount = collect(["" => (clone $query)->where('platform', 'android')->count()]);
-                $iosCount = collect(["" => (clone $query)->where('platform', 'ios')->count()]);
+                $devicesCount = collect(['' => (clone $query)->count()]);
+                $androidCount = collect(['' => (clone $query)->where('platform', 'android')->count()]);
+                $iosCount = collect(['' => (clone $query)->where('platform', 'ios')->count()]);
             }
         }
 
         if (Schema::hasTable('mobile_api_audit_logs')) {
             $query = DB::table('mobile_api_audit_logs')->whereDate('created_at', $dateStr);
-            if (!$isGlobal) {
+            if (! $isGlobal) {
                 $query->whereIn('school_id', $schoolIds);
                 $activeDevices = (clone $query)->groupBy('school_id')->selectRaw('school_id, count(distinct mobile_device_id) as count')->pluck('count', 'school_id');
                 $apiRequests = (clone $query)->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
                 $apiErrors = (clone $query)->where('status_code', '>=', 400)->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
             } else {
-                $activeDevices = collect(["" => (clone $query)->distinct('mobile_device_id')->count()]);
-                $apiRequests = collect(["" => (clone $query)->count()]);
-                $apiErrors = collect(["" => (clone $query)->where('status_code', '>=', 400)->count()]);
+                $activeDevices = collect(['' => (clone $query)->distinct('mobile_device_id')->count()]);
+                $apiRequests = collect(['' => (clone $query)->count()]);
+                $apiErrors = collect(['' => (clone $query)->where('status_code', '>=', 400)->count()]);
             }
         }
 
         if (Schema::hasTable('api_request_logs')) {
             $query = DB::table('api_request_logs')->whereDate('created_at', $dateStr);
-            if (!$isGlobal) {
+            if (! $isGlobal) {
                 $query->whereIn('school_id', $schoolIds);
                 $extApiRequests = (clone $query)->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
                 $extApiErrors = (clone $query)->where('response_status', '>=', 400)->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
                 $rateLimitHits = (clone $query)->where('response_status', 429)->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
                 $failedAuth = (clone $query)->where('response_status', 412)->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
             } else {
-                $extApiRequests = collect(["" => (clone $query)->count()]);
-                $extApiErrors = collect(["" => (clone $query)->where('response_status', '>=', 400)->count()]);
-                $rateLimitHits = collect(["" => (clone $query)->where('response_status', 429)->count()]);
-                $failedAuth = collect(["" => (clone $query)->where('response_status', 412)->count()]);
+                $extApiRequests = collect(['' => (clone $query)->count()]);
+                $extApiErrors = collect(['' => (clone $query)->where('response_status', '>=', 400)->count()]);
+                $rateLimitHits = collect(['' => (clone $query)->where('response_status', 429)->count()]);
+                $failedAuth = collect(['' => (clone $query)->where('response_status', 412)->count()]);
             }
         }
 
         if (Schema::hasTable('webhook_deliveries')) {
             $query = DB::table('webhook_deliveries')->whereDate('created_at', $dateStr);
-            if (!$isGlobal) {
+            if (! $isGlobal) {
                 $query->whereIn('school_id', $schoolIds);
                 $webhookSuccess = (clone $query)->where('status', 'delivered')->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
                 $webhookFailed = (clone $query)->where('status', 'failed')->groupBy('school_id')->selectRaw('school_id, count(*) as count')->pluck('count', 'school_id');
             } else {
-                $webhookSuccess = collect(["" => (clone $query)->where('status', 'delivered')->count()]);
-                $webhookFailed = collect(["" => (clone $query)->where('status', 'failed')->count()]);
+                $webhookSuccess = collect(['' => (clone $query)->where('status', 'delivered')->count()]);
+                $webhookFailed = collect(['' => (clone $query)->where('status', 'failed')->count()]);
             }
         }
 
         foreach ($schoolIds as $schoolId) {
-            $idx = $isGlobal ? "" : $schoolId;
+            $idx = $isGlobal ? '' : $schoolId;
 
             $sDevicesCount = $devicesCount->get($idx) ?? 0;
             $sActiveDevices = $activeDevices->get($idx) ?? 0;
@@ -665,12 +672,14 @@ class AnalyticsSnapshotService
     }
 
     /**
-     * @param int|array $schoolIds
+     * @param  int|array  $schoolIds
      */
     private function compileToGeneralSnapshots($schoolIds, CarbonInterface $date): void
     {
         $schoolIds = (array) $schoolIds;
-        if (empty($schoolIds)) return;
+        if (empty($schoolIds)) {
+            return;
+        }
 
         $dateStr = $date->toDateString();
 

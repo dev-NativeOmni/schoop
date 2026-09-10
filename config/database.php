@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
+use Pdo\Mysql;
 
 return [
 
@@ -48,8 +49,8 @@ return [
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'laravel'),
-            'username' => (str_contains(env('DB_HOST', ''), 'tidbcloud.com') && !str_contains(env('DB_USERNAME', ''), '.'))
-                ? '4VUSZYHVwCLVyvX.' . env('DB_USERNAME', 'root')
+            'username' => (str_contains(env('DB_HOST', ''), 'tidbcloud.com') && ! str_contains(env('DB_USERNAME', ''), '.'))
+                ? '4VUSZYHVwCLVyvX.'.env('DB_USERNAME', 'root')
                 : env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
@@ -60,7 +61,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                (defined('Pdo\Mysql::ATTR_SSL_CA') ? \Pdo\Mysql::ATTR_SSL_CA : (defined('PDO::MYSQL_ATTR_SSL_CA') ? PDO::MYSQL_ATTR_SSL_CA : 1007)) => env('MYSQL_ATTR_SSL_CA', '/etc/ssl/cert.pem'),
+                (defined('Pdo\Mysql::ATTR_SSL_CA') ? Mysql::ATTR_SSL_CA : (defined('PDO::MYSQL_ATTR_SSL_CA') ? PDO::MYSQL_ATTR_SSL_CA : 1007)) => env('MYSQL_ATTR_SSL_CA', '/etc/ssl/cert.pem'),
             ]) : [],
         ],
 
@@ -80,7 +81,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                (defined('Pdo\Mysql::ATTR_SSL_CA') ? \Pdo\Mysql::ATTR_SSL_CA : (defined('PDO::MYSQL_ATTR_SSL_CA') ? PDO::MYSQL_ATTR_SSL_CA : 1007)) => env('MYSQL_ATTR_SSL_CA'),
+                (defined('Pdo\Mysql::ATTR_SSL_CA') ? Mysql::ATTR_SSL_CA : (defined('PDO::MYSQL_ATTR_SSL_CA') ? PDO::MYSQL_ATTR_SSL_CA : 1007)) => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
 

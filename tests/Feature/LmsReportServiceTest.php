@@ -10,7 +10,6 @@ use App\Models\LmsLessonProgress;
 use App\Models\Role;
 use App\Models\School;
 use App\Models\Student;
-use App\Models\User;
 use App\Services\Lms\LmsReportService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,8 +20,11 @@ class LmsReportServiceTest extends TestCase
     use RefreshDatabase;
 
     private School $school;
+
     private LmsCourse $course;
+
     private LmsCourseModule $module;
+
     private LmsLesson $lesson;
 
     protected function setUp(): void
@@ -77,7 +79,7 @@ class LmsReportServiceTest extends TestCase
 
     public function test_get_lesson_progress_stats_with_no_enrollments(): void
     {
-        $reportService = new LmsReportService();
+        $reportService = new LmsReportService;
 
         $stats = $reportService->getLessonProgressStats($this->lesson->id);
 
@@ -118,7 +120,7 @@ class LmsReportServiceTest extends TestCase
 
         // Student 3 has not started (no progress record)
 
-        $reportService = new LmsReportService();
+        $reportService = new LmsReportService;
         $stats = $reportService->getLessonProgressStats($this->lesson->id);
 
         $this->assertEquals([
@@ -130,7 +132,7 @@ class LmsReportServiceTest extends TestCase
 
     public function test_get_lesson_progress_stats_throws_exception_for_missing_lesson(): void
     {
-        $reportService = new LmsReportService();
+        $reportService = new LmsReportService;
 
         $this->expectException(ModelNotFoundException::class);
         $reportService->getLessonProgressStats(99999);

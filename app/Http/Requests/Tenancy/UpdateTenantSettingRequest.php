@@ -14,7 +14,7 @@ class UpdateTenantSettingRequest extends FormRequest
         $accessService = app(TenantAccessService::class);
         $schoolId = app(TenantContextService::class)->activeSchoolId();
 
-        if (!$schoolId) {
+        if (! $schoolId) {
             return false;
         }
 

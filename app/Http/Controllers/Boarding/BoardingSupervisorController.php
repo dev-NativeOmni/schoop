@@ -8,8 +8,8 @@ use App\Http\Requests\Boarding\UpdateBoardingSupervisorRequest;
 use App\Models\BoardingDormitory;
 use App\Models\BoardingRoom;
 use App\Models\BoardingSupervisorProfile;
-use App\Models\User;
 use App\Models\Role;
+use App\Models\User;
 use App\Services\Boarding\BoardingAccessService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -42,7 +42,7 @@ class BoardingSupervisorController extends Controller
         abort_unless($this->accessService->canManageMasterData($request->user()), 403);
 
         $schoolId = $request->user()->school_id;
-        
+
         // Find users with boarding_supervisor role or teacher/admin roles
         $users = User::query()
             ->where('school_id', $schoolId)
@@ -105,7 +105,7 @@ class BoardingSupervisorController extends Controller
         abort_unless($supervisor->school_id === $request->user()->school_id, 403);
 
         $schoolId = $request->user()->school_id;
-        
+
         $users = User::query()
             ->where('school_id', $schoolId)
             ->whereHas('role', function ($q) {
@@ -113,7 +113,7 @@ class BoardingSupervisorController extends Controller
             })
             ->where(function ($q) use ($supervisor) {
                 $q->whereDoesntHave('boardingSupervisorProfile')
-                  ->orWhere('id', $supervisor->user_id);
+                    ->orWhere('id', $supervisor->user_id);
             })
             ->get();
 

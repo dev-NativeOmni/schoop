@@ -19,13 +19,13 @@ class TenantDashboardController extends Controller
     public function index(TenantContextService $contextService): View
     {
         $school = $contextService->activeSchool();
-        if (!$school) {
+        if (! $school) {
             abort(404, 'Sekolah tidak ditemukan atau belum diset.');
         }
 
         // ⚡ Bolt: Cache tenant statistics per school for 15 minutes to reduce database load.
         // Impact: Reduces 4 unindexed full-table count queries to 0 for cached hits.
-        $stats = Cache::remember('tenant.dashboard.stats.school.' . $school->id, now()->addMinutes(15), function () use ($school) {
+        $stats = Cache::remember('tenant.dashboard.stats.school.'.$school->id, now()->addMinutes(15), function () use ($school) {
             return [
                 'students_count' => Student::query()->where('school_id', $school->id)->count(),
                 'classrooms_count' => ClassRoom::query()->where('school_id', $school->id)->count(),

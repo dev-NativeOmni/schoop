@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-class DashboardTahfizhSummaryExport implements FromCollection, WithHeadings, ShouldAutoSize, WithTitle
+class DashboardTahfizhSummaryExport implements FromCollection, ShouldAutoSize, WithHeadings, WithTitle
 {
     public function __construct(
         private readonly array $summary,

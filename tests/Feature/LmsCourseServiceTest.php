@@ -3,13 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\LmsCourse;
-use App\Models\LmsCourseInstructor;
 use App\Models\School;
 use App\Models\TeacherProfile;
 use App\Models\User;
+use App\Services\Lms\LmsActivityLogger;
 use App\Services\Lms\LmsCourseService;
 use App\Services\Tenancy\TenantContextService;
-use App\Services\Lms\LmsActivityLogger;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

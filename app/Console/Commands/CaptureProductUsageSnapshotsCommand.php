@@ -9,6 +9,7 @@ use Illuminate\Console\Command;
 class CaptureProductUsageSnapshotsCommand extends Command
 {
     protected $signature = 'app:capture-product-usage-snapshots {--school_id=}';
+
     protected $description = 'Capture aggregate product usage snapshots per tenant.';
 
     public function handle(UsageSnapshotService $snapshots): int

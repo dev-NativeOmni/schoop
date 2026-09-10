@@ -18,9 +18,13 @@ class LmsCourseServiceTest extends TestCase
     use RefreshDatabase;
 
     private LmsCourseService $service;
+
     private $tenantContextMock;
+
     private $activityLoggerMock;
+
     private School $school;
+
     private User $user;
 
     protected function setUp(): void

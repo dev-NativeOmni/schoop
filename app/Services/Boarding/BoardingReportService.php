@@ -2,14 +2,13 @@
 
 namespace App\Services\Boarding;
 
-use App\Models\BoardingDormitory;
-use App\Models\BoardingRoom;
 use App\Models\BoardingBed;
-use App\Models\BoardingLeaveRequest;
-use App\Models\BoardingHealthLog;
 use App\Models\BoardingDisciplineLog;
+use App\Models\BoardingDormitory;
+use App\Models\BoardingHealthLog;
+use App\Models\BoardingLeaveRequest;
 use App\Models\BoardingRollCallRecord;
-use App\Models\BoardingStudentAssignment;
+use App\Models\BoardingRoom;
 use Illuminate\Support\Facades\DB;
 
 class BoardingReportService

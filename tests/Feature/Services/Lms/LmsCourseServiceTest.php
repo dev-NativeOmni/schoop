@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Services\Lms;
 
-use App\Models\LmsActivityLog;
 use App\Models\LmsCourse;
 use App\Models\LmsCourseInstructor;
 use App\Models\School;
@@ -18,10 +17,15 @@ class LmsCourseServiceTest extends TestCase
     use RefreshDatabase;
 
     private School $school;
+
     private User $admin;
+
     private User $teacher1;
+
     private User $teacher2;
+
     private TeacherProfile $teacherProfile1;
+
     private TeacherProfile $teacherProfile2;
 
     protected function setUp(): void

@@ -13,7 +13,9 @@ use Illuminate\Http\Request;
 class SchoolPwaSettingController extends Controller
 {
     protected TenantContextService $tenantContext;
+
     protected SchoolPwaManifestService $pwaService;
+
     protected WhiteLabelAccessService $accessService;
 
     public function __construct(
@@ -32,6 +34,7 @@ class SchoolPwaSettingController extends Controller
         if ($user->isSuperAdmin() && $request->has('school_id')) {
             return (int) $request->input('school_id');
         }
+
         return $this->tenantContext->activeSchoolId() ?? abort(403, 'Context sekolah tidak ditemukan.');
     }
 
@@ -63,7 +66,7 @@ class SchoolPwaSettingController extends Controller
         $this->accessService->ensureCanManage($request->user(), $schoolId);
 
         $data = $request->validated();
-        
+
         $icon192 = $request->file('icon_192');
         $icon512 = $request->file('icon_512');
 

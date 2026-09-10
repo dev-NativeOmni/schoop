@@ -2,11 +2,11 @@
 
 namespace App\Services\Lms;
 
+use App\Models\LmsAssignmentSubmission;
 use App\Models\LmsCourse;
 use App\Models\LmsCourseEnrollment;
 use App\Models\LmsLesson;
 use App\Models\LmsLessonProgress;
-use App\Models\LmsAssignmentSubmission;
 use App\Models\LmsQuizAttempt;
 use Illuminate\Support\Facades\DB;
 
@@ -71,7 +71,7 @@ class LmsReportService
             ->where('student_id', $studentId)
             ->first();
 
-        if (!$enrollment) {
+        if (! $enrollment) {
             return [];
         }
 

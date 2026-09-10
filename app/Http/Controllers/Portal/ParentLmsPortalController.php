@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Portal;
 
 use App\Http\Controllers\Controller;
-use App\Models\Student;
 use App\Models\LmsCourse;
+use App\Models\LmsLessonProgress;
+use App\Models\Student;
 use App\Services\Lms\LmsAccessService;
 use App\Services\Lms\LmsReportService;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +23,7 @@ class ParentLmsPortalController extends Controller
     public function index(): View
     {
         $parent = Auth::user()->parentProfile;
-        if (!$parent) {
+        if (! $parent) {
             abort(403, 'Profil wali murid tidak ditemukan.');
         }
 
@@ -36,22 +37,22 @@ class ParentLmsPortalController extends Controller
     public function showChildProgress(Student $student, LmsCourse $course): View
     {
         $user = Auth::user();
-        if (!$this->accessService->canViewChildProgress($user, $student)) {
+        if (! $this->accessService->canViewChildProgress($user, $student)) {
             abort(403, 'Anda tidak diizinkan memantau progres santri ini.');
         }
 
-        if (!$this->accessService->canViewCourse($user, $course)) {
+        if (! $this->accessService->canViewCourse($user, $course)) {
             abort(403, 'Santri tidak terdaftar pada kelas ini.');
         }
 
         $summary = $this->reportService->getStudentCourseSummary($student->id, $course->id);
-        
+
         $course->load(['modules.lessons' => function ($query) {
             $query->where('visibility', 'published')->orderBy('sort_order');
         }]);
 
         // Load student lesson progress
-        $completedLessonIds = \App\Models\LmsLessonProgress::where('student_id', $student->id)
+        $completedLessonIds = LmsLessonProgress::where('student_id', $student->id)
             ->where('status', 'completed')
             ->pluck('lesson_id')
             ->toArray();

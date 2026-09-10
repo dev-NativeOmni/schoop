@@ -7,12 +7,13 @@ use App\Models\AiSafetyEvent;
 use App\Services\Ai\AiAccessService;
 use App\Services\Tenancy\TenantContextService;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AiSafetyEventController extends Controller
 {
     protected AiAccessService $accessService;
+
     protected TenantContextService $tenantContext;
 
     public function __construct(AiAccessService $accessService, TenantContextService $tenantContext)
@@ -24,7 +25,7 @@ class AiSafetyEventController extends Controller
     public function index(Request $request): View
     {
         $schoolId = $this->tenantContext->activeSchoolId();
-        if (!$this->accessService->canManageAiSettings(Auth::user(), $schoolId)) {
+        if (! $this->accessService->canManageAiSettings(Auth::user(), $schoolId)) {
             abort(403, 'Unauthorized to view AI safety events.');
         }
 
@@ -40,7 +41,7 @@ class AiSafetyEventController extends Controller
     public function show(AiSafetyEvent $safetyEvent): View
     {
         $schoolId = $this->tenantContext->activeSchoolId();
-        if (!$this->accessService->canManageAiSettings(Auth::user(), $schoolId) || $safetyEvent->school_id !== $schoolId) {
+        if (! $this->accessService->canManageAiSettings(Auth::user(), $schoolId) || $safetyEvent->school_id !== $schoolId) {
             abort(403, 'Unauthorized to view safety event details.');
         }
 

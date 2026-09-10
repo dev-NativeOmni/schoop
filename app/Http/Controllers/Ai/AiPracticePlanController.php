@@ -3,24 +3,27 @@
 namespace App\Http\Controllers\Ai;
 
 use App\Http\Controllers\Controller;
-use App\Models\Student;
-use App\Models\AiPracticePlan;
 use App\Http\Requests\Ai\GeneratePracticePlanRequest;
-use App\Services\Ai\PracticePlanGenerator;
+use App\Models\AiPracticePlan;
+use App\Models\Student;
 use App\Services\Ai\AiAccessService;
 use App\Services\Ai\AiAuditLogger;
+use App\Services\Ai\PracticePlanGenerator;
 use App\Services\Tenancy\TenantContextService;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AiPracticePlanController extends Controller
 {
     protected PracticePlanGenerator $planGenerator;
+
     protected AiAccessService $accessService;
+
     protected AiAuditLogger $auditLogger;
+
     protected TenantContextService $tenantContext;
 
     public function __construct(
@@ -50,7 +53,7 @@ class AiPracticePlanController extends Controller
 
     public function show(AiPracticePlan $practicePlan): View
     {
-        if (!$this->accessService->canViewStudentAiData(Auth::user(), $practicePlan->student)) {
+        if (! $this->accessService->canViewStudentAiData(Auth::user(), $practicePlan->student)) {
             abort(403, 'Unauthorized access to practice plan.');
         }
 
@@ -72,7 +75,7 @@ class AiPracticePlanController extends Controller
         $studentId = $request->input('student_id');
         $student = Student::findOrFail($studentId);
 
-        if (!$this->accessService->canReviewAiOutput(Auth::user(), $student)) {
+        if (! $this->accessService->canReviewAiOutput(Auth::user(), $student)) {
             abort(403, 'Unauthorized to generate practice plans.');
         }
 
@@ -95,7 +98,7 @@ class AiPracticePlanController extends Controller
     public function publish(AiPracticePlan $practicePlan): RedirectResponse
     {
         $student = $practicePlan->student;
-        if (!$this->accessService->canReviewAiOutput(Auth::user(), $student)) {
+        if (! $this->accessService->canReviewAiOutput(Auth::user(), $student)) {
             abort(403, 'Unauthorized to publish practice plan.');
         }
 

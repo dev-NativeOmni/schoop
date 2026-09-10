@@ -7,7 +7,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreIncidentReportRequest extends FormRequest
 {
-    public function authorize(): bool { return app(SaasOperationsAccessService::class)->canManageIncidents($this->user()); }
+    public function authorize(): bool
+    {
+        return app(SaasOperationsAccessService::class)->canManageIncidents($this->user());
+    }
+
     public function rules(): array
     {
         return [

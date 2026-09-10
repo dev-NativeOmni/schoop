@@ -12,7 +12,9 @@ use Illuminate\Http\Request;
 class TenantPublicLandingController extends Controller
 {
     protected TenantContextService $tenantContext;
+
     protected WhiteLabelPublicationService $publicationService;
+
     protected SchoolThemeService $themeService;
 
     public function __construct(
@@ -29,7 +31,7 @@ class TenantPublicLandingController extends Controller
     {
         $schoolId = $this->tenantContext->activeSchoolId();
 
-        if (!$schoolId) {
+        if (! $schoolId) {
             return redirect()->route('login');
         }
 

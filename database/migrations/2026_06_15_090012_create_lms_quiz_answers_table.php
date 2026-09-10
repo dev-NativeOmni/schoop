@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('lms_quiz_answers', function (Blueprint $table): void {
             $table->id();
-            
+
             $table->foreignId('school_id')
                 ->nullable()
                 ->constrained('schools')
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->text('student_answer')->nullable();
             $table->boolean('is_correct')->default(false);
             $table->decimal('score_obtained', 5, 2)->default(0.00);
-            
+
             $table->timestamps();
 
             $table->unique(['quiz_attempt_id', 'quiz_question_id'], 'lms_answers_attempt_question_unique');

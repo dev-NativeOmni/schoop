@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Lms;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Lms\StoreLmsAssignmentRequest;
 use App\Http\Requests\Lms\UpdateLmsAssignmentRequest;
-use App\Models\LmsCourse;
 use App\Models\LmsAssignment;
-use App\Services\Lms\LmsAssignmentService;
+use App\Models\LmsCourse;
 use App\Services\Lms\LmsAccessService;
+use App\Services\Lms\LmsAssignmentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,7 +24,7 @@ class LmsAssignmentController extends Controller
     public function store(StoreLmsAssignmentRequest $request): RedirectResponse
     {
         $course = LmsCourse::findOrFail($request->input('course_id'));
-        if (!$this->accessService->canManageCourse(Auth::user(), $course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $course)) {
             abort(403);
         }
 
@@ -36,7 +36,7 @@ class LmsAssignmentController extends Controller
 
     public function update(UpdateLmsAssignmentRequest $request, LmsAssignment $assignment): RedirectResponse
     {
-        if (!$this->accessService->canManageCourse(Auth::user(), $assignment->course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $assignment->course)) {
             abort(403);
         }
 
@@ -48,7 +48,7 @@ class LmsAssignmentController extends Controller
 
     public function destroy(LmsAssignment $assignment): RedirectResponse
     {
-        if (!$this->accessService->canManageCourse(Auth::user(), $assignment->course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $assignment->course)) {
             abort(403);
         }
 

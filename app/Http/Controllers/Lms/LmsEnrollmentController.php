@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Lms;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Lms\StoreLmsEnrollmentRequest;
+use App\Models\ClassRoom;
 use App\Models\LmsCourse;
 use App\Models\LmsCourseEnrollment;
-use App\Models\ClassRoom;
 use App\Models\Student;
-use App\Services\Lms\LmsEnrollmentService;
 use App\Services\Lms\LmsAccessService;
+use App\Services\Lms\LmsEnrollmentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +29,7 @@ class LmsEnrollmentController extends Controller
         $courseId = $request->input('course_id');
         $course = LmsCourse::findOrFail($courseId);
 
-        if (!$this->accessService->canViewCourse(Auth::user(), $course)) {
+        if (! $this->accessService->canViewCourse(Auth::user(), $course)) {
             abort(403);
         }
 
@@ -46,7 +46,7 @@ class LmsEnrollmentController extends Controller
     public function store(StoreLmsEnrollmentRequest $request): RedirectResponse
     {
         $course = LmsCourse::findOrFail($request->input('course_id'));
-        if (!$this->accessService->canManageCourse(Auth::user(), $course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $course)) {
             abort(403);
         }
 
@@ -66,7 +66,7 @@ class LmsEnrollmentController extends Controller
     public function destroy(LmsCourseEnrollment $enrollment): RedirectResponse
     {
         $course = $enrollment->course;
-        if (!$this->accessService->canManageCourse(Auth::user(), $course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $course)) {
             abort(403);
         }
 

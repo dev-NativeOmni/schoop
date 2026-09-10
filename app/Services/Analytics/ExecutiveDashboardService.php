@@ -2,12 +2,11 @@
 
 namespace App\Services\Analytics;
 
+use App\Models\MobileApiUsageSnapshot;
 use App\Models\School;
 use App\Models\SchoolAcademicSnapshot;
 use App\Models\SchoolFinanceSnapshot;
-use App\Models\SchoolOperationalSnapshot;
 use App\Models\SchoolSupportSnapshot;
-use App\Models\MobileApiUsageSnapshot;
 use App\Models\TenantHealthScore;
 use Carbon\Carbon;
 
@@ -18,7 +17,7 @@ class ExecutiveDashboardService
         $today = Carbon::today()->toDateString();
 
         $activeTenants = School::query()->where('is_active', true)->count();
-        
+
         $avgHealthScore = TenantHealthScore::query()
             ->where('score_date', $today)
             ->avg('score') ?: TenantHealthScore::query()->avg('score') ?: 0;

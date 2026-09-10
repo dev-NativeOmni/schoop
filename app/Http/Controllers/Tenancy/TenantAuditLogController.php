@@ -20,7 +20,7 @@ class TenantAuditLogController extends Controller
     public function index(TenantAuditLogFilterRequest $request): View
     {
         $schoolId = $this->contextService->activeSchoolId();
-        
+
         $query = TenantAuditLog::query()
             ->with(['user', 'school'])
             ->where('school_id', $schoolId);
@@ -30,7 +30,7 @@ class TenantAuditLogController extends Controller
         }
 
         if ($request->filled('action')) {
-            $query->where('action', 'like', '%' . $request->input('action') . '%');
+            $query->where('action', 'like', '%'.$request->input('action').'%');
         }
 
         if ($request->filled('start_date')) {
@@ -45,8 +45,8 @@ class TenantAuditLogController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('action', 'like', "%{$search}%")
-                  ->orWhere('auditable_type', 'like', "%{$search}%")
-                  ->orWhere('ip_address', 'like', "%{$search}%");
+                    ->orWhere('auditable_type', 'like', "%{$search}%")
+                    ->orWhere('ip_address', 'like', "%{$search}%");
             });
         }
 

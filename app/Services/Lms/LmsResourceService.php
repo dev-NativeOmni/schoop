@@ -5,8 +5,8 @@ namespace App\Services\Lms;
 use App\Models\LmsLessonResource;
 use App\Services\Tenancy\TenantContextService;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class LmsResourceService
 {
@@ -27,7 +27,7 @@ class LmsResourceService
             if ($file && $data['resource_type'] === 'file') {
                 $this->validateFile($file);
 
-                $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9_.-]/', '', $file->getClientOriginalName());
+                $filename = time().'_'.preg_replace('/[^a-zA-Z0-9_.-]/', '', $file->getClientOriginalName());
                 $path = $file->storeAs("private/lms/{$schoolId}", $filename, 'local');
 
                 $data['file_path'] = $path;
@@ -35,7 +35,7 @@ class LmsResourceService
                 $data['file_size'] = $file->getSize();
             }
 
-            if (!isset($data['sort_order'])) {
+            if (! isset($data['sort_order'])) {
                 $maxSort = LmsLessonResource::query()->where(['lesson_id' => $data['lesson_id']])->max('sort_order');
                 $data['sort_order'] = $maxSort !== null ? $maxSort + 1 : 1;
             }
@@ -61,7 +61,7 @@ class LmsResourceService
     public function validateFile(UploadedFile $file): void
     {
         $extension = strtolower($file->getClientOriginalExtension());
-        
+
         $allowedExtensions = [
             // Documents
             'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'rtf',

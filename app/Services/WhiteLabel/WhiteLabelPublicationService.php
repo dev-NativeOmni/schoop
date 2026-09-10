@@ -3,15 +3,17 @@
 namespace App\Services\WhiteLabel;
 
 use App\Models\SchoolBrandProfile;
-use App\Models\SchoolThemeSetting;
 use App\Models\SchoolPwaSetting;
+use App\Models\SchoolThemeSetting;
 use App\Models\WhiteLabelPublication;
 use Illuminate\Support\Facades\DB;
 
 class WhiteLabelPublicationService
 {
     protected SchoolBrandingService $brandingService;
+
     protected SchoolThemeService $themeService;
+
     protected SchoolPwaManifestService $pwaService;
 
     public function __construct(
@@ -107,7 +109,7 @@ class WhiteLabelPublicationService
                 'status' => 'published',
                 'published_at' => now(),
                 'published_by' => $userId,
-                'notes' => 'Rolled back to publication #' . $publicationId,
+                'notes' => 'Rolled back to publication #'.$publicationId,
             ]);
         });
     }
@@ -129,7 +131,7 @@ class WhiteLabelPublicationService
                 'brand' => new SchoolBrandProfile($publication->brand_snapshot ?? []),
                 'theme' => new SchoolThemeSetting($publication->theme_snapshot ?? []),
                 'pwa' => new SchoolPwaSetting($publication->pwa_snapshot ?? []),
-                'is_live' => true
+                'is_live' => true,
             ];
         }
 
@@ -138,7 +140,7 @@ class WhiteLabelPublicationService
             'brand' => $this->brandingService->getOrCreateProfile($schoolId),
             'theme' => $this->themeService->getOrCreateTheme($schoolId),
             'pwa' => $this->pwaService->getOrCreatePwaSetting($schoolId),
-            'is_live' => false
+            'is_live' => false,
         ];
     }
 }

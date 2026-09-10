@@ -9,7 +9,6 @@ use App\Models\SchoolAcademicSnapshot;
 use App\Models\SchoolFinanceSnapshot;
 use App\Models\SchoolOperationalSnapshot;
 use App\Models\SchoolSupportSnapshot;
-use App\Models\MobileApiUsageSnapshot;
 use App\Models\TenantHealthScore;
 use Carbon\CarbonInterface;
 
@@ -142,9 +141,10 @@ class ExecutiveReportService
             $highlights[] = "Total setoran hafalan tercatat sebanyak {$metrics['hafalan_records']} records.";
         } else {
             $highlights[] = "Total setoran hafalan santri bulan ini adalah {$metrics['hafalan_records']} records.";
-            $highlights[] = "Rata-rata pencapaian target Tahfizh mencapai " . round($metrics['tahfizh_rate'], 1) . "%.";
-            $highlights[] = "Rata-rata kehadiran santri mencapai " . round($metrics['attendance_rate'], 1) . "%.";
+            $highlights[] = 'Rata-rata pencapaian target Tahfizh mencapai '.round($metrics['tahfizh_rate'], 1).'%.';
+            $highlights[] = 'Rata-rata kehadiran santri mencapai '.round($metrics['attendance_rate'], 1).'%.';
         }
+
         return $highlights;
     }
 
@@ -160,15 +160,16 @@ class ExecutiveReportService
             }
         } else {
             if ($metrics['tahfizh_rate'] < 60) {
-                $risks[] = "Pencapaian target Tahfizh berada di bawah rata-rata nasional (kategori rawan).";
+                $risks[] = 'Pencapaian target Tahfizh berada di bawah rata-rata nasional (kategori rawan).';
             }
             if ($metrics['mutabaah_rate'] < 50) {
-                $risks[] = "Tingkat kedisiplinan pengisian mutabaah yaumiyah masih rendah.";
+                $risks[] = 'Tingkat kedisiplinan pengisian mutabaah yaumiyah masih rendah.';
             }
             if ($metrics['late_rate'] > 10) {
                 $risks[] = "Tingkat keterlambatan santri masuk sekolah di atas batas normal ({$metrics['late_rate']}%).";
             }
         }
+
         return $risks;
     }
 
@@ -177,25 +178,25 @@ class ExecutiveReportService
         $recs = [];
         if ($isInternal) {
             if ($metrics['risk_tenants'] > 0) {
-                $recs[] = "Tim Customer Success direkomendasikan melakukan simulasi onboarding ulang pada tenant berisiko.";
+                $recs[] = 'Tim Customer Success direkomendasikan melakukan simulasi onboarding ulang pada tenant berisiko.';
             }
             if ($metrics['open_tickets'] > 0) {
-                $recs[] = "Prioritaskan penyelesaian tiket support yang hampir melanggar SLA.";
+                $recs[] = 'Prioritaskan penyelesaian tiket support yang hampir melanggar SLA.';
             }
         } else {
             if ($metrics['tahfizh_rate'] < 60) {
-                $recs[] = "Lakukan audit konsistensi input setoran guru tahfizh.";
+                $recs[] = 'Lakukan audit konsistensi input setoran guru tahfizh.';
             }
             if ($metrics['mutabaah_rate'] < 50) {
-                $recs[] = "Berikan sosialisasi atau training ulang pengisian modul portal orang tua.";
+                $recs[] = 'Berikan sosialisasi atau training ulang pengisian modul portal orang tua.';
             }
             if ($metrics['late_rate'] > 10) {
-                $recs[] = "Evaluasi jam masuk kedatangan santri dengan tim kedisiplinan.";
+                $recs[] = 'Evaluasi jam masuk kedatangan santri dengan tim kedisiplinan.';
             }
         }
 
         if (empty($recs)) {
-            $recs[] = "Pertahankan konsistensi performa operasional saat ini.";
+            $recs[] = 'Pertahankan konsistensi performa operasional saat ini.';
         }
 
         return $recs;

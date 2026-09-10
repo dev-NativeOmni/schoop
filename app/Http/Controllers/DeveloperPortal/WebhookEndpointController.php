@@ -11,7 +11,6 @@ use App\Models\WebhookEndpoint;
 use App\Services\DeveloperPortal\ApiAccessService;
 use App\Services\DeveloperPortal\WebhookEventService;
 use App\Services\DeveloperPortal\WebhookSignatureService;
-use Illuminate\Http\Request;
 
 class WebhookEndpointController extends Controller
 {

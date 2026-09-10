@@ -2,12 +2,9 @@
 
 namespace App\Services\Ai;
 
-use App\Models\Student;
 use App\Models\AiLearningProfile;
-use App\Models\AiLearningSignal;
-use App\Services\Ai\LearningSignalAggregator;
+use App\Models\Student;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 
 class QuranLearningProfileService
 {
@@ -34,11 +31,21 @@ class QuranLearningProfileService
         $hasLms = $signals->contains('source_module', 'lms');
 
         $confidence = 0;
-        if ($hasTahfizh) $confidence += 30;
-        if ($hasTahsin) $confidence += 20;
-        if ($hasMutabaah) $confidence += 25;
-        if ($hasAttendance) $confidence += 15;
-        if ($hasLms) $confidence += 10;
+        if ($hasTahfizh) {
+            $confidence += 30;
+        }
+        if ($hasTahsin) {
+            $confidence += 20;
+        }
+        if ($hasMutabaah) {
+            $confidence += 25;
+        }
+        if ($hasAttendance) {
+            $confidence += 15;
+        }
+        if ($hasLms) {
+            $confidence += 10;
+        }
         if ($confidence === 0) {
             $confidence = 30; // Min default
         }
@@ -56,14 +63,14 @@ class QuranLearningProfileService
 
         if ($tahfizhTrend === 'Stabil') {
             $strengths[] = 'Progres setoran hafalan Qur’an berjalan konsisten.';
-        } else if ($tahfizhTrend === 'Perlu perhatian') {
+        } elseif ($tahfizhTrend === 'Perlu perhatian') {
             $focusAreas[] = 'Menstabilkan kembali setoran harian untuk mengurangi hutang hafalan.';
         }
 
         if ($tahsinTrend === 'Baik') {
             $strengths[] = 'Menunjukkan pemahaman tajwid dan makhraj yang baik.';
         } else {
-            $weakSkills = $signals->filter(fn($s) => $s['source_module'] === 'tahsin');
+            $weakSkills = $signals->filter(fn ($s) => $s['source_module'] === 'tahsin');
             foreach ($weakSkills as $ws) {
                 $focusAreas[] = $ws['description'];
             }
@@ -71,13 +78,13 @@ class QuranLearningProfileService
 
         if ($mutabaahTrend === 'Konsisten') {
             $strengths[] = 'Sangat rajin dan konsisten dalam mengamalkan ibadah harian.';
-        } else if ($mutabaahTrend === 'Kurang konsisten') {
+        } elseif ($mutabaahTrend === 'Kurang konsisten') {
             $focusAreas[] = 'Meningkatkan konsistensi dalam mencatat dan menjalankan mutabaah harian.';
         }
 
         if ($attendanceTrend === 'Baik') {
             $strengths[] = 'Tingkat kehadiran di kelas sangat baik.';
-        } else if ($attendanceTrend === 'Perlu perhatian') {
+        } elseif ($attendanceTrend === 'Perlu perhatian') {
             $focusAreas[] = 'Memperbaiki absensi dan mengurangi pola absen tidak hadir.';
         }
 
@@ -92,13 +99,13 @@ class QuranLearningProfileService
         $summaryParts = [];
         $summaryParts[] = "Ananda memiliki profil pembelajaran dengan tingkat keandalan data {$confidence}%.";
         if ($tahfizhTrend === 'Stabil' && $tahsinTrend === 'Baik') {
-            $summaryParts[] = "Secara umum progres hafalan dan kualitas bacaan ananda berkembang dengan baik.";
+            $summaryParts[] = 'Secara umum progres hafalan dan kualitas bacaan ananda berkembang dengan baik.';
         } else {
-            $summaryParts[] = "Pekan ini ananda disarankan fokus pada latihan penguatan tajwid serta menjaga rutinitas murajaah harian.";
+            $summaryParts[] = 'Pekan ini ananda disarankan fokus pada latihan penguatan tajwid serta menjaga rutinitas murajaah harian.';
         }
 
         if ($mutabaahTrend === 'Kurang konsisten') {
-            $summaryParts[] = "Dukungan orang tua di rumah sangat diperlukan untuk memotivasi ananda beribadah harian secara rutin.";
+            $summaryParts[] = 'Dukungan orang tua di rumah sangat diperlukan untuk memotivasi ananda beribadah harian secara rutin.';
         }
 
         $summary = implode(' ', $summaryParts);

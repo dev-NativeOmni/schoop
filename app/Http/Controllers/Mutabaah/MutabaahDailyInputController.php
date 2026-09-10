@@ -29,7 +29,7 @@ class MutabaahDailyInputController extends Controller
             abort(403, 'Anda tidak memiliki akses untuk input mutabaah.');
         }
 
-        $selectedDate    = $request->input('record_date', today()->toDateString());
+        $selectedDate = $request->input('record_date', today()->toDateString());
         $selectedStudent = null;
 
         $students = $this->getStudents($request, $user);
@@ -48,8 +48,8 @@ class MutabaahDailyInputController extends Controller
         // Load existing records for all displayed students
         $studentIds = $students->pluck('id')->all();
         $existingRecords = collect();
-        
-        if (!empty($studentIds)) {
+
+        if (! empty($studentIds)) {
             $existingRecords = MutabaahRecord::query()
                 ->whereIn('student_id', $studentIds)
                 ->whereDate('record_date', $selectedDate)
@@ -124,7 +124,7 @@ class MutabaahDailyInputController extends Controller
 
         return redirect()
             ->route('mutabaah.daily.index', [
-                'student_id'  => $student->id,
+                'student_id' => $student->id,
                 'record_date' => $request->input('record_date'),
             ])
             ->with('success', 'Mutabaah harian berhasil disimpan.');

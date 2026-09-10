@@ -16,6 +16,7 @@ use Illuminate\View\View;
 class BoardingRoomController extends Controller
 {
     protected BoardingAccessService $accessService;
+
     protected BoardingOccupancyService $occupancyService;
 
     public function __construct(
@@ -109,7 +110,7 @@ class BoardingRoomController extends Controller
     public function update(UpdateBoardingRoomRequest $request, BoardingRoom $room): RedirectResponse
     {
         abort_unless($this->accessService->canManageMasterData($request->user()), 403);
-        
+
         $dormitory = BoardingDormitory::findOrFail($request->boarding_dormitory_id);
         abort_unless($dormitory->school_id === $request->user()->school_id, 403);
         abort_unless($room->dormitory->school_id === $request->user()->school_id, 403);

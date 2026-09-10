@@ -2,15 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\AnalyticsMetricDefinition;
 use App\Models\Role;
 use App\Models\School;
 use App\Models\User;
 use App\Models\UserSchoolMembership;
-use App\Models\AnalyticsMetricDefinition;
-use App\Models\AnalyticsSnapshot;
-use App\Models\TenantHealthScore;
-use App\Models\ExecutiveReportRun;
-use App\Models\AnalyticsAccessLog;
 use App\Services\Analytics\AnalyticsPrivacyGuard;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -20,12 +16,17 @@ class Phase23AnalyticsIntegrationTest extends TestCase
     use RefreshDatabase;
 
     private School $schoolA;
+
     private School $schoolB;
 
     private User $superAdmin;
+
     private User $adminA;
+
     private User $adminB;
+
     private User $studentA;
+
     private User $parentA;
 
     protected function setUp(): void
@@ -176,7 +177,7 @@ class Phase23AnalyticsIntegrationTest extends TestCase
     {
         $response = $this->actingAs($this->adminA)
             ->withSession(['active_school_id' => $this->schoolA->id])
-            ->get('/analytics/school?school_id=' . $this->schoolA->id);
+            ->get('/analytics/school?school_id='.$this->schoolA->id);
 
         $response->assertStatus(200);
         $response->assertViewIs('analytics.school.dashboard');
@@ -193,7 +194,7 @@ class Phase23AnalyticsIntegrationTest extends TestCase
     {
         $response = $this->actingAs($this->adminA)
             ->withSession(['active_school_id' => $this->schoolA->id])
-            ->get('/analytics/school?school_id=' . $this->schoolB->id);
+            ->get('/analytics/school?school_id='.$this->schoolB->id);
 
         $response->assertStatus(403);
     }
@@ -201,11 +202,11 @@ class Phase23AnalyticsIntegrationTest extends TestCase
     public function test_student_and_parent_cannot_access_any_analytics(): void
     {
         $response = $this->actingAs($this->studentA)
-            ->get('/analytics/school?school_id=' . $this->schoolA->id);
+            ->get('/analytics/school?school_id='.$this->schoolA->id);
         $response->assertStatus(403);
 
         $response = $this->actingAs($this->parentA)
-            ->get('/analytics/school?school_id=' . $this->schoolA->id);
+            ->get('/analytics/school?school_id='.$this->schoolA->id);
         $response->assertStatus(403);
     }
 
@@ -221,7 +222,7 @@ class Phase23AnalyticsIntegrationTest extends TestCase
             'metadata' => [
                 'api_token' => 'xyz',
                 'active_count' => 10,
-            ]
+            ],
         ];
 
         $sanitized = $guard->removeSensitiveKeys($sensitiveData);

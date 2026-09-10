@@ -2,11 +2,10 @@
 
 namespace App\Services\Ai;
 
-use App\Models\Student;
 use App\Models\AiLearningProfile;
 use App\Models\AiLearningRecommendation;
 use App\Models\AiPracticePlan;
-use App\Services\Ai\AiSafetyGuardService;
+use App\Models\Student;
 
 class ParentGuidanceDigestService
 {

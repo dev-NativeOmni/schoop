@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -10,7 +11,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     protected $fillable = [
@@ -46,9 +47,9 @@ class User extends Authenticatable
      */
     public function getProfilePictureUrlAttribute(): string
     {
-        return $this->profile_picture 
-            ? asset('storage/' . $this->profile_picture) 
-            : 'https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=' . urlencode($this->name);
+        return $this->profile_picture
+            ? asset('storage/'.$this->profile_picture)
+            : 'https://api.dicebear.com/7.x/adventurer-neutral/svg?seed='.urlencode($this->name);
     }
 
     public function role(): BelongsTo

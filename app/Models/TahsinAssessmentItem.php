@@ -8,8 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class TahsinAssessmentItem extends Model
 {
     public const STATUS_MASTERED = 'mastered';
+
     public const STATUS_PROGRESS = 'progress';
+
     public const STATUS_WEAK = 'weak';
+
     public const STATUS_NOT_TESTED = 'not_tested';
 
     protected $fillable = [

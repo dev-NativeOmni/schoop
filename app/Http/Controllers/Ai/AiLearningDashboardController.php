@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Ai;
 
 use App\Http\Controllers\Controller;
+use App\Models\AiFeatureFlag;
 use App\Models\AiLearningProfile;
 use App\Models\AiLearningRecommendation;
 use App\Models\AiPracticePlan;
-use App\Models\AiTeacherReviewQueue;
 use App\Models\AiSafetyEvent;
-use App\Models\AiFeatureFlag;
+use App\Models\AiTeacherReviewQueue;
 use App\Services\Tenancy\TenantContextService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;

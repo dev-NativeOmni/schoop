@@ -7,7 +7,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreSaasTenantInvoiceRequest extends FormRequest
 {
-    public function authorize(): bool { return app(SaasOperationsAccessService::class)->canManageTenantInvoices($this->user()); }
+    public function authorize(): bool
+    {
+        return app(SaasOperationsAccessService::class)->canManageTenantInvoices($this->user());
+    }
+
     public function rules(): array
     {
         return [

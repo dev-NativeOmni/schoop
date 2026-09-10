@@ -24,15 +24,25 @@ class LmsQuizServiceSubmitAttemptTest extends TestCase
     use RefreshDatabase;
 
     private LmsQuizService $quizService;
+
     private School $school;
+
     private Student $student;
+
     private LmsCourse $course;
+
     private LmsCourseModule $module;
+
     private LmsLesson $lesson;
+
     private LmsQuiz $quiz;
+
     private $tenantContextMock;
+
     private $progressServiceMock;
+
     private $notificationServiceMock;
+
     private $loggerMock;
 
     protected function setUp(): void
