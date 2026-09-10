@@ -12,10 +12,15 @@ class StudentBill extends Model
     use BelongsToTenant;
 
     public const STATUS_DRAFT = 'draft';
+
     public const STATUS_POSTED = 'posted';
+
     public const STATUS_PARTIAL = 'partial';
+
     public const STATUS_PAID = 'paid';
+
     public const STATUS_OVERDUE = 'overdue';
+
     public const STATUS_VOID = 'void';
 
     protected $fillable = [

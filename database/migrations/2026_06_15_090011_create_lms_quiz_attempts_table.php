@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('lms_quiz_attempts', function (Blueprint $table): void {
             $table->id();
-            
+
             $table->foreignId('school_id')
                 ->nullable()
                 ->constrained('schools')
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->decimal('score', 5, 2)->default(0.00);
             $table->boolean('is_passed')->default(false);
             $table->string('status')->default('started'); // started, completed, timed_out
-            
+
             $table->timestamps();
 
             $table->index('school_id');

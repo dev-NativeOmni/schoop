@@ -3,21 +3,23 @@
 namespace App\Http\Controllers\Ai;
 
 use App\Http\Controllers\Controller;
-use App\Models\Student;
-use App\Models\AiFeedbackTemplate;
 use App\Http\Requests\Ai\StoreTeacherFeedbackDraftRequest;
-use App\Services\Ai\TeacherFeedbackDraftService;
+use App\Models\AiFeedbackTemplate;
+use App\Models\Student;
 use App\Services\Ai\AiAccessService;
+use App\Services\Ai\TeacherFeedbackDraftService;
 use App\Services\Tenancy\TenantContextService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AiFeedbackDraftController extends Controller
 {
     protected TeacherFeedbackDraftService $draftService;
+
     protected AiAccessService $accessService;
+
     protected TenantContextService $tenantContext;
 
     public function __construct(
@@ -34,7 +36,7 @@ class AiFeedbackDraftController extends Controller
     {
         $schoolId = $this->tenantContext->activeSchoolId();
         $students = Student::query()->where('school_id', $schoolId)->with('user')->get();
-        
+
         $templates = AiFeedbackTemplate::query()
             ->withoutGlobalScopes()
             ->where(function ($query) use ($schoolId) {
@@ -51,7 +53,7 @@ class AiFeedbackDraftController extends Controller
         $studentId = $request->input('student_id');
         $student = Student::findOrFail($studentId);
 
-        if (!$this->accessService->canReviewAiOutput(Auth::user(), $student)) {
+        if (! $this->accessService->canReviewAiOutput(Auth::user(), $student)) {
             abort(403, 'Unauthorized to create teacher feedback draft.');
         }
 

@@ -13,7 +13,7 @@ class UpdateTenantModuleRequest extends FormRequest
         $accessService = app(TenantAccessService::class);
         $module = $this->route('tenantModule');
 
-        if (!$module) {
+        if (! $module) {
             return false;
         }
 

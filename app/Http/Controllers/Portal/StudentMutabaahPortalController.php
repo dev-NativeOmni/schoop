@@ -29,7 +29,7 @@ class StudentMutabaahPortalController extends Controller
             abort(404, 'Data santri tidak ditemukan.');
         }
 
-        $filters  = $request->only(['start_date', 'end_date']);
+        $filters = $request->only(['start_date', 'end_date']);
         $snapshot = $this->reportService->studentSnapshot($student, $filters);
 
         $student->load('user', 'classRoom');

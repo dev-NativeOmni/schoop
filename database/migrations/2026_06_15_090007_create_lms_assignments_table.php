@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('lms_assignments', function (Blueprint $table): void {
             $table->id();
-            
+
             $table->foreignId('school_id')
                 ->nullable()
                 ->constrained('schools')
@@ -34,7 +34,7 @@ return new class extends Migration
             $table->dateTime('due_date')->nullable();
             $table->string('allowed_file_types')->nullable();
             $table->integer('max_file_size_kb')->default(10240); // default 10MB
-            
+
             $table->timestamps();
             $table->softDeletes();
 

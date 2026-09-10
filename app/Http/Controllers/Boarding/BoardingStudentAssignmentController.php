@@ -11,14 +11,15 @@ use App\Models\BoardingStudentAssignment;
 use App\Models\Student;
 use App\Services\Boarding\BoardingAccessService;
 use App\Services\Boarding\BoardingAssignmentService;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Exception;
 
 class BoardingStudentAssignmentController extends Controller
 {
     protected BoardingAccessService $accessService;
+
     protected BoardingAssignmentService $assignmentService;
 
     public function __construct(
@@ -53,7 +54,7 @@ class BoardingStudentAssignmentController extends Controller
             $search = $request->q;
             $query->whereHas('student', function ($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('student_number', 'like', "%{$search}%");
+                    ->orWhere('student_number', 'like', "%{$search}%");
             });
         }
 
@@ -152,9 +153,9 @@ class BoardingStudentAssignmentController extends Controller
             ->whereHas('room.dormitory', function ($q) use ($schoolId) {
                 $q->where('school_id', $schoolId);
             })
-            ->where(function($query) use ($assignment) {
+            ->where(function ($query) use ($assignment) {
                 $query->where('status', 'available')
-                      ->orWhere('id', $assignment->boarding_bed_id);
+                    ->orWhere('id', $assignment->boarding_bed_id);
             })
             ->get();
 

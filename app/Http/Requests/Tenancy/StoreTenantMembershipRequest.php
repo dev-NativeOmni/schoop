@@ -19,6 +19,7 @@ class StoreTenantMembershipRequest extends FormRequest
 
         if ($accessService->isTenantAdmin($user)) {
             $schoolId = (int) $this->input('school_id');
+
             return $accessService->userCanAccessSchool($user, $schoolId);
         }
 
@@ -29,10 +30,10 @@ class StoreTenantMembershipRequest extends FormRequest
     {
         return [
             'user_id' => [
-                'required', 
-                'integer', 
+                'required',
+                'integer',
                 'exists:users,id',
-                Rule::unique('user_school_memberships', 'user_id')->where('school_id', $this->input('school_id'))
+                Rule::unique('user_school_memberships', 'user_id')->where('school_id', $this->input('school_id')),
             ],
             'school_id' => ['required', 'integer', 'exists:schools,id'],
             'role_id' => ['required', 'integer', 'exists:roles,id'],

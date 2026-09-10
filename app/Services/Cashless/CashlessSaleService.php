@@ -11,6 +11,7 @@ use App\Models\CashlessWalletTransaction;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
 
 class CashlessSaleService
@@ -84,7 +85,7 @@ class CashlessSaleService
                 if ($total >= 50000 && ($pin === null || $pin === '')) {
                     throw new InvalidArgumentException('PIN transaksi wajib diisi untuk transaksi Rp 50.000 ke atas.');
                 }
-                if ($pin !== null && $pin !== '' && !\Illuminate\Support\Facades\Hash::check($pin, $wallet->pin)) {
+                if ($pin !== null && $pin !== '' && ! Hash::check($pin, $wallet->pin)) {
                     throw new InvalidArgumentException('PIN transaksi salah.');
                 }
             }
@@ -101,7 +102,7 @@ class CashlessSaleService
 
                 if ($spentToday + $total > $wallet->daily_limit) {
                     $remaining = max(0, $wallet->daily_limit - $spentToday);
-                    throw new InvalidArgumentException('Limit pembelanjaan harian terlampaui. Sisa limit hari ini: Rp ' . number_format($remaining, 0, ',', '.') . '.');
+                    throw new InvalidArgumentException('Limit pembelanjaan harian terlampaui. Sisa limit hari ini: Rp '.number_format($remaining, 0, ',', '.').'.');
                 }
             }
 

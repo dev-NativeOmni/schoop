@@ -20,9 +20,9 @@ class BackupDatabaseCommand extends Command
             $backup = $backupService->backup();
 
             $this->info('Database backup completed.');
-            $this->line('File: ' . $backup['filename']);
-            $this->line('Path: ' . $backup['relative_path']);
-            $this->line('Size: ' . number_format($backup['size_bytes']) . ' bytes');
+            $this->line('File: '.$backup['filename']);
+            $this->line('Path: '.$backup['relative_path']);
+            $this->line('Size: '.number_format($backup['size_bytes']).' bytes');
 
             return self::SUCCESS;
         } catch (Throwable $exception) {

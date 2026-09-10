@@ -54,6 +54,7 @@ class AnalyticsPrivacyGuard
                 $sanitized[$key] = $value;
             }
         }
+
         return $sanitized;
     }
 

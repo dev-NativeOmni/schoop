@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class MutabaahCategory extends Model
 {
     use BelongsToTenant;
-
     use SoftDeletes;
 
     protected $fillable = [

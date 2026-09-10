@@ -13,8 +13,7 @@ class AttendanceScanService
 {
     public function __construct(
         private readonly AttendanceQrTokenService $tokenService
-    ) {
-    }
+    ) {}
 
     public function scan(string $payload, AttendanceSession $session, User $scanner): AttendanceRecord
     {
@@ -94,7 +93,7 @@ class AttendanceScanService
             return 'present';
         }
 
-        $lateAfter = Carbon::parse($session->attendance_date->toDateString() . ' ' . $session->late_after_at);
+        $lateAfter = Carbon::parse($session->attendance_date->toDateString().' '.$session->late_after_at);
 
         return $now->greaterThan($lateAfter) ? 'late' : 'present';
     }

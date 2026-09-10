@@ -14,7 +14,9 @@ use Illuminate\Http\Request;
 class WhiteLabelDashboardController extends Controller
 {
     protected TenantContextService $tenantContext;
+
     protected WhiteLabelAccessService $accessService;
+
     protected WhiteLabelPublicationService $publicationService;
 
     public function __construct(
@@ -38,7 +40,7 @@ class WhiteLabelDashboardController extends Controller
             $schoolId = $activeSchoolId;
         }
 
-        if (!$schoolId) {
+        if (! $schoolId) {
             if ($user->isSuperAdmin()) {
                 // Fetch first school to switch to
                 $firstSchool = School::first();
@@ -53,7 +55,7 @@ class WhiteLabelDashboardController extends Controller
 
         $school = School::findOrFail($schoolId);
         $settings = $this->publicationService->getActivePublishedSettings($schoolId);
-        
+
         $domainCount = SchoolDomainMapping::query()->where('school_id', $schoolId)->count();
         $publications = WhiteLabelPublication::query()
             ->where('school_id', $schoolId)

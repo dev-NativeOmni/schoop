@@ -2,14 +2,15 @@
 
 namespace App\Services\WhiteLabel;
 
-use App\Models\User;
 use App\Models\School;
+use App\Models\User;
 use App\Services\Tenancy\TenantAccessService;
 use App\Services\Tenancy\TenantContextService;
 
 class WhiteLabelAccessService
 {
     protected TenantAccessService $tenantAccess;
+
     protected TenantContextService $tenantContext;
 
     public function __construct(TenantAccessService $tenantAccess, TenantContextService $tenantContext)
@@ -29,11 +30,11 @@ class WhiteLabelAccessService
 
         // Must have access to the active school and be admin or principal
         $schoolId = $this->tenantContext->activeSchoolId();
-        if (!$schoolId) {
+        if (! $schoolId) {
             return false;
         }
 
-        if (!$this->tenantAccess->userCanAccessSchool($user, $schoolId)) {
+        if (! $this->tenantAccess->userCanAccessSchool($user, $schoolId)) {
             return false;
         }
 
@@ -50,7 +51,7 @@ class WhiteLabelAccessService
         }
 
         // Check if user has access to this school
-        if (!$this->tenantAccess->userCanAccessSchool($user, $schoolId)) {
+        if (! $this->tenantAccess->userCanAccessSchool($user, $schoolId)) {
             return false;
         }
 
@@ -63,7 +64,7 @@ class WhiteLabelAccessService
      */
     public function ensureCanManage(User $user, int $schoolId): void
     {
-        if (!$this->canManage($user, $schoolId)) {
+        if (! $this->canManage($user, $schoolId)) {
             abort(403, 'Anda tidak memiliki wewenang untuk mengelola White-Label sekolah ini.');
         }
     }

@@ -5,8 +5,8 @@ namespace App\Services\WhiteLabel;
 use App\Models\School;
 use App\Models\SchoolPwaSetting;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class SchoolPwaManifestService
 {
@@ -19,7 +19,7 @@ class SchoolPwaManifestService
             ->where('school_id', $schoolId)
             ->first();
 
-        if (!$setting) {
+        if (! $setting) {
             $school = School::query()->findOrFail($schoolId);
             $setting = SchoolPwaSetting::query()->create([
                 'school_id' => $schoolId,
@@ -52,7 +52,7 @@ class SchoolPwaManifestService
             if ($setting->icon_192_path) {
                 Storage::disk('public')->delete($setting->icon_192_path);
             }
-            $filename = 'icon_192_' . time() . '.' . $icon192->getClientOriginalExtension();
+            $filename = 'icon_192_'.time().'.'.$icon192->getClientOriginalExtension();
             $path = $icon192->storeAs("white-label/{$schoolId}/pwa", $filename, 'public');
             $data['icon_192_path'] = $path;
         }
@@ -62,7 +62,7 @@ class SchoolPwaManifestService
             if ($setting->icon_512_path) {
                 Storage::disk('public')->delete($setting->icon_512_path);
             }
-            $filename = 'icon_512_' . time() . '.' . $icon512->getClientOriginalExtension();
+            $filename = 'icon_512_'.time().'.'.$icon512->getClientOriginalExtension();
             $path = $icon512->storeAs("white-label/{$schoolId}/pwa", $filename, 'public');
             $data['icon_512_path'] = $path;
         }
@@ -70,7 +70,7 @@ class SchoolPwaManifestService
         $setting->update($data);
 
         // Clear manifest cache
-        Cache::forget('pwa_manifest_school_' . $schoolId);
+        Cache::forget('pwa_manifest_school_'.$schoolId);
 
         return $setting;
     }
@@ -80,7 +80,7 @@ class SchoolPwaManifestService
      */
     public function generateManifest(int $schoolId): array
     {
-        return Cache::remember('pwa_manifest_school_' . $schoolId, now()->addHours(24), function () use ($schoolId) {
+        return Cache::remember('pwa_manifest_school_'.$schoolId, now()->addHours(24), function () use ($schoolId) {
             $setting = $this->getOrCreatePwaSetting($schoolId);
 
             $manifest = [
@@ -94,11 +94,11 @@ class SchoolPwaManifestService
             ];
 
             // Build icons
-            $logoUrl192 = $setting->icon_192_path 
+            $logoUrl192 = $setting->icon_192_path
                 ? Storage::disk('public')->url($setting->icon_192_path)
                 : asset('images/logo_pwa.svg');
 
-            $logoUrl512 = $setting->icon_512_path 
+            $logoUrl512 = $setting->icon_512_path
                 ? Storage::disk('public')->url($setting->icon_512_path)
                 : asset('images/logo_pwa.svg');
 
@@ -109,14 +109,14 @@ class SchoolPwaManifestService
                 'src' => $logoUrl192,
                 'sizes' => '192x192',
                 'type' => $icon192Type,
-                'purpose' => 'any maskable'
+                'purpose' => 'any maskable',
             ];
 
             $manifest['icons'][] = [
                 'src' => $logoUrl512,
                 'sizes' => '512x512',
                 'type' => $icon512Type,
-                'purpose' => 'any maskable'
+                'purpose' => 'any maskable',
             ];
 
             return $manifest;

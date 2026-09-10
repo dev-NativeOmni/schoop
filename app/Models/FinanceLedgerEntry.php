@@ -11,6 +11,7 @@ class FinanceLedgerEntry extends Model
     use BelongsToTenant;
 
     public const DIRECTION_DEBIT = 'debit';
+
     public const DIRECTION_CREDIT = 'credit';
 
     protected $fillable = [

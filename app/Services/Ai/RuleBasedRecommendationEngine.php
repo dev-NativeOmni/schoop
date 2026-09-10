@@ -2,9 +2,9 @@
 
 namespace App\Services\Ai;
 
-use App\Models\Student;
 use App\Models\AiLearningProfile;
 use App\Models\AiLearningRecommendation;
+use App\Models\Student;
 use Illuminate\Support\Collection;
 
 class RuleBasedRecommendationEngine
@@ -37,7 +37,7 @@ class RuleBasedRecommendationEngine
                     'related_content' => [
                         'module' => 'tahfizh',
                         'debt_lines' => $evidence['cumulative_debt_lines'] ?? 0,
-                    ]
+                    ],
                 ]);
             }
 
@@ -54,14 +54,14 @@ class RuleBasedRecommendationEngine
                     'description' => "Penguatan teknik pelafalan dan hukum tajwid pada bagian {$skillName} diperlukan untuk menyempurnakan bacaan ananda.",
                     'recommended_actions' => [
                         "Dengarkan rekaman murattal syekh pilihan yang menekankan makhraj {$skillName}.",
-                        "Lakukan setoran ujicoba khusus makhraj ini di depan pembimbing/guru.",
-                        "Gunakan latihan interaktif LMS pendukung jika tersedia.",
+                        'Lakukan setoran ujicoba khusus makhraj ini di depan pembimbing/guru.',
+                        'Gunakan latihan interaktif LMS pendukung jika tersedia.',
                     ],
                     'evidence' => $evidence,
                     'related_content' => [
                         'module' => 'tahsin',
                         'skill_name' => $skillName,
-                    ]
+                    ],
                 ]);
             }
 
@@ -84,7 +84,7 @@ class RuleBasedRecommendationEngine
                     'related_content' => [
                         'module' => 'mutabaah',
                         'completion_rate' => $evidence['completion_rate'] ?? 0,
-                    ]
+                    ],
                 ]);
             }
 
@@ -107,7 +107,7 @@ class RuleBasedRecommendationEngine
                     'related_content' => [
                         'module' => 'attendance',
                         'absence_count' => $evidence['absence_count'] ?? 0,
-                    ]
+                    ],
                 ]);
             }
 
@@ -120,7 +120,7 @@ class RuleBasedRecommendationEngine
                     'priority' => 'low',
                     'status' => 'draft',
                     'title' => 'Aktivitas Belajar Mandiri LMS',
-                    'description' => "Modul LMS \"" . ($evidence['course_title'] ?? 'materi') . "\" masih menyisakan beberapa lesson yang belum dituntaskan.",
+                    'description' => 'Modul LMS "'.($evidence['course_title'] ?? 'materi').'" masih menyisakan beberapa lesson yang belum dituntaskan.',
                     'recommended_actions' => [
                         'Selesaikan video penjelasan atau materi bacaan pendukung.',
                         'Kerjakan quiz pendukung yang tersedia pada course terkait.',
@@ -130,7 +130,7 @@ class RuleBasedRecommendationEngine
                         'module' => 'lms',
                         'course_id' => $evidence['course_id'] ?? null,
                         'progress' => $evidence['progress_percentage'] ?? 0,
-                    ]
+                    ],
                 ]);
             }
         }

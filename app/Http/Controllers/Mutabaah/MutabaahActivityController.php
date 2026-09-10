@@ -19,7 +19,7 @@ class MutabaahActivityController extends Controller
         $activities = MutabaahActivity::query()
             ->with('category')
             ->when($request->filled('category_id'), fn ($q) => $q->where('mutabaah_category_id', $request->integer('category_id')))
-            ->when($request->filled('search'), fn ($q) => $q->where('name', 'like', '%' . $request->string('search') . '%'))
+            ->when($request->filled('search'), fn ($q) => $q->where('name', 'like', '%'.$request->string('search').'%'))
             ->orderBy('sort_order')
             ->orderBy('name')
             ->paginate(20)

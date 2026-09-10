@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
@@ -14,6 +14,7 @@ class ProfileController extends Controller
     public function show(Request $request): View
     {
         $user = $request->user();
+
         return view('profile.show', ['user' => $user]);
     }
 
@@ -38,8 +39,8 @@ class ProfileController extends Controller
 
         if ($request->hasFile('profile_picture')) {
             // Delete old profile picture if exists
-            if ($user->profile_picture && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->profile_picture)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->profile_picture);
+            if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+                Storage::disk('public')->delete($user->profile_picture);
             }
 
             // Store new picture

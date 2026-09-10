@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -14,6 +15,7 @@ class NavbarLogoProfileTest extends TestCase
     use RefreshDatabase;
 
     private User $superAdmin;
+
     private User $teacher;
 
     protected function setUp(): void
@@ -21,7 +23,7 @@ class NavbarLogoProfileTest extends TestCase
         parent::setUp();
 
         // Seed roles
-        $this->seed(\Database\Seeders\RoleSeeder::class);
+        $this->seed(RoleSeeder::class);
 
         $superAdminRole = Role::query()->where('name', 'super_admin')->firstOrFail();
         $teacherRole = Role::query()->where('name', 'teacher')->firstOrFail();
@@ -100,7 +102,7 @@ class NavbarLogoProfileTest extends TestCase
         ]);
 
         $response->assertRedirect(route('profile.show'));
-        
+
         $this->teacher->refresh();
         $this->assertNotNull($this->teacher->profile_picture);
         Storage::disk('public')->assertExists($this->teacher->profile_picture);

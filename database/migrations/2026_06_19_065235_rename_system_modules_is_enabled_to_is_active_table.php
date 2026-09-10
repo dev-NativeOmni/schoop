@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('system_modules', function (Blueprint $table): void {
-            if (Schema::hasColumn('system_modules', 'is_enabled') && !Schema::hasColumn('system_modules', 'is_active')) {
+            if (Schema::hasColumn('system_modules', 'is_enabled') && ! Schema::hasColumn('system_modules', 'is_active')) {
                 $table->renameColumn('is_enabled', 'is_active');
             }
         });
@@ -18,7 +18,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('system_modules', function (Blueprint $table): void {
-            if (Schema::hasColumn('system_modules', 'is_active') && !Schema::hasColumn('system_modules', 'is_enabled')) {
+            if (Schema::hasColumn('system_modules', 'is_active') && ! Schema::hasColumn('system_modules', 'is_enabled')) {
                 $table->renameColumn('is_active', 'is_enabled');
             }
         });

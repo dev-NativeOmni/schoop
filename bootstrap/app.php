@@ -1,7 +1,21 @@
 <?php
 
+use App\Http\Middleware\ApplyApiRateLimit;
+use App\Http\Middleware\AuthenticateApiClient;
+use App\Http\Middleware\AuthenticateMobileAccessToken;
 use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\EnsureApiScope;
+use App\Http\Middleware\EnsureMobileAppVersion;
+use App\Http\Middleware\EnsureMobileTenantContext;
+use App\Http\Middleware\EnsureModuleIsEnabled;
+use App\Http\Middleware\EnsureSubscriptionIsActive;
+use App\Http\Middleware\EnsureTenantAccess;
+use App\Http\Middleware\LogExternalApiRequest;
+use App\Http\Middleware\MobileApiResponseMiddleware;
+use App\Http\Middleware\ResolveTenantContext;
+use App\Http\Middleware\ResolveTenantFromDomain;
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\ApplicationBuilder;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -15,7 +29,7 @@ if ($bootstrapPath = env('LARAVEL_BOOTSTRAP_PATH')) {
     $app->useBootstrapPath($bootstrapPath);
 }
 
-return (new \Illuminate\Foundation\Configuration\ApplicationBuilder($app))
+return (new ApplicationBuilder($app))
     ->withKernels()
     ->withEvents()
     ->withCommands()
@@ -29,22 +43,22 @@ return (new \Illuminate\Foundation\Configuration\ApplicationBuilder($app))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
         $middleware->web(append: [
-            \App\Http\Middleware\ResolveTenantFromDomain::class,
+            ResolveTenantFromDomain::class,
         ]);
         $middleware->alias([
             'role' => CheckRole::class,
-            'tenant.resolve' => \App\Http\Middleware\ResolveTenantContext::class,
-            'tenant.access' => \App\Http\Middleware\EnsureTenantAccess::class,
-            'subscription.active' => \App\Http\Middleware\EnsureSubscriptionIsActive::class,
-            'module' => \App\Http\Middleware\EnsureModuleIsEnabled::class,
-            'mobile.auth' => \App\Http\Middleware\AuthenticateMobileAccessToken::class,
-            'mobile.tenant' => \App\Http\Middleware\EnsureMobileTenantContext::class,
-            'mobile.version' => \App\Http\Middleware\EnsureMobileAppVersion::class,
-            'mobile.response' => \App\Http\Middleware\MobileApiResponseMiddleware::class,
-            'api.client' => \App\Http\Middleware\AuthenticateApiClient::class,
-            'api.scope' => \App\Http\Middleware\EnsureApiScope::class,
-            'api.request_log' => \App\Http\Middleware\LogExternalApiRequest::class,
-            'api.rate_limit' => \App\Http\Middleware\ApplyApiRateLimit::class,
+            'tenant.resolve' => ResolveTenantContext::class,
+            'tenant.access' => EnsureTenantAccess::class,
+            'subscription.active' => EnsureSubscriptionIsActive::class,
+            'module' => EnsureModuleIsEnabled::class,
+            'mobile.auth' => AuthenticateMobileAccessToken::class,
+            'mobile.tenant' => EnsureMobileTenantContext::class,
+            'mobile.version' => EnsureMobileAppVersion::class,
+            'mobile.response' => MobileApiResponseMiddleware::class,
+            'api.client' => AuthenticateApiClient::class,
+            'api.scope' => EnsureApiScope::class,
+            'api.request_log' => LogExternalApiRequest::class,
+            'api.rate_limit' => ApplyApiRateLimit::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -2,11 +2,11 @@
 
 namespace App\Services\Boarding;
 
-use App\Models\BoardingStudentAssignment;
 use App\Models\BoardingBed;
+use App\Models\BoardingStudentAssignment;
 use App\Models\Student;
-use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class BoardingAssignmentService
 {
@@ -30,14 +30,14 @@ class BoardingAssignmentService
                 ->first();
 
             if ($activeAssignment) {
-                throw new Exception("Santri sudah memiliki penempatan asrama yang aktif.");
+                throw new Exception('Santri sudah memiliki penempatan asrama yang aktif.');
             }
 
             // 2. Validate bed occupancy if a bed is specified
             if ($bedId) {
                 $bed = BoardingBed::find($bedId);
-                if (!$bed || $bed->boarding_room_id !== $roomId) {
-                    throw new Exception("Ranjang tidak ditemukan di kamar tersebut.");
+                if (! $bed || $bed->boarding_room_id !== $roomId) {
+                    throw new Exception('Ranjang tidak ditemukan di kamar tersebut.');
                 }
                 if ($bed->status !== 'available') {
                     throw new Exception("Ranjang tersebut tidak tersedia (status: {$bed->status}).");
@@ -68,9 +68,9 @@ class BoardingAssignmentService
     {
         DB::transaction(function () use ($assignmentId, $endDate) {
             $assignment = BoardingStudentAssignment::findOrFail($assignmentId);
-            
+
             if ($assignment->status !== 'active') {
-                throw new Exception("Penempatan ini sudah tidak aktif.");
+                throw new Exception('Penempatan ini sudah tidak aktif.');
             }
 
             // 1. Update assignment record
@@ -107,8 +107,8 @@ class BoardingAssignmentService
                 ->where('status', 'active')
                 ->first();
 
-            if (!$activeAssignment) {
-                throw new Exception("Santri tidak memiliki penempatan aktif untuk dipindahkan.");
+            if (! $activeAssignment) {
+                throw new Exception('Santri tidak memiliki penempatan aktif untuk dipindahkan.');
             }
 
             // 1. Update old assignment status to 'moved' and record end date
@@ -128,8 +128,8 @@ class BoardingAssignmentService
             // 2. Validate new bed if specified
             if ($newBedId) {
                 $newBed = BoardingBed::find($newBedId);
-                if (!$newBed || $newBed->boarding_room_id !== $newRoomId) {
-                    throw new Exception("Ranjang baru tidak ditemukan di kamar tersebut.");
+                if (! $newBed || $newBed->boarding_room_id !== $newRoomId) {
+                    throw new Exception('Ranjang baru tidak ditemukan di kamar tersebut.');
                 }
                 if ($newBed->status !== 'available') {
                     throw new Exception("Ranjang baru tersebut tidak tersedia (status: {$newBed->status}).");
@@ -146,7 +146,7 @@ class BoardingAssignmentService
                 'boarding_bed_id' => $newBedId,
                 'start_date' => $moveDate,
                 'status' => 'active',
-                'notes' => $notes ?? "Dipindahkan dari kamar sebelumnya.",
+                'notes' => $notes ?? 'Dipindahkan dari kamar sebelumnya.',
                 'created_by' => $creatorId,
             ]);
         });

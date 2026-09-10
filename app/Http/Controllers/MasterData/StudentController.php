@@ -11,6 +11,7 @@ use App\Models\Role;
 use App\Models\School;
 use App\Models\Student;
 use App\Models\User;
+use App\Services\Billing\PlanLimitService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -21,8 +22,8 @@ class StudentController extends Controller
     public function index(): View
     {
         $query = Student::query()->with(['school', 'classRoom', 'user', 'parents.user']);
-        
-        if (!auth()->user()->isSuperAdmin()) {
+
+        if (! auth()->user()->isSuperAdmin()) {
             $query->where(['school_id' => auth()->user()->school_id]);
         }
 
@@ -41,16 +42,16 @@ class StudentController extends Controller
             : collect([auth()->user()->school]);
 
         $classRoomsQuery = ClassRoom::query()->where(['is_active' => true]);
-        if (!$isSuperAdmin) {
+        if (! $isSuperAdmin) {
             $classRoomsQuery->where(['school_id' => $schoolId]);
         }
         $classRooms = $classRoomsQuery->orderByRaw('name')->get();
 
         $parentsQuery = ParentProfile::query()->with('user');
-        if (!$isSuperAdmin) {
+        if (! $isSuperAdmin) {
             $parentsQuery->where(['school_id' => $schoolId]);
         }
-        $parents = $parentsQuery->get()->sortBy(fn($parent) => $parent->user?->name);
+        $parents = $parentsQuery->get()->sortBy(fn ($parent) => $parent->user?->name);
 
         return view('master-data.students.create', [
             'schools' => $schools,
@@ -64,8 +65,8 @@ class StudentController extends Controller
         $schoolId = auth()->user()->isSuperAdmin() ? $request->integer('school_id') : auth()->user()->school_id;
         $school = School::query()->findOrFail($schoolId);
 
-        $planLimitService = app(\App\Services\Billing\PlanLimitService::class);
-        if (!$planLimitService->isWithinLimit($school, 'max_students', 1)) {
+        $planLimitService = app(PlanLimitService::class);
+        if (! $planLimitService->isWithinLimit($school, 'max_students', 1)) {
             if (method_exists(auth()->user(), 'hasRole') && auth()->user()->hasRole(['super_admin', 'admin', 'admin_sekolah'])) {
                 return redirect()->back()
                     ->withInput()
@@ -124,7 +125,7 @@ class StudentController extends Controller
 
     public function show(Student $student): View
     {
-        if (!auth()->user()->isSuperAdmin() && $student->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $student->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data santri ini.');
         }
 
@@ -135,7 +136,7 @@ class StudentController extends Controller
 
     public function edit(Student $student): View
     {
-        if (!auth()->user()->isSuperAdmin() && $student->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $student->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data santri ini.');
         }
 
@@ -148,16 +149,16 @@ class StudentController extends Controller
             : collect([auth()->user()->school]);
 
         $classRoomsQuery = ClassRoom::query()->where(['is_active' => true]);
-        if (!$isSuperAdmin) {
+        if (! $isSuperAdmin) {
             $classRoomsQuery->where(['school_id' => $schoolId]);
         }
         $classRooms = $classRoomsQuery->orderByRaw('name')->get();
 
         $parentsQuery = ParentProfile::query()->with('user');
-        if (!$isSuperAdmin) {
+        if (! $isSuperAdmin) {
             $parentsQuery->where(['school_id' => $schoolId]);
         }
-        $parents = $parentsQuery->get()->sortBy(fn($parent) => $parent->user?->name);
+        $parents = $parentsQuery->get()->sortBy(fn ($parent) => $parent->user?->name);
 
         return view('master-data.students.edit', [
             'student' => $student,
@@ -170,7 +171,7 @@ class StudentController extends Controller
 
     public function update(UpdateStudentRequest $request, Student $student): RedirectResponse
     {
-        if (!auth()->user()->isSuperAdmin() && $student->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $student->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data santri ini.');
         }
 
@@ -220,7 +221,7 @@ class StudentController extends Controller
 
     public function destroy(Student $student): RedirectResponse
     {
-        if (!auth()->user()->isSuperAdmin() && $student->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $student->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data santri ini.');
         }
 

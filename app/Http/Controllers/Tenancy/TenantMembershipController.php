@@ -18,6 +18,7 @@ use Illuminate\View\View;
 class TenantMembershipController extends Controller
 {
     protected TenantMembershipService $membershipService;
+
     protected TenantContextService $contextService;
 
     public function __construct(TenantMembershipService $membershipService, TenantContextService $contextService)
@@ -29,7 +30,7 @@ class TenantMembershipController extends Controller
     public function index(Request $request): View
     {
         $schoolId = $this->contextService->activeSchoolId();
-        
+
         $memberships = UserSchoolMembership::query()
             ->with(['user', 'school', 'role'])
             ->where('school_id', $schoolId)
@@ -42,7 +43,7 @@ class TenantMembershipController extends Controller
     public function create(): View
     {
         $schoolId = $this->contextService->activeSchoolId();
-        
+
         $existingUserIds = UserSchoolMembership::query()
             ->where('school_id', $schoolId)
             ->pluck('user_id')
@@ -71,7 +72,7 @@ class TenantMembershipController extends Controller
     public function edit(UserSchoolMembership $membership): View
     {
         $schoolId = $this->contextService->activeSchoolId();
-        if (!auth()->user()->hasRole('super_admin') && (int) $membership->school_id !== $schoolId) {
+        if (! auth()->user()->hasRole('super_admin') && (int) $membership->school_id !== $schoolId) {
             abort(403, 'Akses tidak sah ke data sekolah lain.');
         }
 
@@ -93,7 +94,7 @@ class TenantMembershipController extends Controller
     public function destroy(UserSchoolMembership $membership): RedirectResponse
     {
         $schoolId = $this->contextService->activeSchoolId();
-        if (!auth()->user()->hasRole('super_admin') && (int) $membership->school_id !== $schoolId) {
+        if (! auth()->user()->hasRole('super_admin') && (int) $membership->school_id !== $schoolId) {
             abort(403, 'Akses tidak sah.');
         }
 

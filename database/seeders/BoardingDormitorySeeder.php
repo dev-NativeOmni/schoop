@@ -5,27 +5,27 @@ namespace Database\Seeders;
 use App\Models\BoardingBed;
 use App\Models\BoardingDormitory;
 use App\Models\BoardingRoom;
-use App\Models\BoardingSupervisorProfile;
 use App\Models\BoardingStudentAssignment;
+use App\Models\BoardingSupervisorProfile;
 use App\Models\Role;
 use App\Models\School;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 
 class BoardingDormitorySeeder extends Seeder
 {
     public function run(): void
     {
         $school = School::query()->where('code', 'ALAZHAR7')->first() ?? School::query()->first();
-        if (!$school) {
+        if (! $school) {
             return;
         }
 
         $supervisorRole = Role::query()->where('name', 'boarding_supervisor')->first();
-        if (!$supervisorRole) {
+        if (! $supervisorRole) {
             return;
         }
 

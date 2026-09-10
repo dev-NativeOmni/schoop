@@ -2,11 +2,11 @@
 
 namespace App\Services\Lms;
 
-use App\Models\SchoolAcademicSnapshot;
+use App\Models\LmsAssignmentSubmission;
 use App\Models\LmsCourse;
 use App\Models\LmsCourseEnrollment;
-use App\Models\LmsAssignmentSubmission;
 use App\Models\LmsQuizAttempt;
+use App\Models\SchoolAcademicSnapshot;
 use App\Services\Tenancy\TenantContextService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +22,7 @@ class LmsAnalyticsSnapshotService
     public function generateSnapshot(int $schoolId, ?Carbon $date = null): SchoolAcademicSnapshot
     {
         $date = $date ?? Carbon::today();
-        
+
         // Scope queries to the specific school_id
         // Since we might run this in a background command (globally or per school),
         // we'll fetch stats scoped to the school.
@@ -77,7 +77,7 @@ class LmsAnalyticsSnapshotService
     public function generateAllSnapshots(?Carbon $date = null): int
     {
         $date = $date ?? Carbon::today();
-        
+
         // Find all schools in database
         $schoolIds = DB::table('schools')->pluck('id');
         $count = 0;

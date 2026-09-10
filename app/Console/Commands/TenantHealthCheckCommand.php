@@ -26,6 +26,7 @@ class TenantHealthCheckCommand extends Command
         foreach ($tables as $table) {
             if (! Schema::hasTable($table)) {
                 $this->error("Missing table: {$table}");
+
                 return self::FAILURE;
             }
 
@@ -50,6 +51,7 @@ class TenantHealthCheckCommand extends Command
 
             if (! Schema::hasColumn($table, 'school_id')) {
                 $this->warn("Tenant column missing: {$table}.school_id");
+
                 continue;
             }
 

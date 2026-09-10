@@ -18,11 +18,12 @@ class LmsQuizAttemptController extends Controller
 
     public function show(LmsQuizAttempt $attempt): View
     {
-        if (!$this->accessService->canManageCourse(Auth::user(), $attempt->quiz->course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $attempt->quiz->course)) {
             abort(403);
         }
 
         $attempt->load(['student', 'quiz', 'answers.question']);
+
         return view('lms.attempts.show', compact('attempt'));
     }
 }

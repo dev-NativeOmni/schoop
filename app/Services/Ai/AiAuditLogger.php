@@ -2,9 +2,9 @@
 
 namespace App\Services\Ai;
 
-use App\Models\User;
-use App\Models\Student;
 use App\Models\AiAuditLog;
+use App\Models\Student;
+use App\Models\User;
 use Illuminate\Support\Facades\Request;
 
 class AiAuditLogger

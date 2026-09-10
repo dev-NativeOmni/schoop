@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('lms_assignment_submissions', function (Blueprint $table): void {
             $table->id();
-            
+
             $table->foreignId('school_id')
                 ->nullable()
                 ->constrained('schools')
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('file_path')->nullable();
             $table->string('file_name')->nullable();
             $table->unsignedBigInteger('file_size')->nullable();
-            
+
             $table->decimal('score', 5, 2)->nullable();
             $table->foreignId('graded_by')
                 ->nullable()
@@ -39,7 +39,7 @@ return new class extends Migration
                 ->nullOnDelete();
             $table->dateTime('graded_at')->nullable();
             $table->text('teacher_feedback')->nullable();
-            
+
             $table->string('status')->default('submitted'); // e.g. submitted, graded, returned
             $table->timestamps();
 

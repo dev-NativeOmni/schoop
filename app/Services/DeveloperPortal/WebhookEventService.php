@@ -2,9 +2,9 @@
 
 namespace App\Services\DeveloperPortal;
 
+use App\Jobs\SendWebhookJob;
 use App\Models\WebhookDelivery;
 use App\Models\WebhookEndpoint;
-use App\Jobs\SendWebhookJob;
 
 class WebhookEventService
 {

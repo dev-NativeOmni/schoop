@@ -38,7 +38,7 @@ class AttendanceQrTokenService
 
     public function qrPayload(AttendanceQrToken $qrToken): string
     {
-        return 'HFP-ATT:' . $qrToken->token;
+        return 'HFP-ATT:'.$qrToken->token;
     }
 
     public function parsePayload(string $payload): string

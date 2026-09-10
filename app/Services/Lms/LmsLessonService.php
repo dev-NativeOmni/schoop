@@ -4,8 +4,8 @@ namespace App\Services\Lms;
 
 use App\Models\LmsLesson;
 use App\Services\Tenancy\TenantContextService;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class LmsLessonService
 {
@@ -20,7 +20,7 @@ class LmsLessonService
     {
         return DB::transaction(function () use ($data, $userId) {
             $schoolId = $this->tenantContext->activeSchoolId();
-            
+
             $data['school_id'] = $schoolId;
             $data['created_by'] = $userId;
 
@@ -29,13 +29,13 @@ class LmsLessonService
                 $slug = $baseSlug;
                 $counter = 1;
                 while (LmsLesson::where('school_id', $schoolId)->where('slug', $slug)->exists()) {
-                    $slug = $baseSlug . '-' . $counter;
+                    $slug = $baseSlug.'-'.$counter;
                     $counter++;
                 }
                 $data['slug'] = $slug;
             }
 
-            if (!isset($data['sort_order'])) {
+            if (! isset($data['sort_order'])) {
                 $maxSort = LmsLesson::where('module_id', $data['module_id'])->max('sort_order');
                 $data['sort_order'] = $maxSort !== null ? $maxSort + 1 : 1;
             }
@@ -57,7 +57,7 @@ class LmsLessonService
                 $slug = $baseSlug;
                 $counter = 1;
                 while (LmsLesson::where('school_id', $schoolId)->where('slug', $slug)->where('id', '!=', $lesson->id)->exists()) {
-                    $slug = $baseSlug . '-' . $counter;
+                    $slug = $baseSlug.'-'.$counter;
                     $counter++;
                 }
                 $data['slug'] = $slug;

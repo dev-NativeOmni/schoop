@@ -2,13 +2,13 @@
 
 namespace App\Services\Ai;
 
-use App\Models\Student;
+use App\Models\AiAssistanceOutput;
+use App\Models\AiAssistanceRequest;
+use App\Models\AiLearningRecommendation;
 use App\Models\AiPracticePlan;
 use App\Models\AiPracticePlanItem;
-use App\Models\AiLearningRecommendation;
-use App\Models\AiAssistanceRequest;
-use App\Models\AiAssistanceOutput;
 use App\Models\AiTeacherReviewQueue;
+use App\Models\Student;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 

@@ -2,12 +2,12 @@
 
 namespace App\Services\Lms;
 
-use App\Models\User;
+use App\Models\LmsAssignment;
 use App\Models\LmsCourse;
 use App\Models\LmsLesson;
-use App\Models\LmsAssignment;
 use App\Models\LmsQuiz;
 use App\Models\Student;
+use App\Models\User;
 
 class LmsAccessService
 {
@@ -43,7 +43,7 @@ class LmsAccessService
             }
 
             $student = $user->studentProfile;
-            if (!$student) {
+            if (! $student) {
                 return false;
             }
 
@@ -57,7 +57,7 @@ class LmsAccessService
             }
 
             $parent = $user->parentProfile;
-            if (!$parent) {
+            if (! $parent) {
                 return false;
             }
 
@@ -90,9 +90,10 @@ class LmsAccessService
         if ($user->isTeacher()) {
             // Check if teacher is assigned to this course
             $teacherProfile = $user->teacherProfile;
-            if (!$teacherProfile) {
+            if (! $teacherProfile) {
                 return false;
             }
+
             return $course->instructors()->where('teacher_profiles.id', $teacherProfile->id)->exists();
         }
 
@@ -101,9 +102,10 @@ class LmsAccessService
 
     public function canViewLesson(User $user, LmsLesson $lesson): bool
     {
-        if ($lesson->visibility !== 'published' && !$user->isSuperAdmin() && !$user->isAdmin() && !$user->isTeacher() && !$user->isPrincipal()) {
+        if ($lesson->visibility !== 'published' && ! $user->isSuperAdmin() && ! $user->isAdmin() && ! $user->isTeacher() && ! $user->isPrincipal()) {
             return false;
         }
+
         return $this->canViewCourse($user, $lesson->course);
     }
 
@@ -114,18 +116,18 @@ class LmsAccessService
 
     public function canSubmitAssignment(User $user, LmsAssignment $assignment): bool
     {
-        if (!$user->isStudent()) {
+        if (! $user->isStudent()) {
             return false;
         }
 
         // Check if lesson is published and accessible
-        if (!$this->canViewLesson($user, $assignment->lesson)) {
+        if (! $this->canViewLesson($user, $assignment->lesson)) {
             return false;
         }
 
         // Check enrollment
         $student = $user->studentProfile;
-        if (!$student) {
+        if (! $student) {
             return false;
         }
 
@@ -134,18 +136,18 @@ class LmsAccessService
 
     public function canAttemptQuiz(User $user, LmsQuiz $quiz): bool
     {
-        if (!$user->isStudent()) {
+        if (! $user->isStudent()) {
             return false;
         }
 
         // Check if lesson is published and accessible
-        if (!$this->canViewLesson($user, $quiz->lesson)) {
+        if (! $this->canViewLesson($user, $quiz->lesson)) {
             return false;
         }
 
         // Check enrollment
         $student = $user->studentProfile;
-        if (!$student) {
+        if (! $student) {
             return false;
         }
 
@@ -154,12 +156,12 @@ class LmsAccessService
 
     public function canViewChildProgress(User $user, Student $student): bool
     {
-        if (!$user->isParent()) {
+        if (! $user->isParent()) {
             return false;
         }
 
         $parent = $user->parentProfile;
-        if (!$parent) {
+        if (! $parent) {
             return false;
         }
 

@@ -28,18 +28,18 @@ class ParentMutabaahPortalController extends Controller
             abort(403, 'Anda tidak memiliki akses ke data anak ini.');
         }
 
-        $filters  = $request->only(['start_date', 'end_date']);
+        $filters = $request->only(['start_date', 'end_date']);
         $snapshot = $this->reportService->studentSnapshot($student, $filters);
 
         $student->load('user', 'classRoom');
 
         // Get parent's children list
         $parentProfile = $user->parentProfile;
-        $children      = $parentProfile?->students()->with('user')->get() ?? collect();
+        $children = $parentProfile?->students()->with('user')->get() ?? collect();
 
         return view('portal.parent.mutabaah', array_merge($snapshot, [
             'children' => $children,
-            'filters'  => $filters,
+            'filters' => $filters,
         ]));
     }
 }

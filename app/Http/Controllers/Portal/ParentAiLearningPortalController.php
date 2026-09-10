@@ -3,17 +3,19 @@
 namespace App\Http\Controllers\Portal;
 
 use App\Http\Controllers\Controller;
-use App\Services\Ai\ParentGuidanceDigestService;
-use App\Services\Ai\AiFeatureFlagService;
 use App\Services\Ai\AiAuditLogger;
+use App\Services\Ai\AiFeatureFlagService;
+use App\Services\Ai\ParentGuidanceDigestService;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class ParentAiLearningPortalController extends Controller
 {
     protected ParentGuidanceDigestService $digestService;
+
     protected AiFeatureFlagService $flagService;
+
     protected AiAuditLogger $auditLogger;
 
     public function __construct(
@@ -32,7 +34,7 @@ class ParentAiLearningPortalController extends Controller
         $schoolId = $user->school_id;
 
         // Check feature flag
-        if (!$this->flagService->isEnabled($schoolId, 'parent_guidance_digest')) {
+        if (! $this->flagService->isEnabled($schoolId, 'parent_guidance_digest')) {
             abort(403, 'Fitur asisten rekomendasi AI dinonaktifkan oleh sekolah.');
         }
 

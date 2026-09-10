@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Lms;
 use App\Http\Controllers\Controller;
 use App\Models\LmsAssignment;
 use App\Models\LmsAssignmentSubmission;
-use App\Services\Lms\LmsAssignmentService;
 use App\Services\Lms\LmsAccessService;
+use App\Services\Lms\LmsAssignmentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +26,7 @@ class LmsAssignmentSubmissionController extends Controller
         $assignmentId = $request->input('assignment_id');
         $assignment = LmsAssignment::findOrFail($assignmentId);
 
-        if (!$this->accessService->canManageCourse(Auth::user(), $assignment->course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $assignment->course)) {
             abort(403);
         }
 
@@ -39,22 +39,23 @@ class LmsAssignmentSubmissionController extends Controller
 
     public function show(LmsAssignmentSubmission $submission): View
     {
-        if (!$this->accessService->canManageCourse(Auth::user(), $submission->assignment->course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $submission->assignment->course)) {
             abort(403);
         }
 
         $submission->load(['student', 'assignment']);
+
         return view('lms.submissions.show', compact('submission'));
     }
 
     public function grade(Request $request, LmsAssignmentSubmission $submission): RedirectResponse
     {
-        if (!$this->accessService->canManageCourse(Auth::user(), $submission->assignment->course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $submission->assignment->course)) {
             abort(403);
         }
 
         $request->validate([
-            'score' => 'required|numeric|min:0|max:' . $submission->assignment->max_score,
+            'score' => 'required|numeric|min:0|max:'.$submission->assignment->max_score,
             'teacher_feedback' => 'nullable|string',
         ]);
 

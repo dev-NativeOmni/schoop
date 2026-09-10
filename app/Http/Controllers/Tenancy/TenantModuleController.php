@@ -14,14 +14,14 @@ use Illuminate\View\View;
 class TenantModuleController extends Controller
 {
     protected TenantModuleService $moduleService;
+
     protected TenantContextService $contextService;
 
     public function __construct(
         TenantModuleService $moduleService,
         TenantContextService $contextService,
         private readonly PlanModuleAccessService $planAccess,
-    )
-    {
+    ) {
         $this->moduleService = $moduleService;
         $this->contextService = $contextService;
     }
@@ -43,7 +43,7 @@ class TenantModuleController extends Controller
     public function update(UpdateTenantModuleRequest $request, TenantModule $tenantModule): RedirectResponse
     {
         $schoolId = $this->contextService->activeSchoolId();
-        if (!auth()->user()->hasRole('super_admin') && (int) $tenantModule->school_id !== $schoolId) {
+        if (! auth()->user()->hasRole('super_admin') && (int) $tenantModule->school_id !== $schoolId) {
             abort(403, 'Akses tidak sah.');
         }
 

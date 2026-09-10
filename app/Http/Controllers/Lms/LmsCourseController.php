@@ -7,8 +7,8 @@ use App\Http\Requests\Lms\StoreLmsCourseRequest;
 use App\Http\Requests\Lms\UpdateLmsCourseRequest;
 use App\Models\LmsCourse;
 use App\Models\TeacherProfile;
-use App\Services\Lms\LmsCourseService;
 use App\Services\Lms\LmsAccessService;
+use App\Services\Lms\LmsCourseService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +26,7 @@ class LmsCourseController extends Controller
     public function index(Request $request): View
     {
         $courses = LmsCourse::with(['instructors.user'])->orderBy('sort_order')->get();
+
         return view('lms.courses.index', compact('courses'));
     }
 
@@ -34,6 +35,7 @@ class LmsCourseController extends Controller
         $this->authorizeAccess();
 
         $teachers = TeacherProfile::with('user')->where('is_active', true)->get();
+
         return view('lms.courses.create', compact('teachers'));
     }
 
@@ -49,17 +51,18 @@ class LmsCourseController extends Controller
 
     public function show(LmsCourse $course): View
     {
-        if (!$this->accessService->canViewCourse(Auth::user(), $course)) {
+        if (! $this->accessService->canViewCourse(Auth::user(), $course)) {
             abort(403);
         }
 
         $course->load(['modules.lessons.assignment', 'modules.lessons.quiz', 'instructors.user']);
+
         return view('lms.courses.show', compact('course'));
     }
 
     public function edit(LmsCourse $course): View
     {
-        if (!$this->accessService->canManageCourse(Auth::user(), $course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $course)) {
             abort(403);
         }
 
@@ -73,7 +76,7 @@ class LmsCourseController extends Controller
 
     public function update(UpdateLmsCourseRequest $request, LmsCourse $course): RedirectResponse
     {
-        if (!$this->accessService->canManageCourse(Auth::user(), $course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $course)) {
             abort(403);
         }
 
@@ -85,19 +88,19 @@ class LmsCourseController extends Controller
 
     public function destroy(LmsCourse $course): RedirectResponse
     {
-        if (!$this->accessService->canManageCourse(Auth::user(), $course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $course)) {
             abort(403);
         }
 
         $this->courseService->deleteCourse($course);
 
         return redirect()->route('lms.courses.index')
-            ->with('success', "Kelas berhasil dihapus.");
+            ->with('success', 'Kelas berhasil dihapus.');
     }
 
     private function authorizeAccess(): void
     {
-        if (!$this->accessService->canCreateCourse(Auth::user())) {
+        if (! $this->accessService->canCreateCourse(Auth::user())) {
             abort(403, 'Anda tidak diizinkan melakukan aksi ini.');
         }
     }

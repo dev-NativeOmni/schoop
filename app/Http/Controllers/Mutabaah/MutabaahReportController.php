@@ -27,7 +27,7 @@ class MutabaahReportController extends Controller
         }
 
         $filters = $request->validated();
-        $data    = $this->reportService->dashboard($filters);
+        $data = $this->reportService->dashboard($filters);
 
         $classRooms = ClassRoom::query()
             ->where('is_active', true)
@@ -36,7 +36,7 @@ class MutabaahReportController extends Controller
 
         return view('mutabaah.reports.dashboard', array_merge($data, [
             'classRooms' => $classRooms,
-            'filters'    => $filters,
+            'filters' => $filters,
         ]));
     }
 
@@ -52,7 +52,7 @@ class MutabaahReportController extends Controller
             abort(403, 'Anda tidak memiliki akses ke data santri ini.');
         }
 
-        $filters  = $request->only(['start_date', 'end_date', 'year', 'month']);
+        $filters = $request->only(['start_date', 'end_date', 'year', 'month']);
         $snapshot = $this->reportService->studentSnapshot($student, $filters);
 
         $student->load('user', 'classRoom');

@@ -14,10 +14,10 @@ class SchoolOsSearchService
                 Student::query()
                     ->with('classRoom')
                     ->where(function ($query) use ($keyword): void {
-                        $query->where('full_name', 'like', '%' . $keyword . '%')
-                            ->orWhere('nickname', 'like', '%' . $keyword . '%')
-                            ->orWhere('nisn', 'like', '%' . $keyword . '%')
-                            ->orWhere('student_number', 'like', '%' . $keyword . '%');
+                        $query->where('full_name', 'like', '%'.$keyword.'%')
+                            ->orWhere('nickname', 'like', '%'.$keyword.'%')
+                            ->orWhere('nisn', 'like', '%'.$keyword.'%')
+                            ->orWhere('student_number', 'like', '%'.$keyword.'%');
                     }),
                 $user
             )

@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class BoardingHealthLog extends Model
 {
     use BelongsToTenant;
-
     use SoftDeletes;
 
     protected $fillable = [

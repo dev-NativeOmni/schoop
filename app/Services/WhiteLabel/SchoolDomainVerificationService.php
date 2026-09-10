@@ -22,7 +22,7 @@ class SchoolDomainVerificationService
             throw new \InvalidArgumentException('Domain sudah terdaftar pada mapping lain.');
         }
 
-        $token = 'hp_verification_' . Str::random(32);
+        $token = 'hp_verification_'.Str::random(32);
 
         return SchoolDomainMapping::query()->create([
             'school_id' => $schoolId,
@@ -50,7 +50,7 @@ class SchoolDomainVerificationService
     public function verifyDomain(int $mappingId, ?int $userId = null): SchoolDomainMapping
     {
         $mapping = SchoolDomainMapping::query()->findOrFail($mappingId);
-        
+
         $mapping->update([
             'status' => 'verified',
             'verified_at' => now(),

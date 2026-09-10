@@ -4,14 +4,16 @@ namespace Database\Seeders;
 
 use App\Models\School;
 use App\Services\WhiteLabel\SchoolBrandingService;
-use App\Services\WhiteLabel\SchoolThemeService;
 use App\Services\WhiteLabel\SchoolPwaManifestService;
+use App\Services\WhiteLabel\SchoolThemeService;
 use Illuminate\Database\Seeder;
 
 class DefaultWhiteLabelSeeder extends Seeder
 {
     protected SchoolBrandingService $brandingService;
+
     protected SchoolThemeService $themeService;
+
     protected SchoolPwaManifestService $pwaService;
 
     public function __construct(

@@ -20,6 +20,7 @@ class IncidentReportController extends Controller
     public function index(): View
     {
         abort_unless($this->access->canManageIncidents(auth()->user()), 403);
+
         return view('saas-ops.incident-reports.index', ['incidents' => IncidentReport::query()->with('school')->latest()->paginate(20)]);
     }
 
@@ -31,6 +32,7 @@ class IncidentReportController extends Controller
     public function store(StoreIncidentReportRequest $request): RedirectResponse
     {
         $incident = $this->incidents->createIncident($request->validated(), $request->user());
+
         return redirect()->route('saas-ops.incident-reports.show', $incident)->with('success', 'Incident dibuat.');
     }
 
@@ -40,6 +42,7 @@ class IncidentReportController extends Controller
             $this->access->assertCanAccessSchool(auth()->user(), (int) $incidentReport->school_id);
         }
         $incidentReport->load('school');
+
         return view('saas-ops.incident-reports.show', ['incident' => $incidentReport]);
     }
 
@@ -51,12 +54,14 @@ class IncidentReportController extends Controller
     public function update(UpdateIncidentReportRequest $request, IncidentReport $incidentReport): RedirectResponse
     {
         $incidentReport->update($request->validated());
+
         return redirect()->route('saas-ops.incident-reports.show', $incidentReport)->with('success', 'Incident diperbarui.');
     }
 
     public function destroy(IncidentReport $incidentReport): RedirectResponse
     {
         $this->incidents->closeIncident($incidentReport, auth()->user());
+
         return back()->with('success', 'Incident closed.');
     }
 }

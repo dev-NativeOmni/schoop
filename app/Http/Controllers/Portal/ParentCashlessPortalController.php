@@ -7,6 +7,7 @@ use App\Models\CashlessWallet;
 use App\Services\Cashless\CashlessAccessService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class ParentCashlessPortalController extends Controller
@@ -28,7 +29,7 @@ class ParentCashlessPortalController extends Controller
         $schoolId = $access->activeSchoolId(auth()->user());
         $studentIds = auth()->user()->parentProfile?->students()->where('students.school_id', $schoolId)->pluck('students.id') ?? collect();
 
-        if (!$studentIds->contains($wallet->student_id) || (int) $wallet->school_id !== (int) $schoolId) {
+        if (! $studentIds->contains($wallet->student_id) || (int) $wallet->school_id !== (int) $schoolId) {
             abort(403, 'Aksi tidak diizinkan.');
         }
 
@@ -48,11 +49,11 @@ class ParentCashlessPortalController extends Controller
         }
 
         if ($request->filled('pin')) {
-            $data['pin'] = \Illuminate\Support\Facades\Hash::make($request->input('pin'));
+            $data['pin'] = Hash::make($request->input('pin'));
         }
 
         $wallet->update($data);
 
-        return back()->with('success', 'Pengaturan wallet ' . $wallet->student?->full_name . ' berhasil diperbarui.');
+        return back()->with('success', 'Pengaturan wallet '.$wallet->student?->full_name.' berhasil diperbarui.');
     }
 }

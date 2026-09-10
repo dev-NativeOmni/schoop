@@ -11,6 +11,7 @@ use Illuminate\View\View;
 class BoardingDashboardController extends Controller
 {
     protected BoardingAccessService $accessService;
+
     protected BoardingReportService $reportService;
 
     public function __construct(

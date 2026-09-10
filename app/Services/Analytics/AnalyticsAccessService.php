@@ -2,6 +2,7 @@
 
 namespace App\Services\Analytics;
 
+use App\Models\School;
 use App\Models\User;
 use App\Services\Tenancy\TenantAccessService;
 
@@ -22,7 +23,7 @@ class AnalyticsAccessService
             return false;
         }
 
-        return $user->hasRole(['admin', 'admin_sekolah', 'principal', 'kepala_sekolah']) 
+        return $user->hasRole(['admin', 'admin_sekolah', 'principal', 'kepala_sekolah'])
             && app(TenantAccessService::class)->userCanAccessSchool($user, $schoolId);
     }
 
@@ -36,7 +37,7 @@ class AnalyticsAccessService
             return false;
         }
 
-        return $user->hasRole(['admin', 'admin_sekolah', 'principal', 'kepala_sekolah']) 
+        return $user->hasRole(['admin', 'admin_sekolah', 'principal', 'kepala_sekolah'])
             && app(TenantAccessService::class)->userCanAccessSchool($user, $schoolId);
     }
 
@@ -55,14 +56,14 @@ class AnalyticsAccessService
             return false;
         }
 
-        return $user->hasRole(['admin', 'admin_sekolah']) 
+        return $user->hasRole(['admin', 'admin_sekolah'])
             && app(TenantAccessService::class)->userCanAccessSchool($user, $schoolId);
     }
 
     public function resolveAccessibleSchoolIds(User $user): array
     {
         if ($user->hasRole(['super_admin', 'operations_manager', 'customer_success', 'support_staff', 'sales'])) {
-            return \App\Models\School::query()->pluck('id')->all();
+            return School::query()->pluck('id')->all();
         }
 
         return app(TenantAccessService::class)->userAccessibleSchoolIds($user);

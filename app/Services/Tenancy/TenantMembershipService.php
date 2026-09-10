@@ -3,7 +3,6 @@
 namespace App\Services\Tenancy;
 
 use App\Models\UserSchoolMembership;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class TenantMembershipService
@@ -18,7 +17,7 @@ class TenantMembershipService
     public function createMembership(array $data): UserSchoolMembership
     {
         return DB::transaction(function () use ($data) {
-            if (!empty($data['is_default'])) {
+            if (! empty($data['is_default'])) {
                 $this->clearDefaultMemberships($data['user_id']);
             }
 
@@ -43,7 +42,7 @@ class TenantMembershipService
         return DB::transaction(function () use ($membership, $data) {
             $oldValues = $membership->toArray();
 
-            if (!empty($data['is_default']) && $data['is_default']) {
+            if (! empty($data['is_default']) && $data['is_default']) {
                 $this->clearDefaultMemberships($membership->user_id);
             }
 

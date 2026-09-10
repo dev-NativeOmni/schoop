@@ -4,6 +4,7 @@ namespace App\Services\Analytics;
 
 use App\Models\AnalyticsAccessLog;
 use App\Models\User;
+use App\Services\Tenancy\TenantContextService;
 use Illuminate\Http\Request;
 
 class AnalyticsAccessLogger
@@ -21,7 +22,7 @@ class AnalyticsAccessLogger
         $sanitizedFilters = $this->privacyGuard->sanitizeFilters($filters);
 
         AnalyticsAccessLog::query()->create([
-            'school_id' => $schoolId ?: app(\App\Services\Tenancy\TenantContextService::class)->activeSchoolId(),
+            'school_id' => $schoolId ?: app(TenantContextService::class)->activeSchoolId(),
             'user_id' => $user?->id,
             'analytics_area' => $area,
             'action' => $action,

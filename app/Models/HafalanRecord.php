@@ -10,14 +10,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class HafalanRecord extends Model
 {
     use BelongsToTenant;
-
     use SoftDeletes;
 
     public const STATUS_LUNAS = 'lunas';
+
     public const STATUS_KURANG = 'kurang';
+
     public const STATUS_LEBIH = 'lebih';
+
     public const STATUS_TIDAK_HADIR = 'tidak_hadir';
+
     public const STATUS_IZIN = 'izin';
+
     public const STATUS_SAKIT = 'sakit';
 
     protected $fillable = [

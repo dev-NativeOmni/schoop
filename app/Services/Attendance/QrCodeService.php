@@ -13,7 +13,7 @@ class QrCodeService
     {
         $renderer = new ImageRenderer(
             new RendererStyle($size),
-            new SvgImageBackEnd()
+            new SvgImageBackEnd
         );
 
         $writer = new Writer($renderer);

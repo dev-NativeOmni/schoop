@@ -97,7 +97,7 @@ class StudentBillService
                 'amount' => $totalAmount,
                 'source_type' => StudentBill::class,
                 'source_id' => $bill->id,
-                'description' => 'Tagihan ' . $bill->invoice_number . ' - ' . $bill->title,
+                'description' => 'Tagihan '.$bill->invoice_number.' - '.$bill->title,
                 'created_by' => $user->id,
             ]);
 
@@ -140,7 +140,7 @@ class StudentBillService
                 'amount' => $bill->total_amount,
                 'source_type' => StudentBill::class,
                 'source_id' => $bill->id,
-                'description' => 'Void tagihan ' . $bill->invoice_number,
+                'description' => 'Void tagihan '.$bill->invoice_number,
                 'created_by' => $user->id,
             ]);
 

@@ -29,7 +29,7 @@ class TenantHealthAnalyticsController extends Controller
         $this->logger->log($request, 'tenant_health_index');
 
         $today = Carbon::today()->toDateString();
-        
+
         $scores = TenantHealthScore::query()
             ->with('school')
             ->where('score_date', $today)

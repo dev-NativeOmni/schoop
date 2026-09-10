@@ -21,7 +21,7 @@ class LmsModuleService
             $schoolId = $this->tenantContext->activeSchoolId();
             $data['school_id'] = $schoolId;
 
-            if (!isset($data['sort_order'])) {
+            if (! isset($data['sort_order'])) {
                 $maxSort = LmsCourseModule::where('course_id', $data['course_id'])->max('sort_order');
                 $data['sort_order'] = $maxSort !== null ? $maxSort + 1 : 1;
             }

@@ -2,14 +2,14 @@
 
 namespace App\Services\Ai;
 
-use App\Models\Student;
 use App\Models\AiLearningSignal;
-use App\Models\TahfizhDebt;
-use App\Models\HafalanRecord;
-use App\Models\TahsinAssessment;
-use App\Models\MutabaahRecord;
 use App\Models\AttendanceRecord;
+use App\Models\HafalanRecord;
 use App\Models\LmsCourseEnrollment;
+use App\Models\MutabaahRecord;
+use App\Models\Student;
+use App\Models\TahfizhDebt;
+use App\Models\TahsinAssessment;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -43,7 +43,7 @@ class LearningSignalAggregator
                     'cumulative_debt_lines' => $latestDebt->cumulative_debt_lines,
                     'debt_lines' => $latestDebt->debt_lines,
                     'calculation_date' => $latestDebt->calculation_date?->toDateString(),
-                ]
+                ],
             ]);
         } else {
             $recentHafalan = HafalanRecord::query()
@@ -53,7 +53,7 @@ class LearningSignalAggregator
                 ->take(3)
                 ->get();
 
-            $isStable = $recentHafalan->count() > 0 && $recentHafalan->every(fn($r) => in_array($r->status, ['lunas', 'lebih']));
+            $isStable = $recentHafalan->count() > 0 && $recentHafalan->every(fn ($r) => in_array($r->status, ['lunas', 'lebih']));
             if ($isStable) {
                 $signals->push([
                     'school_id' => $schoolId,
@@ -63,10 +63,10 @@ class LearningSignalAggregator
                     'signal_key' => 'tahfizh_progress_stable',
                     'severity' => 'positive',
                     'score' => 100.00,
-                    'description' => "Progres setoran hafalan stabil dan konsisten.",
+                    'description' => 'Progres setoran hafalan stabil dan konsisten.',
                     'evidence' => [
-                        'recent_records' => $recentHafalan->map(fn($r) => ['status' => $r->status, 'date' => $r->record_date?->toDateString()]),
-                    ]
+                        'recent_records' => $recentHafalan->map(fn ($r) => ['status' => $r->status, 'date' => $r->record_date?->toDateString()]),
+                    ],
                 ]);
             }
         }
@@ -91,13 +91,13 @@ class LearningSignalAggregator
                         'signal_key' => "tahsin_{$skillCode}_weak",
                         'severity' => 'attention',
                         'score' => (float) ($item->score ?? 0),
-                        'description' => "Kemampuan tahsin pada aspek " . ($item->skill?->name ?? 'tajwid') . " perlu penguatan tambahan.",
+                        'description' => 'Kemampuan tahsin pada aspek '.($item->skill?->name ?? 'tajwid').' perlu penguatan tambahan.',
                         'evidence' => [
                             'skill_name' => $item->skill?->name,
                             'score' => $item->score,
                             'max_score' => $item->skill?->maximum_score,
                             'assessment_date' => $latestTahsin->assessment_date?->toDateString(),
-                        ]
+                        ],
                     ]);
                 }
             }
@@ -129,7 +129,7 @@ class LearningSignalAggregator
                         'completion_rate' => $completionRate,
                         'total_activities' => $totalCount,
                         'completed_activities' => $completedCount,
-                    ]
+                    ],
                 ]);
             } elseif ($completionRate >= 80) {
                 $signals->push([
@@ -140,10 +140,10 @@ class LearningSignalAggregator
                     'signal_key' => 'mutabaah_high_consistency',
                     'severity' => 'positive',
                     'score' => (float) $completionRate,
-                    'description' => "Sangat konsisten mengamalkan mutabaah harian.",
+                    'description' => 'Sangat konsisten mengamalkan mutabaah harian.',
                     'evidence' => [
                         'completion_rate' => $completionRate,
-                    ]
+                    ],
                 ]);
             }
         }
@@ -156,7 +156,7 @@ class LearningSignalAggregator
             ->get();
 
         if ($recentAttendance->count() > 0) {
-            $absences = $recentAttendance->filter(fn($r) => in_array(strtolower($r->status), ['alfa', 'tidak_hadir', 'absent', 'sakit', 'izin']));
+            $absences = $recentAttendance->filter(fn ($r) => in_array(strtolower($r->status), ['alfa', 'tidak_hadir', 'absent', 'sakit', 'izin']));
             if ($absences->count() > 2) {
                 $signals->push([
                     'school_id' => $schoolId,
@@ -169,8 +169,8 @@ class LearningSignalAggregator
                     'description' => "Terdapat pola ketidakhadiran sebanyak {$absences->count()} kali dalam 14 hari terakhir.",
                     'evidence' => [
                         'absence_count' => $absences->count(),
-                        'details' => $absences->map(fn($r) => ['date' => $r->attendance_date?->toDateString(), 'status' => $r->status]),
-                    ]
+                        'details' => $absences->map(fn ($r) => ['date' => $r->attendance_date?->toDateString(), 'status' => $r->status]),
+                    ],
                 ]);
             }
         }
@@ -192,12 +192,12 @@ class LearningSignalAggregator
                 'signal_key' => 'lms_content_incomplete',
                 'severity' => 'info',
                 'score' => (float) $enrollment->progress_percentage,
-                'description' => "Modul LMS " . ($enrollment->course?->title ?? 'materi') . " belum selesai ({$enrollment->progress_percentage}%).",
+                'description' => 'Modul LMS '.($enrollment->course?->title ?? 'materi')." belum selesai ({$enrollment->progress_percentage}%).",
                 'evidence' => [
                     'course_id' => $enrollment->lms_course_id,
                     'course_title' => $enrollment->course?->title,
                     'progress_percentage' => $enrollment->progress_percentage,
-                ]
+                ],
             ]);
         }
 

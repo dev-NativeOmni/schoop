@@ -13,6 +13,7 @@ use Illuminate\View\View;
 class TenantSettingController extends Controller
 {
     protected TenantSettingsService $settingsService;
+
     protected TenantContextService $contextService;
 
     public function __construct(TenantSettingsService $settingsService, TenantContextService $contextService)

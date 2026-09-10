@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Lms\StoreLmsQuizQuestionRequest;
 use App\Models\LmsQuiz;
 use App\Models\LmsQuizQuestion;
-use App\Services\Lms\LmsQuizService;
 use App\Services\Lms\LmsAccessService;
+use App\Services\Lms\LmsQuizService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +22,7 @@ class LmsQuizQuestionController extends Controller
 
     public function store(StoreLmsQuizQuestionRequest $request, LmsQuiz $quiz): RedirectResponse
     {
-        if (!$this->accessService->canManageCourse(Auth::user(), $quiz->course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $quiz->course)) {
             abort(403);
         }
 
@@ -34,7 +34,7 @@ class LmsQuizQuestionController extends Controller
 
     public function update(StoreLmsQuizQuestionRequest $request, LmsQuiz $quiz, LmsQuizQuestion $question): RedirectResponse
     {
-        if (!$this->accessService->canManageCourse(Auth::user(), $quiz->course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $quiz->course)) {
             abort(403);
         }
 
@@ -46,7 +46,7 @@ class LmsQuizQuestionController extends Controller
 
     public function destroy(LmsQuiz $quiz, LmsQuizQuestion $question): RedirectResponse
     {
-        if (!$this->accessService->canManageCourse(Auth::user(), $quiz->course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $quiz->course)) {
             abort(403);
         }
 

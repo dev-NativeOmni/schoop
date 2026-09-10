@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Student extends Model
 {
     use BelongsToTenant;
+
     protected $fillable = [
         'school_id',
         'user_id',

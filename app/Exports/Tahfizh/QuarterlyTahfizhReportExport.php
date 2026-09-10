@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-class QuarterlyTahfizhReportExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithTitle
+class QuarterlyTahfizhReportExport implements FromCollection, ShouldAutoSize, WithHeadings, WithMapping, WithTitle
 {
     public function __construct(
         private readonly Collection $rows,

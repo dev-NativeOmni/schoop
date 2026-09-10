@@ -2,49 +2,47 @@
 
 namespace Tests\Feature;
 
+use App\Models\AiFeatureFlag;
+use App\Models\AiFeedbackTemplate;
+use App\Models\AiLearningProfile;
+use App\Models\AiLearningRecommendation;
+use App\Models\AiLearningSignal;
+use App\Models\ParentProfile;
 use App\Models\Role;
 use App\Models\School;
+use App\Models\Student;
+use App\Models\TahfizhDebt;
 use App\Models\User;
 use App\Models\UserSchoolMembership;
-use App\Models\Student;
-use App\Models\ParentProfile;
-use App\Models\AiFeatureFlag;
-use App\Models\AiLearningProfile;
-use App\Models\AiLearningSignal;
-use App\Models\AiLearningRecommendation;
-use App\Models\AiPracticePlan;
-use App\Models\AiPracticePlanItem;
-use App\Models\AiFeedbackTemplate;
-use App\Models\AiSafetyEvent;
-use App\Models\AiTeacherReviewQueue;
-use App\Models\TahfizhDebt;
-use App\Models\TahsinAssessment;
-use App\Models\TahsinAssessmentItem;
-use App\Models\TahsinSkill;
-use App\Models\TahsinLevel;
-use App\Services\Ai\LearningSignalAggregator;
-use App\Services\Ai\RuleBasedRecommendationEngine;
-use App\Services\Ai\PracticePlanGenerator;
-use App\Services\Ai\TeacherFeedbackDraftService;
 use App\Services\Ai\AiAccessService;
+use App\Services\Ai\LearningSignalAggregator;
+use App\Services\Ai\PracticePlanGenerator;
+use App\Services\Ai\RuleBasedRecommendationEngine;
+use App\Services\Ai\TeacherFeedbackDraftService;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Carbon\Carbon;
 
 class Phase25AiAssistedQuranIntegrationTest extends TestCase
 {
     use RefreshDatabase;
 
     private School $schoolA;
+
     private School $schoolB;
 
     private User $adminA;
+
     private User $adminB;
+
     private User $teacherA;
+
     private User $studentA;
+
     private User $parentA;
 
     private Student $studentProfileA;
+
     private ParentProfile $parentProfileA;
 
     protected function setUp(): void
@@ -157,7 +155,7 @@ class Phase25AiAssistedQuranIntegrationTest extends TestCase
         // 1. Initially disabled (feature flag is default disabled after seeder runs)
         $this->actingAs($this->parentA)
             ->withSession(['active_school_id' => $this->schoolA->id]);
-        
+
         // Parent portal should return 403 because flag is disabled
         $response = $this->get(route('portal.parent.ai-learning'));
         $response->assertStatus(403);
@@ -217,7 +215,7 @@ class Phase25AiAssistedQuranIntegrationTest extends TestCase
             'severity' => 'urgent',
             'score' => 12,
             'description' => 'Hutang hafalan naik',
-            'evidence' => ['cumulative_debt_lines' => 12]
+            'evidence' => ['cumulative_debt_lines' => 12],
         ]);
 
         $engine = app(RuleBasedRecommendationEngine::class);
@@ -272,7 +270,7 @@ class Phase25AiAssistedQuranIntegrationTest extends TestCase
             'school_id' => $this->schoolA->id,
             'template_key' => 'safety_test_template',
             'title' => 'Safety Test',
-            'body_template' => "Ananda {student_name} terlihat malas dan gagal dalam setoran pekan ini.",
+            'body_template' => 'Ananda {student_name} terlihat malas dan gagal dalam setoran pekan ini.',
             'tone' => 'supportive',
             'is_active' => true,
         ]);

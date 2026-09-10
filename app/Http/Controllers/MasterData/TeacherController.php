@@ -19,8 +19,8 @@ class TeacherController extends Controller
     public function index(): View
     {
         $query = TeacherProfile::query()->with(['user', 'school']);
-        
-        if (!auth()->user()->isSuperAdmin()) {
+
+        if (! auth()->user()->isSuperAdmin()) {
             $query->where(['school_id' => auth()->user()->school_id]);
         }
 
@@ -75,7 +75,7 @@ class TeacherController extends Controller
 
     public function show(TeacherProfile $teacher): View
     {
-        if (!auth()->user()->isSuperAdmin() && $teacher->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $teacher->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data guru ini.');
         }
 
@@ -86,12 +86,12 @@ class TeacherController extends Controller
 
     public function edit(TeacherProfile $teacher): View
     {
-        if (!auth()->user()->isSuperAdmin() && $teacher->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $teacher->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data guru ini.');
         }
 
         $teacher->load(['user', 'school']);
-        
+
         $schools = auth()->user()->isSuperAdmin()
             ? School::query()->where(['is_active' => true])->orderByRaw('name')->get()
             : collect([auth()->user()->school]);
@@ -104,7 +104,7 @@ class TeacherController extends Controller
 
     public function update(UpdateTeacherRequest $request, TeacherProfile $teacher): RedirectResponse
     {
-        if (!auth()->user()->isSuperAdmin() && $teacher->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $teacher->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data guru ini.');
         }
 
@@ -143,7 +143,7 @@ class TeacherController extends Controller
 
     public function destroy(TeacherProfile $teacher): RedirectResponse
     {
-        if (!auth()->user()->isSuperAdmin() && $teacher->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $teacher->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data guru ini.');
         }
 

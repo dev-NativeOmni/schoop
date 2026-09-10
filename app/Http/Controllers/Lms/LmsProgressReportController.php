@@ -4,12 +4,11 @@ namespace App\Http\Controllers\Lms;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Lms\LmsProgressReportFilterRequest;
+use App\Models\ClassRoom;
 use App\Models\LmsCourse;
 use App\Models\LmsCourseEnrollment;
-use App\Models\ClassRoom;
-use App\Services\Lms\LmsReportService;
 use App\Services\Lms\LmsAccessService;
-use Illuminate\Support\Facades\Auth;
+use App\Services\Lms\LmsReportService;
 use Illuminate\View\View;
 
 class LmsProgressReportController extends Controller

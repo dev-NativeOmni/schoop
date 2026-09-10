@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ClassRoom extends Model
 {
     use BelongsToTenant;
+
     protected $fillable = [
         'school_id',
         'name',

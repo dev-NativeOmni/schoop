@@ -2,20 +2,18 @@
 
 namespace App\Services\Analytics;
 
-use App\Models\AcademicYear;
 use App\Models\AnalyticsSnapshot;
 use App\Models\AttendanceRecord;
 use App\Models\HafalanRecord;
+use App\Models\MobileApiUsageSnapshot;
 use App\Models\MutabaahRecord;
 use App\Models\School;
 use App\Models\SchoolAcademicSnapshot;
 use App\Models\SchoolFinanceSnapshot;
 use App\Models\SchoolOperationalSnapshot;
 use App\Models\SchoolSupportSnapshot;
-use App\Models\MobileApiUsageSnapshot;
 use App\Models\Student;
 use App\Models\TeacherProfile;
-use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\DB;
@@ -83,7 +81,7 @@ class AnalyticsSnapshotService
                 ->where('school_id', $schoolId)
                 ->where('is_active', true)
                 ->sum('daily_target_lines');
-            
+
             if ($totalTargetLines > 0) {
                 $actualLinesSum = HafalanRecord::query()
                     ->where('school_id', $schoolId)
@@ -121,7 +119,7 @@ class AnalyticsSnapshotService
                 ->where('school_id', $schoolId)
                 ->whereDate('assessment_date', $dateStr)
                 ->count();
-            
+
             if (Schema::hasTable('tahsin_assessment_items')) {
                 $tahsinAvg = DB::table('tahsin_assessment_items')
                     ->join('tahsin_assessments', 'tahsin_assessment_items.tahsin_assessment_id', '=', 'tahsin_assessments.id')
@@ -391,7 +389,7 @@ class AnalyticsSnapshotService
             $high = (clone $query)->where('priority', 'high')->whereIn('status', ['open', 'in_progress'])->count();
             $medium = (clone $query)->where('priority', 'medium')->whereIn('status', ['open', 'in_progress'])->count();
             $low = (clone $query)->where('priority', 'low')->whereIn('status', ['open', 'in_progress'])->count();
-            
+
             // SLA breach and average response calculations if columns exist
             // Simple fallback if SLA check field doesn't exist
             $slaBreached = (clone $query)->where('sla_breached', true)->count();

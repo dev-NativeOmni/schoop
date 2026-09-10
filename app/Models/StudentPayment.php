@@ -12,11 +12,15 @@ class StudentPayment extends Model
     use BelongsToTenant;
 
     public const METHOD_CASH = 'cash';
+
     public const METHOD_BANK_TRANSFER = 'bank_transfer';
+
     public const METHOD_QRIS_EXTERNAL = 'qris_external';
+
     public const METHOD_ADJUSTMENT = 'adjustment';
 
     public const STATUS_POSTED = 'posted';
+
     public const STATUS_VOID = 'void';
 
     protected $fillable = [

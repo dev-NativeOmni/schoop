@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -56,7 +57,7 @@ class DashboardController extends Controller
 
         // ⚡ Bolt: Cache admin statistics per school for 15 minutes to reduce database load.
         // Admin and Principal share the same stats, so using the same cache key here.
-        $stats = Cache::remember('dashboard.admin_stats.school.' . $schoolId, now()->addMinutes(15), function () use ($schoolId) {
+        $stats = Cache::remember('dashboard.admin_stats.school.'.$schoolId, now()->addMinutes(15), function () use ($schoolId) {
             return [
                 'total_classrooms' => ClassRoom::query()->where(['school_id' => $schoolId])->count(),
                 'total_students' => Student::query()->where(['school_id' => $schoolId])->count(),
@@ -73,7 +74,7 @@ class DashboardController extends Controller
 
         // ⚡ Bolt: Cache principal statistics per school for 15 minutes to reduce database load.
         // Reuses the same cache key as Admin to maximize cache hits.
-        $stats = Cache::remember('dashboard.admin_stats.school.' . $schoolId, now()->addMinutes(15), function () use ($schoolId) {
+        $stats = Cache::remember('dashboard.admin_stats.school.'.$schoolId, now()->addMinutes(15), function () use ($schoolId) {
             return [
                 'total_classrooms' => ClassRoom::query()->where(['school_id' => $schoolId])->count(),
                 'total_students' => Student::query()->where(['school_id' => $schoolId])->count(),
@@ -89,7 +90,7 @@ class DashboardController extends Controller
         $schoolId = $request->user()->school_id;
 
         // ⚡ Bolt: Cache teacher statistics per school for 15 minutes to reduce database load.
-        $stats = Cache::remember('dashboard.teacher_stats.school.' . $schoolId, now()->addMinutes(15), function () use ($schoolId) {
+        $stats = Cache::remember('dashboard.teacher_stats.school.'.$schoolId, now()->addMinutes(15), function () use ($schoolId) {
             return [
                 'total_classrooms' => ClassRoom::query()->where(['school_id' => $schoolId])->count(),
                 'total_students' => Student::query()->where(['school_id' => $schoolId])->count(),
@@ -119,15 +120,16 @@ class DashboardController extends Controller
         ]);
 
         if ($request->input('delete_logo') == '1') {
-            if (\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png')) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete('system/logo.png');
+            if (Storage::disk('public')->exists('system/logo.png')) {
+                Storage::disk('public')->delete('system/logo.png');
             }
+
             return redirect()->back()->with('success', 'Logo kustom global berhasil dihapus.');
         }
 
         if ($request->hasFile('logo')) {
-            if (\Illuminate\Support\Facades\Storage::disk('public')->exists('system/logo.png')) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete('system/logo.png');
+            if (Storage::disk('public')->exists('system/logo.png')) {
+                Storage::disk('public')->delete('system/logo.png');
             }
 
             $request->file('logo')->storeAs('system', 'logo.png', 'public');

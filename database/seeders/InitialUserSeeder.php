@@ -27,7 +27,7 @@ class InitialUserSeeder extends Seeder
                 'student',
             ])
             ->get()
-            ->keyBy(fn($role) => $role->name);
+            ->keyBy(fn ($role) => $role->name);
 
         $plainPassword = 'password';
         $defaultPassword = Hash::make($plainPassword);

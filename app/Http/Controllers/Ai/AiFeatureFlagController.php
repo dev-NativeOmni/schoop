@@ -3,20 +3,22 @@
 namespace App\Http\Controllers\Ai;
 
 use App\Http\Controllers\Controller;
-use App\Models\AiFeatureFlag;
 use App\Http\Requests\Ai\UpdateAiFeatureFlagRequest;
+use App\Models\AiFeatureFlag;
 use App\Services\Ai\AiAccessService;
 use App\Services\Ai\AiAuditLogger;
 use App\Services\Tenancy\TenantContextService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AiFeatureFlagController extends Controller
 {
     protected AiAccessService $accessService;
+
     protected AiAuditLogger $auditLogger;
+
     protected TenantContextService $tenantContext;
 
     public function __construct(
@@ -32,7 +34,7 @@ class AiFeatureFlagController extends Controller
     public function index(Request $request): View
     {
         $schoolId = $this->tenantContext->activeSchoolId();
-        if (!$this->accessService->canManageAiSettings(Auth::user(), $schoolId)) {
+        if (! $this->accessService->canManageAiSettings(Auth::user(), $schoolId)) {
             abort(403, 'Unauthorized to view AI settings.');
         }
 
@@ -46,7 +48,7 @@ class AiFeatureFlagController extends Controller
     public function edit(AiFeatureFlag $featureFlag): View
     {
         $schoolId = $this->tenantContext->activeSchoolId();
-        if (!$this->accessService->canManageAiSettings(Auth::user(), $schoolId) || $featureFlag->school_id !== $schoolId) {
+        if (! $this->accessService->canManageAiSettings(Auth::user(), $schoolId) || $featureFlag->school_id !== $schoolId) {
             abort(403, 'Unauthorized to edit AI settings.');
         }
 
@@ -56,12 +58,12 @@ class AiFeatureFlagController extends Controller
     public function update(UpdateAiFeatureFlagRequest $request, AiFeatureFlag $featureFlag): RedirectResponse
     {
         $schoolId = $this->tenantContext->activeSchoolId();
-        if (!$this->accessService->canManageAiSettings(Auth::user(), $schoolId) || $featureFlag->school_id !== $schoolId) {
+        if (! $this->accessService->canManageAiSettings(Auth::user(), $schoolId) || $featureFlag->school_id !== $schoolId) {
             abort(403, 'Unauthorized to update AI settings.');
         }
 
         $before = $featureFlag->toArray();
-        
+
         $featureFlag->update([
             'is_enabled' => $request->boolean('is_enabled'),
             'requires_teacher_review' => $request->boolean('requires_teacher_review'),

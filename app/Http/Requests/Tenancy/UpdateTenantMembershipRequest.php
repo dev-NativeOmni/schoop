@@ -14,7 +14,7 @@ class UpdateTenantMembershipRequest extends FormRequest
         $accessService = app(TenantAccessService::class);
         $membership = $this->route('membership');
 
-        if (!$membership) {
+        if (! $membership) {
             return false;
         }
 

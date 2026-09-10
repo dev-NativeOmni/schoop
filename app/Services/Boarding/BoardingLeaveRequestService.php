@@ -92,8 +92,8 @@ class BoardingLeaveRequestService
     {
         $request = BoardingLeaveRequest::findOrFail($requestId);
 
-        if (!in_array($request->status, ['draft', 'submitted'], true)) {
-            throw new Exception("Pengajuan izin tidak dapat dibatalkan pada status saat ini.");
+        if (! in_array($request->status, ['draft', 'submitted'], true)) {
+            throw new Exception('Pengajuan izin tidak dapat dibatalkan pada status saat ini.');
         }
 
         $request->update([

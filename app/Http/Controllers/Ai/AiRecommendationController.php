@@ -7,12 +7,13 @@ use App\Models\AiLearningRecommendation;
 use App\Services\Ai\AiAccessService;
 use App\Services\Tenancy\TenantContextService;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AiRecommendationController extends Controller
 {
     protected AiAccessService $accessService;
+
     protected TenantContextService $tenantContext;
 
     public function __construct(AiAccessService $accessService, TenantContextService $tenantContext)
@@ -36,7 +37,7 @@ class AiRecommendationController extends Controller
 
     public function show(AiLearningRecommendation $recommendation): View
     {
-        if (!$this->accessService->canViewStudentAiData(Auth::user(), $recommendation->student)) {
+        if (! $this->accessService->canViewStudentAiData(Auth::user(), $recommendation->student)) {
             abort(403, 'Unauthorized access to recommendation data.');
         }
 

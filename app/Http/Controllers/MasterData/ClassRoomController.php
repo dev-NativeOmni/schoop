@@ -16,8 +16,8 @@ class ClassRoomController extends Controller
     public function index(): View
     {
         $query = ClassRoom::query()->with(['school', 'homeroomTeacher']);
-        
-        if (!auth()->user()->isSuperAdmin()) {
+
+        if (! auth()->user()->isSuperAdmin()) {
             $query->where('school_id', auth()->user()->school_id);
         }
 
@@ -37,7 +37,7 @@ class ClassRoomController extends Controller
 
         $teachersQuery = User::query()
             ->whereHas('role', fn ($query) => $query->where('name', 'teacher'));
-        if (!$isSuperAdmin) {
+        if (! $isSuperAdmin) {
             $teachersQuery->where('school_id', $schoolId);
         }
         $teachers = $teachersQuery->orderBy('name')->get();
@@ -53,7 +53,7 @@ class ClassRoomController extends Controller
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active');
 
-        if (!auth()->user()->isSuperAdmin()) {
+        if (! auth()->user()->isSuperAdmin()) {
             $data['school_id'] = auth()->user()->school_id;
         }
 
@@ -66,7 +66,7 @@ class ClassRoomController extends Controller
 
     public function show(ClassRoom $classRoom): View
     {
-        if (!auth()->user()->isSuperAdmin() && $classRoom->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $classRoom->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data kelas ini.');
         }
 
@@ -77,7 +77,7 @@ class ClassRoomController extends Controller
 
     public function edit(ClassRoom $classRoom): View
     {
-        if (!auth()->user()->isSuperAdmin() && $classRoom->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $classRoom->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data kelas ini.');
         }
 
@@ -90,7 +90,7 @@ class ClassRoomController extends Controller
 
         $teachersQuery = User::query()
             ->whereHas('role', fn ($query) => $query->where('name', 'teacher'));
-        if (!$isSuperAdmin) {
+        if (! $isSuperAdmin) {
             $teachersQuery->where('school_id', $schoolId);
         }
         $teachers = $teachersQuery->orderBy('name')->get();
@@ -104,14 +104,14 @@ class ClassRoomController extends Controller
 
     public function update(UpdateClassRoomRequest $request, ClassRoom $classRoom): RedirectResponse
     {
-        if (!auth()->user()->isSuperAdmin() && $classRoom->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $classRoom->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data kelas ini.');
         }
 
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active');
 
-        if (!auth()->user()->isSuperAdmin()) {
+        if (! auth()->user()->isSuperAdmin()) {
             $data['school_id'] = auth()->user()->school_id;
         }
 
@@ -124,7 +124,7 @@ class ClassRoomController extends Controller
 
     public function destroy(ClassRoom $classRoom): RedirectResponse
     {
-        if (!auth()->user()->isSuperAdmin() && $classRoom->school_id !== auth()->user()->school_id) {
+        if (! auth()->user()->isSuperAdmin() && $classRoom->school_id !== auth()->user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke data kelas ini.');
         }
 

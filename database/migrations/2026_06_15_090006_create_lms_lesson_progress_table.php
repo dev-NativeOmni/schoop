@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('lms_lesson_progress', function (Blueprint $table): void {
             $table->id();
-            
+
             $table->foreignId('school_id')
                 ->nullable()
                 ->constrained('schools')

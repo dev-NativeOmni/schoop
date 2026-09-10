@@ -7,8 +7,8 @@ use App\Http\Requests\Lms\StoreLmsLessonRequest;
 use App\Http\Requests\Lms\UpdateLmsLessonRequest;
 use App\Models\LmsCourse;
 use App\Models\LmsLesson;
-use App\Services\Lms\LmsLessonService;
 use App\Services\Lms\LmsAccessService;
+use App\Services\Lms\LmsLessonService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,18 +26,19 @@ class LmsLessonController extends Controller
 
     public function show(LmsLesson $lesson): View
     {
-        if (!$this->accessService->canViewLesson(Auth::user(), $lesson)) {
+        if (! $this->accessService->canViewLesson(Auth::user(), $lesson)) {
             abort(403);
         }
 
         $lesson->load(['course', 'module', 'resources', 'assignment', 'quiz']);
+
         return view('lms.lessons.show', compact('lesson'));
     }
 
     public function store(StoreLmsLessonRequest $request): RedirectResponse
     {
         $course = LmsCourse::findOrFail($request->input('course_id'));
-        if (!$this->accessService->canManageCourse(Auth::user(), $course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $course)) {
             abort(403);
         }
 
@@ -49,7 +50,7 @@ class LmsLessonController extends Controller
 
     public function update(UpdateLmsLessonRequest $request, LmsLesson $lesson): RedirectResponse
     {
-        if (!$this->accessService->canManageLesson(Auth::user(), $lesson)) {
+        if (! $this->accessService->canManageLesson(Auth::user(), $lesson)) {
             abort(403);
         }
 
@@ -61,7 +62,7 @@ class LmsLessonController extends Controller
 
     public function destroy(LmsLesson $lesson): RedirectResponse
     {
-        if (!$this->accessService->canManageLesson(Auth::user(), $lesson)) {
+        if (! $this->accessService->canManageLesson(Auth::user(), $lesson)) {
             abort(403);
         }
 
@@ -69,7 +70,7 @@ class LmsLessonController extends Controller
         $this->lessonService->deleteLesson($lesson);
 
         return redirect()->route('lms.courses.show', $courseId)
-            ->with('success', "Materi berhasil dihapus.");
+            ->with('success', 'Materi berhasil dihapus.');
     }
 
     public function reorder(Request $request): JsonResponse
@@ -85,7 +86,7 @@ class LmsLessonController extends Controller
         }
 
         $firstLesson = LmsLesson::findOrFail($ids[0]);
-        if (!$this->accessService->canManageCourse(Auth::user(), $firstLesson->course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $firstLesson->course)) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 

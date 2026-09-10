@@ -37,7 +37,7 @@ class TahfizhDebtBehindNotification extends Notification
         return [
             'category' => 'tahfizh_debt_behind',
             'title' => 'Santri belum mencapai target',
-            'body' => $this->debt->student?->full_name . ' masih memiliki hutang hafalan.',
+            'body' => $this->debt->student?->full_name.' masih memiliki hutang hafalan.',
             'type' => 'warning',
             'student_id' => $this->debt->student_id,
             'student_name' => $this->debt->student?->full_name,

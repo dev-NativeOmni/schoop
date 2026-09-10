@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Tenancy;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClassRoom;
-use App\Models\School;
 use App\Models\Student;
 use App\Models\TenantAuditLog;
 use App\Models\TenantModule;
@@ -18,7 +17,7 @@ class TenantDashboardController extends Controller
     public function index(TenantContextService $contextService): View
     {
         $school = $contextService->activeSchool();
-        if (!$school) {
+        if (! $school) {
             abort(404, 'Sekolah tidak ditemukan atau belum diset.');
         }
 

@@ -18,14 +18,14 @@ class SystemHealthCheckCommand extends Command
         foreach ($checks as $name => $result) {
             $status = ($result['ok'] ?? false) ? 'OK' : 'FAILED';
 
-            $this->line(strtoupper($name) . ': ' . $status);
+            $this->line(strtoupper($name).': '.$status);
 
             foreach ($result as $key => $value) {
                 if ($key === 'ok') {
                     continue;
                 }
 
-                $this->line('  - ' . $key . ': ' . $this->stringify($value));
+                $this->line('  - '.$key.': '.$this->stringify($value));
             }
         }
 

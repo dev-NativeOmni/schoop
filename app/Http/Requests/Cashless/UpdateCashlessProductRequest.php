@@ -2,6 +2,4 @@
 
 namespace App\Http\Requests\Cashless;
 
-class UpdateCashlessProductRequest extends StoreCashlessProductRequest
-{
-}
+class UpdateCashlessProductRequest extends StoreCashlessProductRequest {}

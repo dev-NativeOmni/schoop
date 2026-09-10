@@ -3,22 +3,22 @@
 namespace App\Http\Controllers\Boarding;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Boarding\StoreBoardingRollCallSessionRequest;
 use App\Http\Requests\Boarding\StoreBoardingRollCallRecordRequest;
+use App\Http\Requests\Boarding\StoreBoardingRollCallSessionRequest;
 use App\Models\BoardingDormitory;
-use App\Models\BoardingRoom;
 use App\Models\BoardingRollCallSession;
-use App\Models\BoardingRollCallRecord;
+use App\Models\BoardingRoom;
 use App\Services\Boarding\BoardingAccessService;
 use App\Services\Boarding\BoardingRollCallService;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Exception;
 
 class BoardingRollCallController extends Controller
 {
     protected BoardingAccessService $accessService;
+
     protected BoardingRollCallService $rollCallService;
 
     public function __construct(
@@ -110,10 +110,10 @@ class BoardingRollCallController extends Controller
         abort_unless($this->accessService->canManageRollCall($request->user(), $rollCall), 403);
 
         $rollCall->load(['dormitory', 'room', 'records.student.classRoom', 'creator']);
-        
+
         $records = $rollCall->records()->orderByHasAssignment()->get(); // Order by student name
         // Let's just sort by student name
-        $records = $rollCall->records()->get()->sortBy(function($record) {
+        $records = $rollCall->records()->get()->sortBy(function ($record) {
             return $record->student->full_name;
         });
 
@@ -158,6 +158,7 @@ class BoardingRollCallController extends Controller
 
         try {
             $this->rollCallService->closeSession($rollCall->id);
+
             return redirect()
                 ->route('boarding.roll-calls.show', $rollCall->id)
                 ->with('success', 'Sesi absen berhasil ditutup dan dikunci.');

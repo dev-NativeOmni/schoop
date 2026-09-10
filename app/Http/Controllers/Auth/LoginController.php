@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\Tenancy\TenantContextService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -54,12 +55,13 @@ class LoginController extends Controller
             ])->save();
 
             // Resolve active school context
-            $schoolId = app(\App\Services\Tenancy\TenantContextService::class)->resolveForUser($user);
+            $schoolId = app(TenantContextService::class)->resolveForUser($user);
 
-            if (!$schoolId && !$user->hasRole(['super_admin', 'operations_manager', 'support_staff', 'customer_success', 'sales'])) {
+            if (! $schoolId && ! $user->hasRole(['super_admin', 'operations_manager', 'support_staff', 'customer_success', 'sales'])) {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
+
                 return back()
                     ->withErrors([
                         'login' => 'Akun Anda belum terhubung ke sekolah. Hubungi admin.',

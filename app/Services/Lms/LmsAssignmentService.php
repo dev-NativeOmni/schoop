@@ -6,7 +6,6 @@ use App\Models\LmsAssignment;
 use App\Models\LmsAssignmentSubmission;
 use App\Services\Tenancy\TenantContextService;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
 class LmsAssignmentService
@@ -60,7 +59,7 @@ class LmsAssignmentService
             if ($file) {
                 $this->validateFile($file);
 
-                $filename = time() . '_sub_' . preg_replace('/[^a-zA-Z0-9_.-]/', '', $file->getClientOriginalName());
+                $filename = time().'_sub_'.preg_replace('/[^a-zA-Z0-9_.-]/', '', $file->getClientOriginalName());
                 $path = $file->storeAs("private/lms_submissions/{$schoolId}", $filename, 'local');
 
                 $submissionData['file_path'] = $path;
@@ -86,7 +85,7 @@ class LmsAssignmentService
     {
         return DB::transaction(function () use ($submissionId, $score, $feedback, $teacherUserId) {
             $submission = LmsAssignmentSubmission::findOrFail($submissionId);
-            
+
             $submission->update([
                 'score' => $score,
                 'teacher_feedback' => $feedback,
@@ -96,7 +95,7 @@ class LmsAssignmentService
             ]);
 
             $assignment = $submission->assignment;
-            
+
             // Send internal notification to student
             $this->notificationService->notifyAssignmentGraded($submission);
 

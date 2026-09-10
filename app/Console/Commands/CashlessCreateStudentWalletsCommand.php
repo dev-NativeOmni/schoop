@@ -28,6 +28,7 @@ class CashlessCreateStudentWalletsCommand extends Command
             try {
                 if ($student->cashlessWallet) {
                     $skipped++;
+
                     continue;
                 }
 

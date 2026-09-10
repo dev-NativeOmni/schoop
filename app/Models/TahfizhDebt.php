@@ -11,12 +11,17 @@ class TahfizhDebt extends Model
     use BelongsToTenant;
 
     public const PERIOD_DAILY = 'daily';
+
     public const PERIOD_WEEKLY = 'weekly';
+
     public const PERIOD_MONTHLY = 'monthly';
 
     public const STATUS_NO_TARGET = 'no_target';
+
     public const STATUS_MET = 'met';
+
     public const STATUS_BEHIND = 'behind';
+
     public const STATUS_AHEAD = 'ahead';
 
     protected $fillable = [

@@ -2,12 +2,12 @@
 
 namespace App\Services\Analytics;
 
+use App\Models\MobileApiUsageSnapshot;
 use App\Models\School;
 use App\Models\SchoolAcademicSnapshot;
 use App\Models\SchoolFinanceSnapshot;
 use App\Models\SchoolOperationalSnapshot;
 use App\Models\SchoolSupportSnapshot;
-use App\Models\MobileApiUsageSnapshot;
 use App\Models\TenantHealthScore;
 use App\Models\TenantHealthScoreComponent;
 use Carbon\CarbonInterface;
@@ -175,7 +175,7 @@ class TenantHealthScoreService
             [
                 'score' => $totalScore,
                 'status' => $status,
-                'summary' => "Skor kesehatan terkalkulasi sebesar {$totalScore}/100. Status sekolah: " . strtoupper($status),
+                'summary' => "Skor kesehatan terkalkulasi sebesar {$totalScore}/100. Status sekolah: ".strtoupper($status),
                 'risk_flags' => $riskFlags,
                 'recommendations' => $recommendations,
             ]
@@ -221,6 +221,7 @@ class TenantHealthScoreService
         if ($score >= 40) {
             return 'risk';
         }
+
         return 'critical';
     }
 }

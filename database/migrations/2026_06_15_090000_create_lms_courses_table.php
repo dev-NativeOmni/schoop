@@ -10,17 +10,17 @@ return new class extends Migration
     {
         Schema::create('lms_courses', function (Blueprint $table): void {
             $table->id();
-            
+
             $table->foreignId('school_id')
                 ->nullable()
                 ->constrained('schools')
                 ->nullOnDelete();
-                
+
             $table->foreignId('created_by')
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete();
-                
+
             $table->foreignId('updated_by')
                 ->nullable()
                 ->constrained('users')
@@ -45,7 +45,7 @@ return new class extends Migration
 
             $table->unique(['school_id', 'course_code'], 'lms_courses_code_unique');
             $table->unique(['school_id', 'slug'], 'lms_courses_slug_unique');
-            
+
             $table->index('school_id');
             $table->index('type');
             $table->index('visibility');

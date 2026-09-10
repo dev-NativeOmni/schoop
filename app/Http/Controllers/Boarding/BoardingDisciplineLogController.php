@@ -56,7 +56,7 @@ class BoardingDisciplineLogController extends Controller
             $search = $request->q;
             $query->whereHas('student', function ($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('student_number', 'like', "%{$search}%");
+                    ->orWhere('student_number', 'like', "%{$search}%");
             });
         }
 
@@ -70,7 +70,7 @@ class BoardingDisciplineLogController extends Controller
         abort_unless($this->accessService->canAccessDashboard($request->user()), 403);
 
         $schoolId = $request->user()->school_id;
-        
+
         // Query active students to log discipline for
         $students = Student::query()
             ->where('school_id', $schoolId)

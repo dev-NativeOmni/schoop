@@ -7,8 +7,11 @@ use InvalidArgumentException;
 class LineRangeCalculator
 {
     public const MIN_PAGE = 1;
+
     public const MAX_PAGE = 604;
+
     public const MIN_LINE = 1;
+
     public const MAX_LINE = 15;
 
     public function calculate(

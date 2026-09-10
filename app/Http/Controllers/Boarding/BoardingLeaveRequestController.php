@@ -4,19 +4,19 @@ namespace App\Http\Controllers\Boarding;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Boarding\StoreBoardingLeaveRequestRequest;
-use App\Http\Requests\Boarding\UpdateBoardingLeaveRequestStatusRequest;
 use App\Models\BoardingLeaveRequest;
 use App\Models\Student;
 use App\Services\Boarding\BoardingAccessService;
 use App\Services\Boarding\BoardingLeaveRequestService;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Exception;
 
 class BoardingLeaveRequestController extends Controller
 {
     protected BoardingAccessService $accessService;
+
     protected BoardingLeaveRequestService $leaveService;
 
     public function __construct(
@@ -67,7 +67,7 @@ class BoardingLeaveRequestController extends Controller
             $search = $request->q;
             $query->whereHas('student', function ($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('student_number', 'like', "%{$search}%");
+                    ->orWhere('student_number', 'like', "%{$search}%");
             });
         }
 
@@ -81,7 +81,7 @@ class BoardingLeaveRequestController extends Controller
         abort_unless($this->accessService->canAccessDashboard($request->user()), 403);
 
         $schoolId = $request->user()->school_id;
-        
+
         // Query active students to request leave for
         $students = Student::query()
             ->where('school_id', $schoolId)
@@ -130,6 +130,7 @@ class BoardingLeaveRequestController extends Controller
 
         try {
             $this->leaveService->approve($leaveRequest->id, $request->user()->id, $request->input('approval_note'));
+
             return redirect()
                 ->route('boarding.leave-requests.show', $leaveRequest->id)
                 ->with('success', 'Pengajuan izin disetujui.');
@@ -144,6 +145,7 @@ class BoardingLeaveRequestController extends Controller
 
         try {
             $this->leaveService->reject($leaveRequest->id, $request->user()->id, $request->input('approval_note'));
+
             return redirect()
                 ->route('boarding.leave-requests.show', $leaveRequest->id)
                 ->with('success', 'Pengajuan izin ditolak.');
@@ -158,6 +160,7 @@ class BoardingLeaveRequestController extends Controller
 
         try {
             $this->leaveService->markReturned($leaveRequest->id);
+
             return redirect()
                 ->route('boarding.leave-requests.show', $leaveRequest->id)
                 ->with('success', 'Status santri berhasil ditandai sudah kembali.');
@@ -172,6 +175,7 @@ class BoardingLeaveRequestController extends Controller
 
         try {
             $this->leaveService->cancel($leaveRequest->id);
+
             return redirect()
                 ->route('boarding.leave-requests.index')
                 ->with('success', 'Pengajuan izin dibatalkan.');

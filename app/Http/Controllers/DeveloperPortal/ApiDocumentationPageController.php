@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DeveloperPortal\StoreApiDocumentationPageRequest;
 use App\Models\ApiDocumentationPage;
 use App\Services\DeveloperPortal\ApiAccessService;
-use Illuminate\Http\Request;
 
 class ApiDocumentationPageController extends Controller
 {

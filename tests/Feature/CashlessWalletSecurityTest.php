@@ -9,9 +9,15 @@ use App\Models\CashlessWallet;
 use App\Models\ParentProfile;
 use App\Models\Role;
 use App\Models\School;
+use App\Models\SchoolSubscription;
 use App\Models\Student;
+use App\Models\SubscriptionPlan;
 use App\Models\User;
 use App\Models\UserSchoolMembership;
+use App\Services\Cashless\CashlessSaleService;
+use Database\Seeders\PlanModuleSeeder;
+use Database\Seeders\SubscriptionPlanSeeder;
+use Database\Seeders\SystemModuleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -21,16 +27,27 @@ class CashlessWalletSecurityTest extends TestCase
     use RefreshDatabase;
 
     private School $school;
+
     private User $admin;
+
     private User $parent;
+
     private User $unauthorizedParent;
+
     private User $student;
+
     private Student $studentProfile;
+
     private ParentProfile $parentProfile;
+
     private ParentProfile $unauthorizedParentProfile;
+
     private CashlessWallet $wallet;
+
     private CashlessMerchant $merchant;
+
     private CashlessPosSession $posSession;
+
     private CashlessProduct $product;
 
     protected function setUp(): void
@@ -123,12 +140,12 @@ class CashlessWalletSecurityTest extends TestCase
         UserSchoolMembership::create(['user_id' => $this->student->id, 'school_id' => $this->school->id, 'role_id' => $studentRole->id, 'membership_status' => 'active']);
 
         // Seed and create active school subscription to enable 'cashless' module
-        $this->seed(\Database\Seeders\SystemModuleSeeder::class);
-        $this->seed(\Database\Seeders\SubscriptionPlanSeeder::class);
-        $this->seed(\Database\Seeders\PlanModuleSeeder::class);
+        $this->seed(SystemModuleSeeder::class);
+        $this->seed(SubscriptionPlanSeeder::class);
+        $this->seed(PlanModuleSeeder::class);
 
-        $enterprisePlan = \App\Models\SubscriptionPlan::where('code', 'enterprise')->firstOrFail();
-        \App\Models\SchoolSubscription::create([
+        $enterprisePlan = SubscriptionPlan::where('code', 'enterprise')->firstOrFail();
+        SchoolSubscription::create([
             'school_id' => $this->school->id,
             'subscription_plan_id' => $enterprisePlan->id,
             'status' => 'active',
@@ -221,8 +238,8 @@ class CashlessWalletSecurityTest extends TestCase
             'student_id' => $this->studentProfile->id,
             'idempotency_key' => 'idemp-1',
             'items' => [
-                ['cashless_product_id' => $this->product->id, 'quantity' => 1]
-            ]
+                ['cashless_product_id' => $this->product->id, 'quantity' => 1],
+            ],
         ];
 
         $response = $this->post(route('cashless.pos.sales.store'), $payload);
@@ -234,22 +251,22 @@ class CashlessWalletSecurityTest extends TestCase
             'student_id' => $this->studentProfile->id,
             'idempotency_key' => 'idemp-2',
             'items' => [
-                ['cashless_product_id' => $this->product->id, 'quantity' => 1]
-            ]
+                ['cashless_product_id' => $this->product->id, 'quantity' => 1],
+            ],
         ];
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Limit pembelanjaan harian terlampaui.');
 
         // Calling direct service to assert the exception
-        app(\App\Services\Cashless\CashlessSaleService::class)->createSale($payload2, $this->admin);
+        app(CashlessSaleService::class)->createSale($payload2, $this->admin);
     }
 
     public function test_sale_requires_pin_for_high_value_transaction(): void
     {
         // Set PIN
         $this->wallet->update([
-            'pin' => Hash::make('123456')
+            'pin' => Hash::make('123456'),
         ]);
 
         // Product above threshold (>= 50,000)
@@ -269,13 +286,13 @@ class CashlessWalletSecurityTest extends TestCase
             'student_id' => $this->studentProfile->id,
             'idempotency_key' => 'idemp-3',
             'items' => [
-                ['cashless_product_id' => $expensiveProduct->id, 'quantity' => 1]
-            ]
+                ['cashless_product_id' => $expensiveProduct->id, 'quantity' => 1],
+            ],
         ];
 
         // 1. Submit without PIN - Should throw InvalidArgumentException
         try {
-            app(\App\Services\Cashless\CashlessSaleService::class)->createSale($payload, $this->admin);
+            app(CashlessSaleService::class)->createSale($payload, $this->admin);
             $this->fail('Expected InvalidArgumentException was not thrown for missing PIN.');
         } catch (\InvalidArgumentException $e) {
             $this->assertStringContainsString('PIN transaksi wajib diisi', $e->getMessage());
@@ -284,7 +301,7 @@ class CashlessWalletSecurityTest extends TestCase
         // 2. Submit with incorrect PIN - Should throw InvalidArgumentException
         $payload['pin'] = '999999';
         try {
-            app(\App\Services\Cashless\CashlessSaleService::class)->createSale($payload, $this->admin);
+            app(CashlessSaleService::class)->createSale($payload, $this->admin);
             $this->fail('Expected InvalidArgumentException was not thrown for incorrect PIN.');
         } catch (\InvalidArgumentException $e) {
             $this->assertStringContainsString('PIN transaksi salah', $e->getMessage());
@@ -292,7 +309,7 @@ class CashlessWalletSecurityTest extends TestCase
 
         // 3. Submit with correct PIN - Should succeed
         $payload['pin'] = '123456';
-        $sale = app(\App\Services\Cashless\CashlessSaleService::class)->createSale($payload, $this->admin);
+        $sale = app(CashlessSaleService::class)->createSale($payload, $this->admin);
         $this->assertNotNull($sale);
         $this->assertEquals('posted', $sale->status);
     }
@@ -300,7 +317,7 @@ class CashlessWalletSecurityTest extends TestCase
     public function test_sale_does_not_require_pin_for_low_value_transaction(): void
     {
         $this->wallet->update([
-            'pin' => Hash::make('123456')
+            'pin' => Hash::make('123456'),
         ]);
 
         // Low value (Rp 10.000) without PIN - Should succeed
@@ -309,11 +326,11 @@ class CashlessWalletSecurityTest extends TestCase
             'student_id' => $this->studentProfile->id,
             'idempotency_key' => 'idemp-4',
             'items' => [
-                ['cashless_product_id' => $this->product->id, 'quantity' => 1]
-            ]
+                ['cashless_product_id' => $this->product->id, 'quantity' => 1],
+            ],
         ];
 
-        $sale = app(\App\Services\Cashless\CashlessSaleService::class)->createSale($payload, $this->admin);
+        $sale = app(CashlessSaleService::class)->createSale($payload, $this->admin);
         $this->assertNotNull($sale);
         $this->assertEquals('posted', $sale->status);
     }
@@ -337,11 +354,11 @@ class CashlessWalletSecurityTest extends TestCase
             'student_id' => $this->studentProfile->id,
             'idempotency_key' => 'idemp-5',
             'items' => [
-                ['cashless_product_id' => $expensiveProduct->id, 'quantity' => 1]
-            ]
+                ['cashless_product_id' => $expensiveProduct->id, 'quantity' => 1],
+            ],
         ];
 
-        $sale = app(\App\Services\Cashless\CashlessSaleService::class)->createSale($payload, $this->admin);
+        $sale = app(CashlessSaleService::class)->createSale($payload, $this->admin);
         $this->assertNotNull($sale);
         $this->assertEquals('posted', $sale->status);
     }

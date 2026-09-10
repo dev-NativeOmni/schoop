@@ -30,19 +30,19 @@ class PlanModuleController extends Controller
     public function update(SyncPlanModulesRequest $request, SubscriptionPlan $plan): RedirectResponse
     {
         $inputModules = $request->input('modules', []);
-        
+
         $syncData = [];
         foreach ($inputModules as $systemModuleId => $data) {
             $isIncluded = isset($data['is_included']) && $data['is_included'] == '1';
-            
+
             if ($isIncluded) {
                 $limits = null;
-                if (!empty($data['limits'])) {
+                if (! empty($data['limits'])) {
                     $limits = json_decode($data['limits'], true);
                 }
-                
+
                 $features = null;
-                if (!empty($data['features'])) {
+                if (! empty($data['features'])) {
                     $features = json_decode($data['features'], true);
                 }
 

@@ -2,12 +2,11 @@
 
 namespace App\Services\Boarding;
 
-use App\Models\User;
-use App\Models\Student;
-use App\Models\BoardingDormitory;
-use App\Models\BoardingRoom;
 use App\Models\BoardingLeaveRequest;
 use App\Models\BoardingRollCallSession;
+use App\Models\BoardingRoom;
+use App\Models\Student;
+use App\Models\User;
 
 class BoardingAccessService
 {
@@ -44,12 +43,12 @@ class BoardingAccessService
             return true;
         }
 
-        if (!$user->isBoardingSupervisor()) {
+        if (! $user->isBoardingSupervisor()) {
             return false;
         }
 
         $profile = $user->boardingSupervisorProfile;
-        if (!$profile || $profile->status !== 'active') {
+        if (! $profile || $profile->status !== 'active') {
             return false;
         }
 
@@ -61,6 +60,7 @@ class BoardingAccessService
         // If assigned to a room, check if the room belongs to this dormitory
         if ($profile->boarding_room_id) {
             $room = BoardingRoom::find($profile->boarding_room_id);
+
             return $room && $room->boarding_dormitory_id === $dormitoryId;
         }
 
@@ -76,12 +76,12 @@ class BoardingAccessService
             return true;
         }
 
-        if (!$user->isBoardingSupervisor()) {
+        if (! $user->isBoardingSupervisor()) {
             return false;
         }
 
         $profile = $user->boardingSupervisorProfile;
-        if (!$profile || $profile->status !== 'active') {
+        if (! $profile || $profile->status !== 'active') {
             return false;
         }
 
@@ -107,10 +107,11 @@ class BoardingAccessService
 
         if ($user->isBoardingSupervisor()) {
             $activeAssignment = $student->activeBoardingAssignment;
-            if (!$activeAssignment) {
+            if (! $activeAssignment) {
                 // Supervisors can view unassigned students to assign them, or check if they belong to their school
                 return $user->school_id === $student->school_id;
             }
+
             return $this->supervisorHasDormitoryScope($user, $activeAssignment->boarding_dormitory_id);
         }
 
@@ -136,9 +137,10 @@ class BoardingAccessService
 
         if ($user->isBoardingSupervisor()) {
             $activeAssignment = $student->activeBoardingAssignment;
-            if (!$activeAssignment) {
+            if (! $activeAssignment) {
                 return $user->school_id === $student->school_id;
             }
+
             return $this->supervisorHasDormitoryScope($user, $activeAssignment->boarding_dormitory_id);
         }
 
@@ -157,9 +159,10 @@ class BoardingAccessService
         if ($user->isBoardingSupervisor()) {
             $student = $request->student;
             $activeAssignment = $student->activeBoardingAssignment;
-            if (!$activeAssignment) {
+            if (! $activeAssignment) {
                 return false;
             }
+
             return $this->supervisorHasDormitoryScope($user, $activeAssignment->boarding_dormitory_id);
         }
 
@@ -185,8 +188,10 @@ class BoardingAccessService
             }
             if ($session->boarding_room_id) {
                 $room = BoardingRoom::find($session->boarding_room_id);
+
                 return $room && $this->supervisorHasRoomScope($user, $room);
             }
+
             return true;
         }
 

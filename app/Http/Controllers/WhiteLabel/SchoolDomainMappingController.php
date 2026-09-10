@@ -17,7 +17,9 @@ use Illuminate\Support\Str;
 class SchoolDomainMappingController extends Controller
 {
     protected TenantContextService $tenantContext;
+
     protected SchoolDomainVerificationService $domainService;
+
     protected WhiteLabelAccessService $accessService;
 
     public function __construct(
@@ -36,6 +38,7 @@ class SchoolDomainMappingController extends Controller
         if ($user->isSuperAdmin() && $request->has('school_id')) {
             return (int) $request->input('school_id');
         }
+
         return $this->tenantContext->activeSchoolId() ?? abort(403, 'Context sekolah tidak ditemukan.');
     }
 
@@ -69,7 +72,7 @@ class SchoolDomainMappingController extends Controller
         $this->accessService->ensureCanManage($request->user(), $schoolId);
 
         $data = $request->validated();
-        
+
         try {
             $this->domainService->createMapping(
                 $schoolId,
@@ -129,7 +132,7 @@ class SchoolDomainMappingController extends Controller
 
         if ($oldDomain !== $data['domain']) {
             $data['status'] = 'pending';
-            $data['verification_token'] = 'hp_verification_' . Str::random(32);
+            $data['verification_token'] = 'hp_verification_'.Str::random(32);
             $data['verified_at'] = null;
             $data['verified_by'] = null;
             $data['activated_at'] = null;
@@ -149,9 +152,9 @@ class SchoolDomainMappingController extends Controller
     public function verify(Request $request, $id)
     {
         $schoolId = $this->resolveSchoolId($request);
-        
+
         // Super Admin only can verify/approve mappings, OR school admin if authorized
-        if (!$request->user()->isSuperAdmin()) {
+        if (! $request->user()->isSuperAdmin()) {
             abort(403, 'Hanya Super Admin yang dapat melakukan verifikasi domain.');
         }
 
@@ -177,6 +180,7 @@ class SchoolDomainMappingController extends Controller
 
         try {
             $this->domainService->activateDomain($id);
+
             return redirect()
                 ->route('white-label.domains.index', ['school_id' => $schoolId])
                 ->with('success', 'Domain berhasil diaktifkan.');

@@ -9,7 +9,6 @@ use App\Notifications\AnnouncementNotification;
 use App\Notifications\HafalanRecordCreatedNotification;
 use App\Notifications\TahfizhDebtBehindNotification;
 use Illuminate\Notifications\Notification as BaseNotification;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Notification;
 
 class NotificationDispatchService

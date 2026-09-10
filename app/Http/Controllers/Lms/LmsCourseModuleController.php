@@ -7,8 +7,8 @@ use App\Http\Requests\Lms\StoreLmsCourseModuleRequest;
 use App\Http\Requests\Lms\UpdateLmsCourseModuleRequest;
 use App\Models\LmsCourse;
 use App\Models\LmsCourseModule;
-use App\Services\Lms\LmsModuleService;
 use App\Services\Lms\LmsAccessService;
+use App\Services\Lms\LmsModuleService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,7 +26,7 @@ class LmsCourseModuleController extends Controller
     public function store(StoreLmsCourseModuleRequest $request): RedirectResponse
     {
         $course = LmsCourse::findOrFail($request->input('course_id'));
-        if (!$this->accessService->canManageCourse(Auth::user(), $course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $course)) {
             abort(403);
         }
 
@@ -38,7 +38,7 @@ class LmsCourseModuleController extends Controller
 
     public function update(UpdateLmsCourseModuleRequest $request, LmsCourseModule $module): RedirectResponse
     {
-        if (!$this->accessService->canManageCourse(Auth::user(), $module->course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $module->course)) {
             abort(403);
         }
 
@@ -50,7 +50,7 @@ class LmsCourseModuleController extends Controller
 
     public function destroy(LmsCourseModule $module): RedirectResponse
     {
-        if (!$this->accessService->canManageCourse(Auth::user(), $module->course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $module->course)) {
             abort(403);
         }
 
@@ -58,7 +58,7 @@ class LmsCourseModuleController extends Controller
         $this->moduleService->deleteModule($module);
 
         return redirect()->route('lms.courses.show', $courseId)
-            ->with('success', "Modul berhasil dihapus.");
+            ->with('success', 'Modul berhasil dihapus.');
     }
 
     public function reorder(Request $request): JsonResponse
@@ -74,7 +74,7 @@ class LmsCourseModuleController extends Controller
         }
 
         $firstModule = LmsCourseModule::findOrFail($ids[0]);
-        if (!$this->accessService->canManageCourse(Auth::user(), $firstModule->course)) {
+        if (! $this->accessService->canManageCourse(Auth::user(), $firstModule->course)) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 

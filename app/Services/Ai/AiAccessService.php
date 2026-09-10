@@ -2,8 +2,8 @@
 
 namespace App\Services\Ai;
 
-use App\Models\User;
 use App\Models\Student;
+use App\Models\User;
 
 class AiAccessService
 {

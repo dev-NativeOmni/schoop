@@ -1,25 +1,27 @@
 <?php
+
 require 'vendor/autoload.php';
 $app = require_once 'bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel = $app->make(Kernel::class);
 $kernel->bootstrap();
 
-use App\Models\School;
-use App\Models\Role;
-use App\Models\User;
-use App\Models\UserSchoolMembership;
-use App\Models\Student;
-use App\Models\CashlessWallet;
 use App\Models\CashlessMerchant;
 use App\Models\CashlessMerchantUser;
 use App\Models\CashlessPosSession;
 use App\Models\CashlessProduct;
+use App\Models\CashlessRefund;
 use App\Models\CashlessSale;
 use App\Models\CashlessSaleItem;
+use App\Models\CashlessWallet;
 use App\Models\CashlessWalletTransaction;
-use App\Models\CashlessRefund;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Role;
+use App\Models\School;
+use App\Models\Student;
+use App\Models\User;
+use App\Models\UserSchoolMembership;
+use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 echo "Starting Cashless Dummy Data Seeding...\n";
@@ -173,7 +175,7 @@ DB::transaction(function () {
 
     // Day 1 (two days ago)
     $dateDay1 = now()->subDays(2);
-    
+
     // Sale 1: Student 19 buys Nasi Ayam (15000)
     $sale1 = CashlessSale::create([
         'school_id' => $schoolId,
@@ -216,7 +218,7 @@ DB::transaction(function () {
         'amount' => 15000,
         'balance_before' => 165000,
         'balance_after' => 150000,
-        'note' => 'Pembelian ' . $merchantKantin->name,
+        'note' => 'Pembelian '.$merchantKantin->name,
         'status' => 'posted',
         'posted_at' => $dateDay1,
         'created_at' => $dateDay1,
@@ -264,7 +266,7 @@ DB::transaction(function () {
         'amount' => 7000,
         'balance_before' => 257000,
         'balance_after' => 250000,
-        'note' => 'Pembelian ' . $merchantKantin->name,
+        'note' => 'Pembelian '.$merchantKantin->name,
         'status' => 'posted',
         'posted_at' => $dateDay1,
         'created_at' => $dateDay1,
@@ -315,7 +317,7 @@ DB::transaction(function () {
         'amount' => 5000,
         'balance_before' => 155000,
         'balance_after' => 150000,
-        'note' => 'Pembelian ' . $merchantKantin->name,
+        'note' => 'Pembelian '.$merchantKantin->name,
         'status' => 'posted',
         'posted_at' => $dateDay2,
         'created_at' => $dateDay2,
@@ -366,7 +368,7 @@ DB::transaction(function () {
         'amount' => 6000,
         'balance_before' => 41000,
         'balance_after' => 35000,
-        'note' => 'Pembelian ' . $merchantKoperasi->name,
+        'note' => 'Pembelian '.$merchantKoperasi->name,
         'status' => 'posted',
         'posted_at' => $dateDay3,
         'created_at' => $dateDay3,

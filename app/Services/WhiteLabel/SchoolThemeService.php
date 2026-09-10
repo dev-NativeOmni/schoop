@@ -15,7 +15,7 @@ class SchoolThemeService
             ->where('school_id', $schoolId)
             ->first();
 
-        if (!$theme) {
+        if (! $theme) {
             $theme = SchoolThemeSetting::query()->create([
                 'school_id' => $schoolId,
                 'theme_name' => 'Default Theme',
@@ -94,7 +94,7 @@ class SchoolThemeService
 /**
  * Defensive CSS sanitisation helper.
  */
-if (!function_exists('esc_css')) {
+if (! function_exists('esc_css')) {
     function esc_css(string $value): string
     {
         return preg_match('/^#[0-9A-Fa-f]{3,6}$/', $value) ? $value : '#2563eb';

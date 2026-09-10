@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
+use App\Models\AiLearningSignal;
 use App\Models\Student;
+use App\Services\Ai\AiAuditLogger;
 use App\Services\Ai\QuranLearningProfileService;
 use App\Services\Ai\RuleBasedRecommendationEngine;
-use App\Services\Ai\AiAuditLogger;
-use App\Models\AiLearningSignal;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class GenerateAiLearningProfilesCommand extends Command
 {
@@ -51,6 +51,7 @@ class GenerateAiLearningProfilesCommand extends Command
 
         if ($students->isEmpty()) {
             $this->info('No students found matching the criteria.');
+
             return 0;
         }
 
@@ -80,6 +81,7 @@ class GenerateAiLearningProfilesCommand extends Command
         }
 
         $this->info('AI learning profiles generated successfully.');
+
         return 0;
     }
 }

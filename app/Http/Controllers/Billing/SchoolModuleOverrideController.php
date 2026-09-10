@@ -43,7 +43,7 @@ class SchoolModuleOverrideController extends Controller
                 'system_module_id' => $data['system_module_id'],
             ],
             [
-                'is_enabled' => (bool)$data['is_enabled'],
+                'is_enabled' => (bool) $data['is_enabled'],
                 'reason' => $data['reason'] ?? null,
                 'expires_at' => $data['expires_at'] ?? null,
                 'created_by' => $data['created_by'],
@@ -72,7 +72,7 @@ class SchoolModuleOverrideController extends Controller
         ]);
 
         $moduleOverride->update([
-            'is_enabled' => (bool)$request->input('is_enabled'),
+            'is_enabled' => (bool) $request->input('is_enabled'),
             'reason' => $request->input('reason'),
             'expires_at' => $request->input('expires_at'),
         ]);
