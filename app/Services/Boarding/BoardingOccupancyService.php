@@ -81,18 +81,44 @@ class BoardingOccupancyService
             $query->where('school_id', $schoolId);
         }
         $dormitories = $query->get();
+        $dormitoryIds = $dormitories->pluck('id');
 
-        $totalCapacity = 0;
-        $totalOccupied = 0;
-        $totalAvailable = 0;
-        $totalMaintenance = 0;
+        if ($dormitoryIds->isEmpty()) {
+            return [
+                'dormitories_count' => 0,
+                'capacity' => 0,
+                'occupied' => 0,
+                'available' => 0,
+                'maintenance' => 0,
+                'occupancy_rate' => 0,
+            ];
+        }
 
-        foreach ($dormitories as $dormitory) {
-            $stats = $this->getDormitoryStats($dormitory);
-            $totalCapacity += $stats['capacity'];
-            $totalOccupied += $stats['occupied'];
-            $totalAvailable += $stats['available'];
-            $totalMaintenance += $stats['maintenance'];
+        // Optimization: Batch fetch active rooms for all dormitories
+        $rooms = \App\Models\BoardingRoom::query()
+            ->whereIn('boarding_dormitory_id', $dormitoryIds)
+            ->where('is_active', true)
+            ->get();
+
+        $totalCapacity = $rooms->sum('capacity');
+        $roomIds = $rooms->pluck('id');
+
+        if ($roomIds->isEmpty()) {
+            $totalOccupied = 0;
+            $totalAvailable = 0;
+            $totalMaintenance = 0;
+        } else {
+            // Optimization: Batch count bed statuses using group by instead of N+1 queries
+            $bedCounts = \App\Models\BoardingBed::query()
+                ->select('status', \DB::raw('count(*) as count'))
+                ->whereIn('boarding_room_id', $roomIds)
+                ->whereIn('status', ['occupied', 'available', 'maintenance'])
+                ->groupBy('status')
+                ->pluck('count', 'status');
+
+            $totalOccupied = (int) ($bedCounts['occupied'] ?? 0);
+            $totalAvailable = (int) ($bedCounts['available'] ?? 0);
+            $totalMaintenance = (int) ($bedCounts['maintenance'] ?? 0);
         }
 
         $occupancyRate = $totalCapacity > 0 ? round(($totalOccupied / $totalCapacity) * 100, 1) : 0;
