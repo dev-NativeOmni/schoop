@@ -11,13 +11,19 @@ class AttendanceQrTokenService
 {
     public function ensureActiveToken(Student $student, ?User $createdBy = null): AttendanceQrToken
     {
-        $existing = AttendanceQrToken::query()
-            ->where('student_id', $student->id)
-            ->where('is_active', true)
-            ->first();
+        if ($student->relationLoaded('attendanceQrToken')) {
+            if ($student->attendanceQrToken) {
+                return $student->attendanceQrToken;
+            }
+        } else {
+            $existing = AttendanceQrToken::query()
+                ->where('student_id', $student->id)
+                ->where('is_active', true)
+                ->first();
 
-        if ($existing) {
-            return $existing;
+            if ($existing) {
+                return $existing;
+            }
         }
 
         return $this->createToken($student, $createdBy);
@@ -25,13 +31,22 @@ class AttendanceQrTokenService
 
     public function rotateToken(Student $student, ?User $createdBy = null): AttendanceQrToken
     {
-        AttendanceQrToken::query()
-            ->where('student_id', $student->id)
-            ->where('is_active', true)
-            ->update([
-                'is_active' => false,
-                'rotated_at' => now(),
-            ]);
+        if ($student->relationLoaded('attendanceQrToken')) {
+            if ($student->attendanceQrToken) {
+                $student->attendanceQrToken->update([
+                    'is_active' => false,
+                    'rotated_at' => now(),
+                ]);
+            }
+        } else {
+            AttendanceQrToken::query()
+                ->where('student_id', $student->id)
+                ->where('is_active', true)
+                ->update([
+                    'is_active' => false,
+                    'rotated_at' => now(),
+                ]);
+        }
 
         return $this->createToken($student, $createdBy);
     }
@@ -58,12 +73,18 @@ class AttendanceQrTokenService
             $token = Str::random(64);
         } while (AttendanceQrToken::query()->where('token', $token)->exists());
 
-        return AttendanceQrToken::query()->create([
+        $token = AttendanceQrToken::query()->create([
             'school_id' => $student->school_id ?? null,
             'student_id' => $student->id,
             'token' => $token,
             'is_active' => true,
             'created_by' => $createdBy?->id,
         ]);
+
+        if ($student->relationLoaded('attendanceQrToken')) {
+            $student->setRelation('attendanceQrToken', $token);
+        }
+
+        return $token;
     }
 }
