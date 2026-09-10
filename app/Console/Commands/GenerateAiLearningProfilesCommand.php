@@ -56,16 +56,23 @@ class GenerateAiLearningProfilesCommand extends Command
 
         $this->info("Generating profiles for {$students->count()} students...");
 
+        $profiles = [];
         foreach ($students as $student) {
             // 1. Generate learning profile (also aggregates signals)
-            $profile = $profileService->generateForStudent($student, $date);
+            $profiles[$student->id] = $profileService->generateForStudent($student, $date);
+        }
 
-            // 2. Fetch signals generated to pass to recommendation engine
-            $signals = AiLearningSignal::query()
-                ->withoutGlobalScopes()
-                ->where('student_id', $student->id)
-                ->where('signal_date', $date->toDateString())
-                ->get();
+        // 2. Pre-fetch all signals generated for these students in a single query
+        $allSignals = AiLearningSignal::query()
+            ->withoutGlobalScopes()
+            ->whereIn('student_id', $students->pluck('id'))
+            ->where('signal_date', $date->toDateString())
+            ->get()
+            ->groupBy('student_id');
+
+        foreach ($students as $student) {
+            $profile = $profiles[$student->id];
+            $signals = $allSignals->get($student->id, collect());
 
             // 3. Generate recommendations
             $recEngine->generate($student, $signals, $profile);
