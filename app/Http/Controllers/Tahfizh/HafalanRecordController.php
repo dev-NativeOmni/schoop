@@ -12,21 +12,16 @@ use App\Models\School;
 use App\Models\Student;
 use App\Models\TahfizhTarget;
 use App\Models\User;
-use App\Services\Tahfizh\HafalanSequenceGuard;
-use App\Services\Tahfizh\LineRangeCalculator;
+use App\Services\Tahfizh\HafalanRecordService;
 use App\Services\Notifications\NotificationDispatchService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
-use InvalidArgumentException;
 
 class HafalanRecordController extends Controller
 {
     public function __construct(
-        private readonly LineRangeCalculator $lineRangeCalculator,
-        private readonly HafalanSequenceGuard $sequenceGuard,
+        private readonly HafalanRecordService $hafalanRecordService,
     ) {
         //
     }
@@ -123,66 +118,11 @@ class HafalanRecordController extends Controller
     {
         $user = $request->user();
 
-        try {
-            $totalLines = $this->lineRangeCalculator->calculate(
-                (int) $request->input('start_page'),
-                (int) $request->input('start_line'),
-                (int) $request->input('end_page'),
-                (int) $request->input('end_line'),
-            );
-        } catch (InvalidArgumentException $exception) {
-            throw ValidationException::withMessages([
-                'start_page' => $exception->getMessage(),
-            ]);
-        }
-
-        $sequence = $this->sequenceGuard->validate(
-            studentId: (int) $request->input('student_id'),
-            recordDate: $request->input('record_date'),
-            startPage: (int) $request->input('start_page'),
-            startLine: (int) $request->input('start_line'),
+        $record = $this->hafalanRecordService->createRecord(
+            data: $request->validated(),
+            userId: $user->id,
+            isTeacher: $user->hasRole('teacher')
         );
-
-        if (! $sequence['valid']) {
-            throw ValidationException::withMessages([
-                'start_page' => $sequence['note'],
-            ]);
-        }
-
-        $record = DB::transaction(function () use ($request, $user, $totalLines, $sequence): HafalanRecord {
-            $teacherId = $user->hasRole('teacher')
-                ? $user->id
-                : $request->input('teacher_id');
-
-            return HafalanRecord::query()->create([
-                'school_id' => $request->integer('school_id'),
-                'student_id' => $request->integer('student_id'),
-                'teacher_id' => $teacherId,
-                'tahfizh_target_id' => $request->input('tahfizh_target_id'),
-                'record_date' => $request->input('record_date'),
-
-                'start_surah_id' => $request->input('start_surah_id'),
-                'start_ayah' => $request->input('start_ayah'),
-                'end_surah_id' => $request->input('end_surah_id'),
-                'end_ayah' => $request->input('end_ayah'),
-
-                'start_page' => $request->integer('start_page'),
-                'start_line' => $request->integer('start_line'),
-                'end_page' => $request->integer('end_page'),
-                'end_line' => $request->integer('end_line'),
-
-                'total_lines' => $totalLines,
-                'status' => $request->input('status'),
-                'quality_score' => $request->input('quality_score'),
-                'notes' => $request->input('notes'),
-
-                'is_sequence_valid' => true,
-                'sequence_note' => $sequence['note'],
-
-                'created_by' => $user->id,
-                'updated_by' => null,
-            ]);
-        });
 
         app(NotificationDispatchService::class)->notifyHafalanRecordCreated($record);
 
@@ -248,66 +188,12 @@ class HafalanRecordController extends Controller
     {
         $user = $request->user();
 
-        try {
-            $totalLines = $this->lineRangeCalculator->calculate(
-                (int) $request->input('start_page'),
-                (int) $request->input('start_line'),
-                (int) $request->input('end_page'),
-                (int) $request->input('end_line'),
-            );
-        } catch (InvalidArgumentException $exception) {
-            throw ValidationException::withMessages([
-                'start_page' => $exception->getMessage(),
-            ]);
-        }
-
-        $sequence = $this->sequenceGuard->validate(
-            studentId: (int) $request->input('student_id'),
-            recordDate: $request->input('record_date'),
-            startPage: (int) $request->input('start_page'),
-            startLine: (int) $request->input('start_line'),
-            ignoreRecordId: $hafalanRecord->id,
+        $this->hafalanRecordService->updateRecord(
+            record: $hafalanRecord,
+            data: $request->validated(),
+            userId: $user->id,
+            isTeacher: $user->hasRole('teacher')
         );
-
-        if (! $sequence['valid']) {
-            throw ValidationException::withMessages([
-                'start_page' => $sequence['note'],
-            ]);
-        }
-
-        DB::transaction(function () use ($request, $user, $hafalanRecord, $totalLines, $sequence): void {
-            $teacherId = $user->hasRole('teacher')
-                ? $user->id
-                : $request->input('teacher_id');
-
-            $hafalanRecord->update([
-                'school_id' => $request->integer('school_id'),
-                'student_id' => $request->integer('student_id'),
-                'teacher_id' => $teacherId,
-                'tahfizh_target_id' => $request->input('tahfizh_target_id'),
-                'record_date' => $request->input('record_date'),
-
-                'start_surah_id' => $request->input('start_surah_id'),
-                'start_ayah' => $request->input('start_ayah'),
-                'end_surah_id' => $request->input('end_surah_id'),
-                'end_ayah' => $request->input('end_ayah'),
-
-                'start_page' => $request->integer('start_page'),
-                'start_line' => $request->integer('start_line'),
-                'end_page' => $request->integer('end_page'),
-                'end_line' => $request->integer('end_line'),
-
-                'total_lines' => $totalLines,
-                'status' => $request->input('status'),
-                'quality_score' => $request->input('quality_score'),
-                'notes' => $request->input('notes'),
-
-                'is_sequence_valid' => true,
-                'sequence_note' => $sequence['note'],
-
-                'updated_by' => $user->id,
-            ]);
-        });
 
         return redirect()
             ->route('tahfizh.hafalan-records.index')
