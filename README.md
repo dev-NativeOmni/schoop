@@ -1,38 +1,43 @@
-# Panduan Setup & Jalankan Projek HafizPlus School Platform
+# Schoop / HafizPlus School Platform
 
-Panduan ini berisi langkah-langkah detail untuk memasang, mengonfigurasi, dan menjalankan proyek **HafizPlus School Platform** pada perangkat/komputer baru agar berfungsi utuh dan sama persis.
+This is a multi-tenant school management platform built with **Laravel**.
 
----
+## Tech Stack
 
-## Prasyarat Lingkungan (Prerequisites)
-Pastikan perangkat baru Anda telah terpasang:
-1. **PHP >= 8.2** (Rekomendasi PHP 8.2 / 8.3)
-2. **Composer** (Package Manager PHP)
-3. **Node.js & NPM** (LTS Version)
-4. **MySQL / MariaDB** (Untuk basis data lokal)
-5. **Git**
+- **Backend:** Laravel 12, PHP 8.2+
+- **Frontend:** Vite, Tailwind CSS, Alpine.js, Preline
+- **Database:** MySQL / MariaDB
 
----
+## Architecture Notes
 
-## Langkah Setup & Instalasi (Step-by-Step)
+- **Multi-Tenant Architecture:** The Laravel backend uses a multi-tenant architecture where many models are automatically scoped by `school_id`. This is achieved using a `BelongsToTenant` trait and a global scope.
+- **Language:** The UI text is primarily in Indonesian.
+- **Package Manager:** Strictly use **pnpm** for managing frontend dependencies. Do not use npm or yarn.
 
-### 1. Dapatkan Kode Sumber (Clone / Pull)
-Jika mengambil dari repositori Git baru, jalankan:
+## Requirements
+
+- PHP >= 8.2
+- Composer
+- Node.js (LTS Version)
+- **pnpm** (Frontend Package Manager)
+- MySQL / MariaDB
+
+## Setup & Installation
+
+Follow these steps to set up the project locally:
+
+### 1. Clone the repository
 ```bash
-git clone https://github.com/dev-NativeOmni/hafizplus-school-platform.git
-cd hafizplus-school-platform
-```
-Dan pastikan Anda berada di branch yang diinginkan (misal `phase-25-ai-assisted-quran-learning`):
-```bash
-git checkout phase-25-ai-assisted-quran-learning
+git clone <repository-url>
+cd <repository-directory>
 ```
 
-### 2. Salin Konfigurasi Lingkungan (`.env`)
-Salin berkas `.env.example` untuk membuat file konfigurasi lingkungan lokal Anda:
+### 2. Environment Configuration
+Copy the `.env.example` file to create your local environment configuration:
 ```bash
 cp .env.example .env
 ```
-Buka file `.env` yang baru dibuat di editor teks, lalu sesuaikan pengaturan database Anda:
+Update your database configuration in the `.env` file:
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -42,68 +47,57 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-### 3. Instal Dependensi Backend (PHP Composer)
-Jalankan perintah berikut untuk mengunduh dan menyinkronkan seluruh pustaka backend Laravel:
+### 3. Install Backend Dependencies
+Use Composer to install the required PHP packages:
 ```bash
 composer install
 ```
 
-### 4. Instal Dependensi Frontend (Node NPM)
-Jalankan perintah ini untuk menginstal pustaka Tailwind CSS, Alpine.js, dan Vite bundler:
+### 4. Install Frontend Dependencies
+Use **pnpm** to install Tailwind CSS, Alpine.js, and Vite:
 ```bash
-npm install
+pnpm install
 ```
 
-### 5. Generate Application Encryption Key
-Laravel memerlukan kunci enkripsi unik untuk mengamankan data sesi dan sandi terdekripsi. Generate key tersebut dengan perintah:
+### 5. Generate Application Key
+Generate the Laravel encryption key:
 ```bash
 php artisan key:generate
 ```
 
-### 6. Migrasi & Seed Database lokal
-Pastikan server database MySQL Anda sudah berjalan (misal menggunakan XAMPP, Laragon, atau Docker). Kemudian buat database kosong bernama `hafizplus_school_platform` dan jalankan perintah:
+### 6. Database Migration and Seeding
+Ensure your local database server is running and the database specified in your `.env` (e.g., `hafizplus_school_platform`) is created. Then run:
 ```bash
 php artisan migrate --seed
 ```
-*Catatan: Parameter `--seed` akan otomatis mempopulasikan database dengan data awal sekolah, data user master, feature flags, dan template feedback AI.*
 
-### 7. Hubungkan Storage Link (Symlink)
-Laravel menyimpan berkas unggahan di direktori privat secara default. Jalankan perintah ini untuk menghubungkannya agar gambar (seperti logo sekolah/brand) bisa diakses di browser secara publik:
+### 7. Storage Link
+Create a symbolic link for the storage directory so uploaded files are publicly accessible:
 ```bash
 php artisan storage:link
 ```
 
-### 8. Kompilasi Aset Frontend (CSS & JS)
-Kompilasi aset CSS dan JavaScript menggunakan Vite:
-- **Untuk Production (Kompilasi Sekali):**
+### 8. Compile Frontend Assets
+- **For Development (with Hot Module Replacement):**
   ```bash
-  npm run build
+  pnpm dev
   ```
-- **Untuk Development (Real-time Compilation/HMR):**
+- **For Production (Build):**
   ```bash
-  npm run dev
+  pnpm build
   ```
 
----
+## Running the Development Server
 
-## Menjalankan Server Lokal (Local Server Run)
+To access the application locally:
+```bash
+php artisan serve
+```
+Then visit `http://127.0.0.1:8000` in your browser.
 
-Untuk mengakses web di browser lokal Anda:
-1. **Jalankan Laravel Dev Server:**
-   ```bash
-   php artisan serve
-   ```
-2. Buka tautan yang muncul (biasanya [http://127.0.0.1:8000](http://127.0.0.1:8000)) pada browser Anda.
-3. Gunakan kredensial user hasil seeder untuk login.
+## Testing
 
----
-
-## Menjalankan Pengujian Integrasi (Testing)
-Untuk memastikan seluruh modul dan logika program berjalan aman dan tidak ada kerusakan fungsional, jalankan seluruh rangkaian uji coba (PHPUnit) dengan perintah:
+To run the backend tests (PHPUnit), execute:
 ```bash
 php artisan test
-```
-Untuk menguji modul AI (Phase 25) secara spesifik:
-```bash
-php artisan test --filter Phase25AiAssistedQuranIntegrationTest
 ```
