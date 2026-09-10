@@ -65,7 +65,6 @@ class ParentController extends Controller
                 'email' => $request->string('email'),
                 'phone' => $request->input('phone'),
                 'password' => Hash::make($request->string('password')),
-                'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->string('password')),
                 'is_active' => $request->boolean('is_active'),
             ]);
 
@@ -146,7 +145,6 @@ class ParentController extends Controller
             if ($request->filled('password')) {
                 $parent->user->update([
                     'password' => Hash::make($request->string('password')),
-                    'password_plain' => \Illuminate\Support\Facades\Crypt::encryptString($request->string('password')),
                 ]);
             }
 
