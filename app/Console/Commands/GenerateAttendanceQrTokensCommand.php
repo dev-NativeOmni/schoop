@@ -16,7 +16,7 @@ class GenerateAttendanceQrTokensCommand extends Command
     {
         $rotate = (bool) $this->option('rotate');
 
-        $students = Student::query()->get();
+        $students = Student::with('attendanceQrToken')->get();
 
         $bar = $this->output->createProgressBar($students->count());
         $bar->start();
