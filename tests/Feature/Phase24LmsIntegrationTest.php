@@ -381,6 +381,47 @@ class Phase24LmsIntegrationTest extends TestCase
         $this->assertFalse($accessService->canViewChildProgress($this->parentA, $studentB));
     }
 
+    public function test_update_question_modifies_question_correctly(): void
+    {
+        session(['active_school_id' => $this->schoolA->id]);
+        app()->instance('resolved_domain_school_id', $this->schoolA->id);
+
+        $course = LmsCourse::create(['school_id' => $this->schoolA->id, 'title' => 'Update Course', 'slug' => 'u-c', 'course_code' => 'UC', 'visibility' => 'published']);
+        $module = LmsCourseModule::create(['school_id' => $this->schoolA->id, 'course_id' => $course->id, 'title' => 'M1']);
+        $lesson = LmsLesson::create(['school_id' => $this->schoolA->id, 'course_id' => $course->id, 'module_id' => $module->id, 'title' => 'Q L', 'slug' => 'uql', 'lesson_type' => 'quiz', 'visibility' => 'published']);
+        $quiz = LmsQuiz::create(['school_id' => $this->schoolA->id, 'course_id' => $course->id, 'lesson_id' => $lesson->id, 'title' => 'Q1', 'passing_score' => 70]);
+
+        $quizService = app(LmsQuizService::class);
+        $question = $quizService->addQuestion($quiz->id, [
+            'question_text' => 'Old text',
+            'question_type' => 'multiple_choice',
+            'options' => ['A' => 'Old Opt A'],
+            'correct_answer' => 'A',
+            'score_weight' => 5,
+        ]);
+
+        $newData = [
+            'question_text' => 'New text',
+            'options' => ['A' => 'New Opt A', 'B' => 'New Opt B'],
+            'correct_answer' => 'B',
+            'score_weight' => 10,
+        ];
+
+        $updatedQuestion = $quizService->updateQuestion($question, $newData);
+
+        $this->assertEquals('New text', $updatedQuestion->question_text);
+        $this->assertEquals(['A' => 'New Opt A', 'B' => 'New Opt B'], $updatedQuestion->options);
+        $this->assertEquals('B', $updatedQuestion->correct_answer);
+        $this->assertEquals(10, $updatedQuestion->score_weight);
+
+        $this->assertDatabaseHas('lms_quiz_questions', [
+            'id' => $question->id,
+            'question_text' => 'New text',
+            'correct_answer' => 'B',
+            'score_weight' => 10,
+        ]);
+    }
+
     public function test_lms_console_commands_run_successfully(): void
     {
         $this->artisan('app:lms-recalculate-progress')->assertExitCode(0);
