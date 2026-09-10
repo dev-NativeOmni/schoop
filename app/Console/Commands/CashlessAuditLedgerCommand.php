@@ -24,19 +24,29 @@ class CashlessAuditLedgerCommand extends Command
             ->when($schoolId, fn ($query) => $query->where('school_id', $schoolId))
             ->with('student')
             ->chunkById(100, function ($wallets) use (&$issues, $fix): void {
+                $walletIds = $wallets->pluck('id');
+
+                $creditsByWallet = CashlessWalletTransaction::query()
+                    ->whereIn('cashless_wallet_id', $walletIds)
+                    ->where('direction', 'credit')
+                    ->selectRaw('cashless_wallet_id, sum(amount) as total')
+                    ->groupBy('cashless_wallet_id')
+                    ->pluck('total', 'cashless_wallet_id');
+
+                $debitsByWallet = CashlessWalletTransaction::query()
+                    ->whereIn('cashless_wallet_id', $walletIds)
+                    ->where('direction', 'debit')
+                    ->selectRaw('cashless_wallet_id, sum(amount) as total')
+                    ->groupBy('cashless_wallet_id')
+                    ->pluck('total', 'cashless_wallet_id');
+
                 foreach ($wallets as $wallet) {
                     if ((int) $wallet->student?->school_id !== (int) $wallet->school_id) {
                         $issues[] = "Wallet {$wallet->id}: student school mismatch";
                     }
 
-                    $credits = CashlessWalletTransaction::query()
-                        ->where('cashless_wallet_id', $wallet->id)
-                        ->where('direction', 'credit')
-                        ->sum('amount');
-                    $debits = CashlessWalletTransaction::query()
-                        ->where('cashless_wallet_id', $wallet->id)
-                        ->where('direction', 'debit')
-                        ->sum('amount');
+                    $credits = $creditsByWallet[$wallet->id] ?? 0;
+                    $debits = $debitsByWallet[$wallet->id] ?? 0;
                     $expected = (int) $credits - (int) $debits;
 
                     if ((int) $wallet->balance !== $expected) {
