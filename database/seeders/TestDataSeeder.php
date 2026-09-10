@@ -56,13 +56,13 @@ class TestDataSeeder extends Seeder
             ->first();
 
         if ($santri1) {
-            $santri1->update(['class_room_id' => $class10A->id, 'student_number' => '2025001']);
+            $santri1->update(['class_room_id' => $class10A->id, 'student_number' => '2025001', 'nisn' => '0011223344']);
         }
         if ($santri2) {
-            $santri2->update(['class_room_id' => $class10A->id, 'student_number' => '2025002']);
+            $santri2->update(['class_room_id' => $class10A->id, 'student_number' => '2025002', 'nisn' => '0011223345']);
         }
         if ($santri3) {
-            $santri3->update(['class_room_id' => $class10B->id, 'student_number' => '2025003']);
+            $santri3->update(['class_room_id' => $class10B->id, 'student_number' => '2025003', 'nisn' => '0011223346']);
         }
 
         $this->command->info('Students linked to classes.');
