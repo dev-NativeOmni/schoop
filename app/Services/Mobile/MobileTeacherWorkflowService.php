@@ -11,8 +11,7 @@ use App\Models\User;
 use App\Services\Attendance\AttendanceScanService;
 use App\Services\Mutabaah\MutabaahRecordService;
 use App\Services\Notifications\NotificationDispatchService;
-use App\Services\Tahfizh\HafalanSequenceGuard;
-use App\Services\Tahfizh\LineRangeCalculator;
+use App\Services\Tahfizh\HafalanRecordService;
 use App\Services\Tahsin\TahsinAssessmentService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -23,8 +22,7 @@ class MobileTeacherWorkflowService
     public function __construct(
         private readonly MobileAccessService $access,
         private readonly MobilePortalSummaryService $summaries,
-        private readonly LineRangeCalculator $lineRangeCalculator,
-        private readonly HafalanSequenceGuard $sequenceGuard,
+        private readonly HafalanRecordService $hafalanRecordService,
         private readonly MutabaahRecordService $mutabaahRecords,
         private readonly TahsinAssessmentService $tahsinAssessments,
         private readonly AttendanceScanService $attendanceScanner,
@@ -82,52 +80,10 @@ class MobileTeacherWorkflowService
         $student = Student::query()->findOrFail($payload['student_id']);
         $this->access->ensureTeacherCanAccessStudent($teacher, $student);
 
-        try {
-            $totalLines = $this->lineRangeCalculator->calculate(
-                (int) $payload['start_page'],
-                (int) $payload['start_line'],
-                (int) $payload['end_page'],
-                (int) $payload['end_line'],
-            );
-        } catch (InvalidArgumentException $exception) {
-            throw ValidationException::withMessages(['start_page' => $exception->getMessage()]);
-        }
+        // Populate school_id implicitly from student
+        $payload['school_id'] = $student->school_id;
 
-        $sequence = $this->sequenceGuard->validate(
-            studentId: (int) $student->id,
-            recordDate: $payload['record_date'],
-            startPage: (int) $payload['start_page'],
-            startLine: (int) $payload['start_line'],
-        );
-
-        if (! $sequence['valid']) {
-            throw ValidationException::withMessages(['start_page' => $sequence['note']]);
-        }
-
-        $record = DB::transaction(function () use ($payload, $teacher, $student, $totalLines, $sequence): HafalanRecord {
-            return HafalanRecord::query()->create([
-                'school_id' => $student->school_id,
-                'student_id' => $student->id,
-                'teacher_id' => $teacher->hasRole('teacher') ? $teacher->id : ($payload['teacher_id'] ?? $teacher->id),
-                'tahfizh_target_id' => $payload['tahfizh_target_id'] ?? null,
-                'record_date' => $payload['record_date'],
-                'start_surah_id' => $payload['start_surah_id'] ?? null,
-                'start_ayah' => $payload['start_ayah'] ?? null,
-                'end_surah_id' => $payload['end_surah_id'] ?? null,
-                'end_ayah' => $payload['end_ayah'] ?? null,
-                'start_page' => $payload['start_page'],
-                'start_line' => $payload['start_line'],
-                'end_page' => $payload['end_page'],
-                'end_line' => $payload['end_line'],
-                'total_lines' => $totalLines,
-                'status' => $payload['status'],
-                'quality_score' => $payload['quality_score'] ?? null,
-                'notes' => $payload['notes'] ?? null,
-                'is_sequence_valid' => true,
-                'sequence_note' => $sequence['note'],
-                'created_by' => $teacher->id,
-            ]);
-        });
+        $record = $this->hafalanRecordService->createRecord($payload, $teacher);
 
         app(NotificationDispatchService::class)->notifyHafalanRecordCreated($record);
 
