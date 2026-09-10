@@ -7,6 +7,7 @@ use App\Models\CashlessSale;
 use App\Models\CashlessWallet;
 use App\Models\CashlessWalletTransaction;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class CashlessAuditLedgerCommand extends Command
 {
@@ -24,19 +25,25 @@ class CashlessAuditLedgerCommand extends Command
             ->when($schoolId, fn ($query) => $query->where('school_id', $schoolId))
             ->with('student')
             ->chunkById(100, function ($wallets) use (&$issues, $fix): void {
+                $walletIds = $wallets->pluck('id')->toArray();
+
+                $transactionSums = CashlessWalletTransaction::query()
+                    ->whereIn('cashless_wallet_id', $walletIds)
+                    ->select('cashless_wallet_id', 'direction', DB::raw('SUM(amount) as total'))
+                    ->groupBy('cashless_wallet_id', 'direction')
+                    ->get()
+                    ->groupBy('cashless_wallet_id');
+
                 foreach ($wallets as $wallet) {
                     if ((int) $wallet->student?->school_id !== (int) $wallet->school_id) {
                         $issues[] = "Wallet {$wallet->id}: student school mismatch";
                     }
 
-                    $credits = CashlessWalletTransaction::query()
-                        ->where('cashless_wallet_id', $wallet->id)
-                        ->where('direction', 'credit')
-                        ->sum('amount');
-                    $debits = CashlessWalletTransaction::query()
-                        ->where('cashless_wallet_id', $wallet->id)
-                        ->where('direction', 'debit')
-                        ->sum('amount');
+                    $walletSums = $transactionSums->get($wallet->id, collect());
+
+                    $credits = $walletSums->where('direction', 'credit')->first()?->total ?? 0;
+                    $debits = $walletSums->where('direction', 'debit')->first()?->total ?? 0;
+
                     $expected = (int) $credits - (int) $debits;
 
                     if ((int) $wallet->balance !== $expected) {
