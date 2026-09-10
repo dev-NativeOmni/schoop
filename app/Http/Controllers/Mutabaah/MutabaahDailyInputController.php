@@ -32,24 +32,7 @@ class MutabaahDailyInputController extends Controller
         $selectedDate    = $request->input('record_date', today()->toDateString());
         $selectedStudent = null;
 
-        // Student scope
-        $studentQuery = Student::query()
-            ->with(['user', 'classRoom'])
-            ->where('is_active', true)
-            ->orderBy('full_name');
-
-        $this->accessService->applyStudentScope($studentQuery, $user);
-
-        // Apply filters if any
-        if ($request->filled('class_room_id')) {
-            $studentQuery->where('class_room_id', $request->integer('class_room_id'));
-        }
-
-        if ($request->filled('student_id')) {
-            $studentQuery->where('id', $request->integer('student_id'));
-        }
-
-        $students = $studentQuery->get();
+        $students = $this->getStudents($request, $user);
 
         if ($request->filled('student_id')) {
             $selectedStudent = $students->firstWhere('id', $request->integer('student_id'));
@@ -88,6 +71,28 @@ class MutabaahDailyInputController extends Controller
             'selectedStudent',
             'classRooms',
         ));
+    }
+
+    private function getStudents(Request $request, $user)
+    {
+        // Student scope
+        $studentQuery = Student::query()
+            ->with(['user', 'classRoom'])
+            ->where('is_active', true)
+            ->orderBy('full_name');
+
+        $this->accessService->applyStudentScope($studentQuery, $user);
+
+        // Apply filters if any
+        if ($request->filled('class_room_id')) {
+            $studentQuery->where('class_room_id', $request->integer('class_room_id'));
+        }
+
+        if ($request->filled('student_id')) {
+            $studentQuery->where('id', $request->integer('student_id'));
+        }
+
+        return $studentQuery->get();
     }
 
     public function store(StoreMutabaahDailyInputRequest $request): RedirectResponse
