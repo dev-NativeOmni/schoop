@@ -12,8 +12,8 @@ use App\Models\School;
 use App\Models\Student;
 use App\Models\TahfizhTarget;
 use App\Models\User;
-use App\Services\Tahfizh\HafalanRecordService;
 use App\Services\Notifications\NotificationDispatchService;
+use App\Services\Tahfizh\HafalanRecordService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -45,26 +45,14 @@ class HafalanRecordController extends Controller
             ->when($user->hasRole('teacher'), function ($query) use ($user): void {
                 $query->where('teacher_id', $user->id);
             })
-            ->when($request->filled('class_room_id'), function ($query) use ($request): void {
-                $query->whereHas('student', function ($studentQuery) use ($request): void {
-                    $studentQuery->where('class_room_id', $request->integer('class_room_id'));
-                });
-            })
-            ->when($request->filled('student_id'), function ($query) use ($request): void {
-                $query->where('student_id', $request->integer('student_id'));
-            })
-            ->when($request->filled('teacher_id'), function ($query) use ($request): void {
-                $query->where('teacher_id', $request->integer('teacher_id'));
-            })
-            ->when($request->filled('status'), function ($query) use ($request): void {
-                $query->where('status', $request->string('status'));
-            })
-            ->when($request->filled('date_from'), function ($query) use ($request): void {
-                $query->whereDate('record_date', '>=', $request->date('date_from'));
-            })
-            ->when($request->filled('date_until'), function ($query) use ($request): void {
-                $query->whereDate('record_date', '<=', $request->date('date_until'));
-            })
+            ->filter([
+                'class_room_id' => $request->filled('class_room_id') ? $request->integer('class_room_id') : null,
+                'student_id' => $request->filled('student_id') ? $request->integer('student_id') : null,
+                'teacher_id' => $request->filled('teacher_id') ? $request->integer('teacher_id') : null,
+                'status' => $request->filled('status') ? $request->string('status')->toString() : null,
+                'date_from' => $request->filled('date_from') ? $request->date('date_from') : null,
+                'date_until' => $request->filled('date_until') ? $request->date('date_until') : null,
+            ])
             ->latest('record_date')
             ->latest('id')
             ->paginate(15)
