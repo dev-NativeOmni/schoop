@@ -222,4 +222,31 @@ class LmsCourseServiceTest extends TestCase
             'is_primary' => true,
         ]);
     }
+
+    public function test_delete_course_removes_from_database_and_logs_activity(): void
+    {
+        $course = LmsCourse::create([
+            'school_id' => $this->school->id,
+            'title' => 'Test Course To Delete',
+            'slug' => 'test-course-to-delete',
+            'course_code' => 'TC-DEL',
+            'created_by' => $this->admin->id,
+            'updated_by' => $this->admin->id,
+        ]);
+
+        $service = app(LmsCourseService::class);
+        $service->deleteCourse($course);
+
+        $this->assertSoftDeleted('lms_courses', [
+            'id' => $course->id,
+        ]);
+
+        $this->assertDatabaseHas('lms_activity_logs', [
+            'school_id' => $this->school->id,
+            'user_id' => $this->admin->id,
+            'activity_type' => 'course_delete',
+            'subject_type' => LmsCourse::class,
+            'subject_id' => $course->id,
+        ]);
+    }
 }
