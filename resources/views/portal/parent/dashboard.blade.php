@@ -24,7 +24,7 @@
                         </p>
                     </div>
 
-                    <div class="grid gap-3 grid-cols-3">
+                    <div class="grid gap-3 grid-cols-1 sm:grid-cols-3">
                         <div class="rounded-xl bg-slate-50 p-4">
                             <div class="text-xs text-slate-500">Setoran Bulan Ini</div>
                             <div class="mt-1 text-2xl font-bold text-slate-900">{{ $snapshot['total_records'] }}</div>

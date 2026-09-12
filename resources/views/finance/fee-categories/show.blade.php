@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto px-4 py-6">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col mb-6 gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Detail Kategori: {{ $feeCategory->name }}</h1>
             <a href="{{ route('finance.fee-categories.index') }}" class="text-sm text-blue-600">&larr; Kembali ke daftar</a>

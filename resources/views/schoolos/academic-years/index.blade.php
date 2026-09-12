@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex items-center justify-between gap-4">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Tahun Ajaran</h1>
             <p class="text-sm text-slate-500 dark:text-slate-400">Kelola tahun ajaran aktif.</p>

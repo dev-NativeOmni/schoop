@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex items-center justify-between border-b pb-4">
+    <div class="flex flex-col border-b pb-4 gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="text-3xl font-extrabold tracking-tight">Kelola Kelas Pembelajaran</h1>
             <p class="text-slate-500">Buat, perbarui, dan lihat semua kelas pembelajaran aktif.</p>

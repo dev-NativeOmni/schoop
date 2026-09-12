@@ -685,14 +685,15 @@
         <!-- Scrollable Navigation Area inside Drawer -->
         <div class="flex-1 overflow-y-auto px-4 py-5 space-y-4">
             
-            <!-- Mobile User Profile -->
-            <div class="p-3 bg-slate-800/30 border border-slate-700/30 rounded-xl flex items-center space-x-3 mb-4">
+            <!-- Mobile User Profile (tap to open Profil Saya) -->
+            <a href="{{ route('profile.show') }}" class="p-3 bg-slate-800/30 border border-slate-700/30 rounded-xl flex items-center space-x-3 mb-4 hover:bg-slate-800/60 transition">
                 <img src="{{ Auth::user()->profile_picture_url ?? 'https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=' . urlencode(Auth::user()->name) }}" alt="Avatar" class="w-9 h-9 rounded-full object-cover">
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-bold text-white truncate">{{ Auth::user()->name }}</p>
                     <p class="text-[10px] text-slate-400 capitalize truncate">{{ $roleName ?? 'User' }}</p>
                 </div>
-            </div>
+                <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </a>
 
             <!-- Mobile Quick Settings (Dark Mode toggle inside mobile menu) -->
             <div class="flex items-center justify-between p-3 bg-slate-800/20 border border-slate-700/30 rounded-xl mb-4 text-xs">
@@ -715,6 +716,13 @@
                 <a href="{{ route('quran.mushaf') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition text-slate-300 hover:bg-slate-800/80 hover:text-white">
                     <span>Al-Qur'an Mushaf</span>
                 </a>
+
+                <!-- Tiket Bantuan -->
+                @if (auth()->user()->hasRole(['admin', 'admin_sekolah', 'principal', 'kepala_sekolah', 'teacher', 'merchant', 'boarding_supervisor', 'finance', 'cashier']))
+                    <a href="{{ route('saas-ops.support-tickets.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition text-slate-300 hover:bg-slate-800/80 hover:text-white">
+                        <span>Tiket Bantuan</span>
+                    </a>
+                @endif
 
                 <!-- SchoolOS Mobile -->
                 @if ($canViewSchoolOs && $canUseSchoolOs)
@@ -839,6 +847,214 @@
                             <a href="{{ route('attendance.scanner.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Scanner Kehadiran</a>
                             <a href="{{ route('attendance.manual.create') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Input Manual</a>
                             <a href="{{ route('attendance.sessions.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Sesi Kehadiran</a>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Tahsin Mobile -->
+                @if ($hasInternalAccess && $canUseTahsin)
+                    <div class="space-y-1">
+                        <button @click="openDropdown = openDropdown === 'tahsin-m' ? null : 'tahsin-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
+                            <span>Tahsin</span>
+                            <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'tahsin-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div x-show="openDropdown === 'tahsin-m'" x-collapse class="pl-5 space-y-1" style="display: none;">
+                            <a href="{{ route('tahsin.reports.dashboard') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Dashboard Laporan</a>
+                            <a href="{{ route('tahsin.profiles.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Profil Tahsin Siswa</a>
+                            <a href="{{ route('tahsin.assessments.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Penilaian Siswa</a>
+                            @if ($hasAdminOrSuperAdmin)
+                                <a href="{{ route('tahsin.levels.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Kelola Jenjang</a>
+                                <a href="{{ route('tahsin.skills.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Kelola Keterampilan</a>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
+                <!-- LMS Mobile -->
+                @if ($hasInternalAccess && $canUseLms)
+                    <div class="space-y-1">
+                        <button @click="openDropdown = openDropdown === 'lms-m' ? null : 'lms-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
+                            <span>LMS Belajar</span>
+                            <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'lms-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div x-show="openDropdown === 'lms-m'" x-collapse class="pl-5 space-y-1" style="display: none;">
+                            <a href="{{ route('lms.dashboard') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Dashboard LMS</a>
+                            <a href="{{ route('lms.courses.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Kursus Belajar</a>
+                            <a href="{{ route('lms.reports.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Laporan Progress</a>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Keuangan Mobile -->
+                @if ($hasFinanceAccess && $canUseFinanceModule)
+                    <div class="space-y-1">
+                        <button @click="openDropdown = openDropdown === 'finance-m' ? null : 'finance-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
+                            <span>Keuangan</span>
+                            <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'finance-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div x-show="openDropdown === 'finance-m'" x-collapse class="pl-5 space-y-1" style="display: none;">
+                            <a href="{{ route('finance.reports.dashboard') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Dashboard Laporan</a>
+                            <a href="{{ route('finance.bills.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Tagihan Siswa</a>
+                            <a href="{{ route('finance.payments.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Pembayaran Siswa</a>
+                            @if ($canManageFinance)
+                                <a href="{{ route('finance.fee-categories.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Kategori Biaya</a>
+                                <a href="{{ route('finance.fee-items.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Item Biaya</a>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Cashless Mobile -->
+                @if ($hasCashlessAccess && $canUseCashlessModule)
+                    <div class="space-y-1">
+                        <button @click="openDropdown = openDropdown === 'cashless-m' ? null : 'cashless-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
+                            <span>Cashless System</span>
+                            <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'cashless-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div x-show="openDropdown === 'cashless-m'" x-collapse class="pl-5 space-y-1" style="display: none;">
+                            <a href="{{ route('cashless.reports.dashboard') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Dashboard Laporan</a>
+                            @if ($canManageCashless)
+                                <a href="{{ route('cashless.merchants.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Merchant</a>
+                                <a href="{{ route('cashless.products.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Produk Merchant</a>
+                                <a href="{{ route('cashless.wallets.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Wallet Santri</a>
+                                <a href="{{ route('cashless.top-ups.create') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Top Up Wallet</a>
+                                <a href="{{ route('cashless.refunds.create') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Refund / Void</a>
+                                <a href="{{ route('cashless.settlements.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Settlement</a>
+                            @endif
+                            @if ($canUseCashlessPos)
+                                <a href="{{ route('cashless.pos.cashier') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">POS Kasir</a>
+                                <a href="{{ route('cashless.pos-sessions.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Session POS</a>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
+                <!-- SaaS Operations Mobile -->
+                @if ($hasSaasOpsAccess)
+                    <div class="space-y-1">
+                        <button @click="openDropdown = openDropdown === 'saasops-m' ? null : 'saasops-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
+                            <span>SaaS Ops</span>
+                            <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'saasops-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div x-show="openDropdown === 'saasops-m'" x-collapse class="pl-5 space-y-1" style="display: none;">
+                            <a href="{{ route('saas-ops.dashboard') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Scale Dashboard</a>
+                            @if ($canManageSaasSubscriptions)
+                                <a href="{{ route('saas-ops.subscription-plans.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Plans</a>
+                                <a href="{{ route('saas-ops.school-subscriptions.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">School Subs</a>
+                                <a href="{{ route('saas-ops.tenant-invoices.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Invoices</a>
+                            @endif
+                            <a href="{{ route('saas-ops.support-tickets.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Tickets</a>
+                            @if ($canManageSaasIncidents)
+                                <a href="{{ route('saas-ops.incident-reports.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Incidents</a>
+                                <a href="{{ route('saas-ops.release-notes.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Releases</a>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Developer Portal Mobile -->
+                @if ($hasDeveloperPortalAccess)
+                    <div class="space-y-1">
+                        <button @click="openDropdown = openDropdown === 'developerportal-m' ? null : 'developerportal-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
+                            <span>Developer Portal</span>
+                            <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'developerportal-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div x-show="openDropdown === 'developerportal-m'" x-collapse class="pl-5 space-y-1" style="display: none;">
+                            <a href="{{ route('developer-portal.dashboard') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Dev Dashboard</a>
+                            @if ($canManageDevClients)
+                                <a href="{{ route('developer-portal.api-clients.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">API Clients</a>
+                            @endif
+                            <a href="{{ route('developer-portal.docs.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">API Docs</a>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Boarding Mobile -->
+                @if ($hasBoardingAccess && $canUseBoardingModule)
+                    <div class="space-y-1">
+                        <button @click="openDropdown = openDropdown === 'boarding-m' ? null : 'boarding-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
+                            <span>Boarding</span>
+                            <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'boarding-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div x-show="openDropdown === 'boarding-m'" x-collapse class="pl-5 space-y-1" style="display: none;">
+                            <a href="{{ route('boarding.dashboard') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Dashboard Boarding</a>
+                            <a href="{{ route('boarding.dormitories.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Asrama</a>
+                            <a href="{{ route('boarding.rooms.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Kamar</a>
+                            <a href="{{ route('boarding.beds.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Ranjang</a>
+                            <a href="{{ route('boarding.assignments.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Penempatan Santri</a>
+                            <a href="{{ route('boarding.leave-requests.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Perizinan</a>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Portal Wali Mobile -->
+                @if ($isParent)
+                    <div class="space-y-1">
+                        <button @click="openDropdown = openDropdown === 'parent-m' ? null : 'parent-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
+                            <span>Portal Wali</span>
+                            <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'parent-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div x-show="openDropdown === 'parent-m'" x-collapse class="pl-5 space-y-1" style="display: none;">
+                            @if($canUseTahfizh)
+                                <a href="{{ route('portal.parent.dashboard') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Progres Tahfizh</a>
+                            @endif
+                            @if ($firstChild && $canUseMutabaah)
+                                <a href="{{ route('portal.parent.mutabaah', $firstChild) }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Mutabaah Anak</a>
+                            @endif
+                            @if($canUseAttendance)
+                                <a href="{{ route('portal.parent.attendance') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Kehadiran Anak</a>
+                            @endif
+                            @if($canUseTahsin)
+                                <a href="{{ route('portal.parent.tahsin') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Tahsin Anak</a>
+                            @endif
+                            @if($canUseFinanceModule)
+                                <a href="{{ route('portal.parent.finance') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Keuangan Anak</a>
+                            @endif
+                            @if($canUseCashlessModule)
+                                <a href="{{ route('portal.parent.cashless') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Cashless Anak</a>
+                            @endif
+                            @if($canUseBoardingModule)
+                                <a href="{{ route('portal.parent.boarding') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Boarding Anak</a>
+                            @endif
+                            @if($canUseLms)
+                                <a href="{{ route('portal.parent.lms.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">LMS Anak</a>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Portal Santri Mobile -->
+                @if ($isStudent)
+                    <div class="space-y-1">
+                        <button @click="openDropdown = openDropdown === 'student-m' ? null : 'student-m'" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white">
+                            <span>Portal Santri</span>
+                            <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': openDropdown === 'student-m' }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                        <div x-show="openDropdown === 'student-m'" x-collapse class="pl-5 space-y-1" style="display: none;">
+                            @if($canUseTahfizh)
+                                <a href="{{ route('portal.student.dashboard') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Progres Tahfizh</a>
+                            @endif
+                            @if($canUseMutabaah)
+                                <a href="{{ route('portal.student.mutabaah') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Mutabaah Saya</a>
+                            @endif
+                            @if($canUseAttendance)
+                                <a href="{{ route('portal.student.attendance') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Kehadiran Saya</a>
+                            @endif
+                            @if($canUseTahsin)
+                                <a href="{{ route('portal.student.tahsin') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Tahsin Saya</a>
+                            @endif
+                            @if($canUseFinanceModule)
+                                <a href="{{ route('portal.student.finance') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Keuangan Saya</a>
+                            @endif
+                            @if($canUseCashlessModule)
+                                <a href="{{ route('portal.student.cashless') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Cashless Saya</a>
+                            @endif
+                            @if($canUseBoardingModule)
+                                <a href="{{ route('portal.student.boarding') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">Boarding Saya</a>
+                            @endif
+                            @if($canUseLms)
+                                <a href="{{ route('portal.student.lms.index') }}" class="block py-1 px-3 text-xs text-slate-400 hover:text-white">LMS Saya</a>
+                            @endif
                         </div>
                     </div>
                 @endif

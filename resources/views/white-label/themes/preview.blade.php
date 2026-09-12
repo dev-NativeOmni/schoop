@@ -43,7 +43,7 @@
 <body class="min-h-screen bg-slate-100 preview-bg p-8 font-sans">
     <div class="max-w-4xl mx-auto space-y-8">
         <!-- Back Navigation Header -->
-        <div class="flex items-center justify-between border-b pb-4">
+        <div class="flex flex-col border-b pb-4 gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <span class="text-xs font-bold text-slate-400 uppercase">Interactive Live Sandbox</span>
                 <h1 class="text-2xl font-black">Pratinjau Tema: {{ $theme->theme_name }}</h1>

@@ -3,7 +3,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between border-b pb-4">
+    <div class="flex flex-col border-b pb-4 gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <div class="flex items-center gap-2">
                 <a href="{{ route('lms.courses.show', $lesson->course_id) }}" class="text-sm text-slate-500 hover:text-blue-600">← Kembali ke Silabus Kelas</a>
