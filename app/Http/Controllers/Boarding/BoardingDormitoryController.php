@@ -36,8 +36,17 @@ class BoardingDormitoryController extends Controller
             ->withCount('rooms')
             ->paginate(15);
 
+        $allStats = $this->occupancyService->getDormitoriesStats($dormitories);
+
         foreach ($dormitories as $dormitory) {
-            $dormitory->stats = $this->occupancyService->getDormitoryStats($dormitory);
+            $dormitory->stats = $allStats[$dormitory->id] ?? [
+                'capacity' => 0,
+                'occupied' => 0,
+                'available' => 0,
+                'maintenance' => 0,
+                'occupancy_rate' => 0,
+                'rooms_count' => 0,
+            ];
         }
 
         return view('boarding.dormitories.index', compact('dormitories'));

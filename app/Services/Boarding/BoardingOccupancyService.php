@@ -9,39 +9,99 @@ use App\Models\BoardingRoom;
 class BoardingOccupancyService
 {
     /**
+     * Get aggregated occupancy statistics for multiple dormitories in a single batch.
+     */
+    public function getDormitoriesStats(iterable $dormitories): array
+    {
+        $dormitoryIds = [];
+        foreach ($dormitories as $dormitory) {
+            if ($dormitory && isset($dormitory->id)) {
+                $dormitoryIds[] = $dormitory->id;
+            }
+        }
+        $dormitoryIds = array_unique($dormitoryIds);
+        if (empty($dormitoryIds)) {
+            return [];
+        }
+
+        $rooms = BoardingRoom::whereIn('boarding_dormitory_id', $dormitoryIds)
+            ->where('is_active', true)
+            ->get();
+
+        $roomIds = $rooms->pluck('id')->toArray();
+
+        $bedStats = [];
+        if (! empty($roomIds)) {
+            $bedStats = BoardingBed::whereIn('boarding_room_id', $roomIds)
+                ->selectRaw('boarding_room_id, status, count(*) as count')
+                ->groupBy('boarding_room_id', 'status')
+                ->get()
+                ->groupBy('boarding_room_id');
+        }
+
+        $stats = [];
+        foreach ($dormitoryIds as $dormitoryId) {
+            $stats[$dormitoryId] = [
+                'capacity' => 0,
+                'occupied' => 0,
+                'available' => 0,
+                'maintenance' => 0,
+                'occupancy_rate' => 0,
+                'rooms_count' => 0,
+            ];
+        }
+
+        $dormitoryRooms = $rooms->groupBy('boarding_dormitory_id');
+
+        foreach ($dormitoryRooms as $dormId => $roomsForDorm) {
+            $totalCapacity = $roomsForDorm->sum('capacity');
+            $occupiedCount = 0;
+            $availableCount = 0;
+            $maintenanceCount = 0;
+
+            foreach ($roomsForDorm as $room) {
+                if (isset($bedStats[$room->id])) {
+                    foreach ($bedStats[$room->id] as $stat) {
+                        if ($stat->status === 'occupied') {
+                            $occupiedCount += $stat->count;
+                        } elseif ($stat->status === 'available') {
+                            $availableCount += $stat->count;
+                        } elseif ($stat->status === 'maintenance') {
+                            $maintenanceCount += $stat->count;
+                        }
+                    }
+                }
+            }
+
+            $occupancyRate = $totalCapacity > 0 ? round(($occupiedCount / $totalCapacity) * 100, 1) : 0;
+
+            $stats[$dormId] = [
+                'capacity' => $totalCapacity,
+                'occupied' => $occupiedCount,
+                'available' => $availableCount,
+                'maintenance' => $maintenanceCount,
+                'occupancy_rate' => $occupancyRate,
+                'rooms_count' => $roomsForDorm->count(),
+            ];
+        }
+
+        return $stats;
+    }
+
+    /**
      * Get occupancy statistics for a specific dormitory.
      */
     public function getDormitoryStats(BoardingDormitory $dormitory): array
     {
-        $rooms = $dormitory->rooms()->where('is_active', true)->get();
-        $roomIds = $rooms->pluck('id');
+        $stats = $this->getDormitoriesStats([$dormitory]);
 
-        $totalCapacity = $rooms->sum('capacity');
-
-        $occupiedCount = BoardingBed::query()
-            ->whereIn('boarding_room_id', $roomIds)
-            ->where('status', 'occupied')
-            ->count();
-
-        $availableCount = BoardingBed::query()
-            ->whereIn('boarding_room_id', $roomIds)
-            ->where('status', 'available')
-            ->count();
-
-        $maintenanceCount = BoardingBed::query()
-            ->whereIn('boarding_room_id', $roomIds)
-            ->where('status', 'maintenance')
-            ->count();
-
-        $occupancyRate = $totalCapacity > 0 ? round(($occupiedCount / $totalCapacity) * 100, 1) : 0;
-
-        return [
-            'capacity' => $totalCapacity,
-            'occupied' => $occupiedCount,
-            'available' => $availableCount,
-            'maintenance' => $maintenanceCount,
-            'occupancy_rate' => $occupancyRate,
-            'rooms_count' => $rooms->count(),
+        return $stats[$dormitory->id] ?? [
+            'capacity' => 0,
+            'occupied' => 0,
+            'available' => 0,
+            'maintenance' => 0,
+            'occupancy_rate' => 0,
+            'rooms_count' => 0,
         ];
     }
 
@@ -81,44 +141,25 @@ class BoardingOccupancyService
             $query->where('school_id', $schoolId);
         }
         $dormitories = $query->get();
-        $dormitoryIds = $dormitories->pluck('id');
 
-        if ($dormitoryIds->isEmpty()) {
-            return [
-                'dormitories_count' => 0,
+        $totalCapacity = 0;
+        $totalOccupied = 0;
+        $totalAvailable = 0;
+        $totalMaintenance = 0;
+
+        $allStats = $this->getDormitoriesStats($dormitories);
+
+        foreach ($dormitories as $dormitory) {
+            $stats = $allStats[$dormitory->id] ?? [
                 'capacity' => 0,
                 'occupied' => 0,
                 'available' => 0,
                 'maintenance' => 0,
-                'occupancy_rate' => 0,
             ];
-        }
-
-        // Optimization: Batch fetch active rooms for all dormitories
-        $rooms = BoardingRoom::query()
-            ->whereIn('boarding_dormitory_id', $dormitoryIds)
-            ->where('is_active', true)
-            ->get();
-
-        $totalCapacity = $rooms->sum('capacity');
-        $roomIds = $rooms->pluck('id');
-
-        if ($roomIds->isEmpty()) {
-            $totalOccupied = 0;
-            $totalAvailable = 0;
-            $totalMaintenance = 0;
-        } else {
-            // Optimization: Batch count bed statuses using group by instead of N+1 queries
-            $bedCounts = BoardingBed::query()
-                ->select('status', \DB::raw('count(*) as count'))
-                ->whereIn('boarding_room_id', $roomIds)
-                ->whereIn('status', ['occupied', 'available', 'maintenance'])
-                ->groupBy('status')
-                ->pluck('count', 'status');
-
-            $totalOccupied = (int) ($bedCounts['occupied'] ?? 0);
-            $totalAvailable = (int) ($bedCounts['available'] ?? 0);
-            $totalMaintenance = (int) ($bedCounts['maintenance'] ?? 0);
+            $totalCapacity += $stats['capacity'];
+            $totalOccupied += $stats['occupied'];
+            $totalAvailable += $stats['available'];
+            $totalMaintenance += $stats['maintenance'];
         }
 
         $occupancyRate = $totalCapacity > 0 ? round(($totalOccupied / $totalCapacity) * 100, 1) : 0;
