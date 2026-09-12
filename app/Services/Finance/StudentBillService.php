@@ -50,6 +50,9 @@ class StudentBillService
                 'posted_at' => now(),
             ]);
 
+            $itemsToInsert = [];
+            $now = now();
+
             foreach ($items as $item) {
                 if (empty($item['name']) && empty($item['unit_amount'])) {
                     continue; // Skip optional empty items
@@ -65,7 +68,7 @@ class StudentBillService
                     ]);
                 }
 
-                StudentBillItem::query()->create([
+                $itemsToInsert[] = [
                     'student_bill_id' => $bill->id,
                     'finance_fee_item_id' => $item['finance_fee_item_id'] ?? null,
                     'name' => $item['name'],
@@ -73,9 +76,15 @@ class StudentBillService
                     'quantity' => $quantity,
                     'unit_amount' => $unitAmount,
                     'total_amount' => $lineTotal,
-                ]);
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
 
                 $totalAmount += $lineTotal;
+            }
+
+            if (! empty($itemsToInsert)) {
+                StudentBillItem::query()->insert($itemsToInsert);
             }
 
             if ($totalAmount <= 0) {
