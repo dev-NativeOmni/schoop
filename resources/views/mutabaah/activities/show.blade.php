@@ -6,7 +6,7 @@
 <div class="max-w-2xl mx-auto space-y-6">
 
     {{-- Back Button & Title --}}
-    <div class="flex items-center justify-between border-b border-slate-200/80 pb-5 dark:border-slate-800">
+    <div class="flex flex-col border-b border-slate-200/80 pb-5 dark:border-slate-800 gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex items-center space-x-4">
             <a href="{{ route('mutabaah.activities.index') }}" 
                class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 transition">

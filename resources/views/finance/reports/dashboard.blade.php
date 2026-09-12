@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 py-6">
-    <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+    <div class="flex flex-col mb-6 flex-wrap gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Laporan Finance</h1>
             <p class="text-sm text-gray-600 dark:text-slate-400">Ringkasan tagihan, pembayaran, dan tunggakan keuangan santri.</p>

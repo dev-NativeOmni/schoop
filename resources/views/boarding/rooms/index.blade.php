@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex items-center justify-between border-b border-slate-200 pb-4 dark:border-slate-800">
+    <div class="flex flex-col border-b border-slate-200 pb-4 dark:border-slate-800 gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Daftar Kamar</h1>
             <p class="text-sm text-slate-500">Kelola kamar-kamar yang berada di dalam asrama.</p>
