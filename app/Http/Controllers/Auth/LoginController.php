@@ -7,6 +7,7 @@ use App\Services\Tenancy\TenantContextService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
 
 class LoginController extends Controller
@@ -29,6 +30,18 @@ class LoginController extends Controller
             'password' => ['required', 'string'],
         ]);
 
+        $throttleKey = 'login|'.$request->ip().'|'.mb_strtolower($credentials['login']);
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 8)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            return back()
+                ->withErrors([
+                    'login' => "Terlalu banyak percobaan login. Coba lagi dalam {$seconds} detik.",
+                ])
+                ->onlyInput('login');
+        }
+
         // Determine if the login field is an email or username
         $loginField = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
@@ -39,12 +52,16 @@ class LoginController extends Controller
         ];
 
         if (! Auth::attempt($attemptCredentials, $request->boolean('remember'))) {
+            RateLimiter::hit($throttleKey, 60);
+
             return back()
                 ->withErrors([
                     'login' => 'Login gagal. Periksa username/email dan password.',
                 ])
                 ->onlyInput('login');
         }
+
+        RateLimiter::clear($throttleKey);
 
         $request->session()->regenerate();
 
